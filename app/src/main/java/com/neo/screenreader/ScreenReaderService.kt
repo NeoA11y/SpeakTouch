@@ -4,6 +4,8 @@ import android.accessibilityservice.AccessibilityService
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
+import timber.log.Timber
 
 class ScreenReaderService : AccessibilityService() {
 
@@ -13,48 +15,90 @@ class ScreenReaderService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
 
-        Log.d("ScreenReaderService", "event: ${event.event}, source: ${event.source?.className}")
+        Timber.d("event: %s, source: %s", event.event, event.source?.className)
 
-        when(event.eventType) {
+        val nodeInfoCompat = event.source?.compat
 
-            AccessibilityEvent.TYPE_TOUCH_EXPLORATION_GESTURE_START -> {
+        when (event.eventType) {
 
+            AccessibilityEvent.TYPE_VIEW_HOVER_ENTER -> {
+                nodeInfoCompat?.performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
             }
 
+            AccessibilityEvent.TYPE_ANNOUNCEMENT -> {
+
+            }
+            AccessibilityEvent.TYPE_ASSIST_READING_CONTEXT -> {
+
+            }
+            AccessibilityEvent.TYPE_GESTURE_DETECTION_END -> {
+
+            }
+            AccessibilityEvent.TYPE_GESTURE_DETECTION_START -> {
+
+            }
+            AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED -> {
+
+            }
+            AccessibilityEvent.TYPE_SPEECH_STATE_CHANGE -> {
+
+            }
             AccessibilityEvent.TYPE_TOUCH_EXPLORATION_GESTURE_END -> {
 
             }
-
-            AccessibilityEvent.TYPE_TOUCH_INTERACTION_START -> {
+            AccessibilityEvent.TYPE_TOUCH_EXPLORATION_GESTURE_START -> {
 
             }
-
             AccessibilityEvent.TYPE_TOUCH_INTERACTION_END -> {
 
             }
-
-            AccessibilityEvent.TYPE_WINDOWS_CHANGED -> {
-
-            }
-
-            AccessibilityEvent.TYPE_VIEW_HOVER_EXIT -> {
+            AccessibilityEvent.TYPE_TOUCH_INTERACTION_START -> {
 
             }
-
             AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED -> {
 
             }
-        }
-
-        val source = event.source ?: return
-
-        when(event.eventType) {
-
-            AccessibilityEvent.TYPE_VIEW_HOVER_ENTER -> {
-                source.performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
-            }
 
             AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED -> {
+
+            }
+            AccessibilityEvent.TYPE_VIEW_CLICKED -> {
+
+            }
+            AccessibilityEvent.TYPE_VIEW_CONTEXT_CLICKED -> {
+
+            }
+            AccessibilityEvent.TYPE_VIEW_FOCUSED -> {
+
+            }
+            AccessibilityEvent.TYPE_VIEW_HOVER_EXIT -> {
+
+            }
+            AccessibilityEvent.TYPE_VIEW_LONG_CLICKED -> {
+
+            }
+            AccessibilityEvent.TYPE_VIEW_SCROLLED -> {
+
+            }
+            AccessibilityEvent.TYPE_VIEW_SELECTED -> {
+
+            }
+            AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED -> {
+
+            }
+            AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED -> {
+
+            }
+            AccessibilityEvent.TYPE_VIEW_TEXT_TRAVERSED_AT_MOVEMENT_GRANULARITY -> {
+
+            }
+            AccessibilityEvent.TYPE_WINDOWS_CHANGED -> {
+
+            }
+            AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED -> {
+
+            }
+            AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> {
 
             }
         }
@@ -64,6 +108,9 @@ class ScreenReaderService : AccessibilityService() {
 
     }
 }
+
+private val AccessibilityNodeInfo.compat: AccessibilityNodeInfoCompat
+    get() = AccessibilityNodeInfoCompat.wrap(this)
 
 private val AccessibilityEvent.event: String
     get() {
