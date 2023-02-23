@@ -58,7 +58,6 @@ class ScreenReaderService : AccessibilityService() {
             AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED -> {
 
             }
-
             AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED -> {
 
             }
