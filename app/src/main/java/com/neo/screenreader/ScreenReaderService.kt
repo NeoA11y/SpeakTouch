@@ -1,6 +1,7 @@
 package com.neo.screenreader
 
 import android.accessibilityservice.AccessibilityService
+import android.speech.tts.TextToSpeech
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
@@ -9,8 +10,21 @@ import timber.log.Timber
 
 class ScreenReaderService : AccessibilityService() {
 
-    override fun onCreate() {
+    private lateinit var textToSpeech: TextToSpeech
 
+    override fun onCreate() {
+        super.onCreate()
+
+        textToSpeech = TextToSpeech(this) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                textToSpeech.speak(
+                    "Screen Reader ativado",
+                    TextToSpeech.QUEUE_FLUSH,
+                    null,
+                    null
+                )
+            }
+        }
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -65,6 +79,26 @@ class ScreenReaderService : AccessibilityService() {
             }
             AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED -> {
 
+                val nodeInfo = event.source ?: return
+
+                textToSpeech.speak(
+                    nodeInfo.availableContent.isEmptyOrNull {
+                        buildList {
+                            for (index in 0 until nodeInfo.childCount) {
+                                val child = nodeInfo.getChild(index) ?: continue
+
+                                val childCompat = AccessibilityNodeInfoCompat.wrap(child)
+
+                                if (childCompat.isReadable) {
+                                    add(child.availableContent)
+                                }
+                            }
+                        }.joinToString(", ")
+                    },
+                    TextToSpeech.QUEUE_FLUSH,
+                    null,
+                    null
+                )
             }
             AccessibilityEvent.TYPE_VIEW_CLICKED -> {
 
@@ -188,4 +222,13 @@ class ScreenReaderService : AccessibilityService() {
     override fun onInterrupt() {
 
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        textToSpeech.shutdown();
+    }
 }
+
+private val AccessibilityNodeInfo.availableContent: CharSequence
+    get() = text.isEmptyOrNull { contentDescription ?: "" }

@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+
     <application
         android:name=".ScreenReaderApplication"
         android:allowBackup="true"
@@ -13,23 +19,23 @@
         android:theme="@style/Theme.ScreenReader"
         tools:targetApi="31">
 
-            <service
-                android:name=".ScreenReaderService"
-                android:exported="true"
-                android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+        <service
+            android:name=".ScreenReaderService"
+            android:exported="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
 
-                <intent-filter>
-                    <action android:name="android.accessibilityservice.AccessibilityService" />
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
 
-                    <category android:name="android.accessibilityservice.category.FEEDBACK_AUDIBLE" />
-                    <category android:name="android.accessibilityservice.category.FEEDBACK_HAPTIC" />
-                    <category android:name="android.accessibilityservice.category.FEEDBACK_SPOKEN" />
-                </intent-filter>
+                <category android:name="android.accessibilityservice.category.FEEDBACK_AUDIBLE" />
+                <category android:name="android.accessibilityservice.category.FEEDBACK_HAPTIC" />
+                <category android:name="android.accessibilityservice.category.FEEDBACK_SPOKEN" />
+            </intent-filter>
 
-                <meta-data
-                    android:name="android.accessibilityservice"
-                    android:resource="@xml/accessibility_service_config" />
-            </service>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
 
     </application>
 
