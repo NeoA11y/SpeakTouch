@@ -68,7 +68,7 @@ class ScreenReaderService : AccessibilityService() {
 
             }
             AccessibilityEvent.TYPE_VIEW_FOCUSED -> {
-
+                nodeInfoCompat?.performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
             }
             AccessibilityEvent.TYPE_VIEW_HOVER_EXIT -> {
 
