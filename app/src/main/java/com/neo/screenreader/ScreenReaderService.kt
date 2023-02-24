@@ -4,9 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
-import com.neo.screenreader.utils.extensions.eventString
-import com.neo.screenreader.utils.extensions.isAccessibilityFocusable
-import com.neo.screenreader.utils.extensions.isClickableOrFocusable
+import com.neo.screenreader.utils.extensions.*
 import timber.log.Timber
 
 class ScreenReaderService : AccessibilityService() {
@@ -121,37 +119,69 @@ class ScreenReaderService : AccessibilityService() {
             "setAccessibilityFocus()\n" +
                     "class: %s\n" +
                     "isFocusable: %s\n" +
+                    "isEnabled: %s\n" +
                     "isClickable: %s\n" +
                     "isLongClickable: %s\n" +
                     "text: %s\n" +
-                    "description: %s\n" +
+                    "hint: %s\n" +
+                    "contentDescription: %s\n" +
+                    "stateDescription: %s\n" +
                     "isHeading: %s\n" +
+                    "paneTitle: %s\n" +
                     "isScreenReaderFocusable: %s\n" +
                     "isImportantForAccessibility: %s\n",
             nodeInfoCompat.className,
+            nodeInfoCompat.isEnabled,
             nodeInfoCompat.isFocusable,
             nodeInfoCompat.isClickable,
             nodeInfoCompat.isLongClickable,
             nodeInfoCompat.text,
+            nodeInfoCompat.hintText,
             nodeInfoCompat.contentDescription,
+            nodeInfoCompat.stateDescription,
             nodeInfoCompat.isHeading,
+            nodeInfoCompat.paneTitle,
             nodeInfoCompat.isScreenReaderFocusable,
             nodeInfoCompat.isImportantForAccessibility,
         )
 
-        val nodeInfoParent = nodeInfoCompat.parent
-
         when {
-            nodeInfoCompat.isClickableOrFocusable -> {
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
+
+            !nodeInfoCompat.isEnabled -> {
+                Timber.i("%s: ignored by disabled", nodeInfoCompat.className)
+                return
             }
 
-            nodeInfoCompat.parent?.isClickableOrFocusable == true -> {
-                nodeInfoParent.performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
+            !nodeInfoCompat.isImportantForAccessibility -> {
+                Timber.i("%s: ignored by important accessibility no", nodeInfoCompat.className)
+                return
             }
 
-            nodeInfo.isAccessibilityFocusable -> {
+            nodeInfoCompat.isActionable -> {
+                Timber.i("%s: selected by actionable", nodeInfoCompat.className)
                 nodeInfo.performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
+                return
+            }
+
+            nodeInfoCompat.parent?.isActionable == true -> {
+                Timber.i("%s: up parent by actionable", nodeInfoCompat.className)
+                setAccessibilityFocus(nodeInfoCompat.parent.unwrap())
+                return
+            }
+
+            nodeInfoCompat.isReadable -> {
+                Timber.i("%s: selected by readable", nodeInfoCompat.className)
+                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
+                return
+            }
+
+            nodeInfoCompat.parent?.isReadable == true -> {
+                Timber.i("%s: up parent by readable", nodeInfoCompat.className)
+                setAccessibilityFocus(nodeInfoCompat.parent.unwrap())
+            }
+
+            else -> {
+                Timber.i("%s: ignored", nodeInfoCompat.className)
             }
         }
     }
