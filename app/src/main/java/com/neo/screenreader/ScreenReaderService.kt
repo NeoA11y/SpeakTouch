@@ -27,7 +27,7 @@ class ScreenReaderService : AccessibilityService() {
 
                 val nodeInfo = event.source ?: return
 
-                setAccessibilityFocus(nodeInfo)
+                handlerAccessibilityFocus(nodeInfo)
             }
 
             AccessibilityEvent.TYPE_ANNOUNCEMENT -> {
@@ -76,7 +76,7 @@ class ScreenReaderService : AccessibilityService() {
 
                 val nodeInfoCompat = event.source ?: return
 
-                setAccessibilityFocus(nodeInfoCompat)
+                handlerAccessibilityFocus(nodeInfoCompat)
             }
             AccessibilityEvent.TYPE_VIEW_HOVER_EXIT -> {
 
@@ -111,7 +111,7 @@ class ScreenReaderService : AccessibilityService() {
         }
     }
 
-    private fun setAccessibilityFocus(nodeInfo: AccessibilityNodeInfo) {
+    private fun handlerAccessibilityFocus(nodeInfo: AccessibilityNodeInfo) {
 
         val nodeInfoCompat = AccessibilityNodeInfoCompat.wrap(nodeInfo)
 
@@ -126,10 +126,12 @@ class ScreenReaderService : AccessibilityService() {
                     "hint: %s\n" +
                     "contentDescription: %s\n" +
                     "stateDescription: %s\n" +
+                    "error: %s\n" +
                     "isHeading: %s\n" +
                     "paneTitle: %s\n" +
                     "isScreenReaderFocusable: %s\n" +
-                    "isImportantForAccessibility: %s\n",
+                    "isImportantForAccessibility: %s\n" +
+                    "parent: %s\n",
             nodeInfoCompat.className,
             nodeInfoCompat.isEnabled,
             nodeInfoCompat.isFocusable,
@@ -139,18 +141,15 @@ class ScreenReaderService : AccessibilityService() {
             nodeInfoCompat.hintText,
             nodeInfoCompat.contentDescription,
             nodeInfoCompat.stateDescription,
+            nodeInfoCompat.error,
             nodeInfoCompat.isHeading,
             nodeInfoCompat.paneTitle,
             nodeInfoCompat.isScreenReaderFocusable,
             nodeInfoCompat.isImportantForAccessibility,
+            nodeInfoCompat.parent?.className,
         )
 
         when {
-
-            !nodeInfoCompat.isEnabled -> {
-                Timber.i("%s: ignored by disabled", nodeInfoCompat.className)
-                return
-            }
 
             !nodeInfoCompat.isImportantForAccessibility -> {
                 Timber.i("%s: ignored by important accessibility no", nodeInfoCompat.className)
@@ -165,7 +164,7 @@ class ScreenReaderService : AccessibilityService() {
 
             nodeInfoCompat.parent?.isActionable == true -> {
                 Timber.i("%s: up parent by actionable", nodeInfoCompat.className)
-                setAccessibilityFocus(nodeInfoCompat.parent.unwrap())
+                handlerAccessibilityFocus(nodeInfoCompat.parent.unwrap())
                 return
             }
 
@@ -177,7 +176,7 @@ class ScreenReaderService : AccessibilityService() {
 
             nodeInfoCompat.parent?.isReadable == true -> {
                 Timber.i("%s: up parent by readable", nodeInfoCompat.className)
-                setAccessibilityFocus(nodeInfoCompat.parent.unwrap())
+                handlerAccessibilityFocus(nodeInfoCompat.parent.unwrap())
             }
 
             else -> {
