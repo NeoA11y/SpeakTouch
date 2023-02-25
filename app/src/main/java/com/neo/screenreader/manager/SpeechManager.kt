@@ -13,7 +13,7 @@ class SpeechManager(
 
     fun handlerAccessibilityEvent(event: AccessibilityEvent) {
         if (event.eventType == AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED) {
-            speak(AccessibilityNodeInfoCompat.wrap(event.source ?: return))
+            speak(NodeInfo.wrap(event.source ?: return))
         }
     }
 
@@ -29,7 +29,7 @@ class SpeechManager(
         )
     }
 
-    private fun speak(node: AccessibilityNodeInfoCompat) {
+    private fun speak(node: NodeInfo) {
         speak(getContent(node))
     }
 
@@ -41,7 +41,7 @@ class SpeechManager(
     }
 
     private fun getType(
-        node: AccessibilityNodeInfoCompat
+        node: NodeInfo
     ) = with(node) {
         when {
             isCheckable -> {
@@ -71,7 +71,7 @@ class SpeechManager(
     }
 
     private fun getChildrenContent(
-        node: AccessibilityNodeInfoCompat
+        node: NodeInfo
     ): String {
         return buildList {
             for (index in 0 until node.childCount) {
@@ -85,7 +85,7 @@ class SpeechManager(
     }
 
     private fun getContent(
-        node: AccessibilityNodeInfoCompat
+        node: NodeInfo
     ) = with(node) {
         Timber.d("getContent()\n${node.getLog()}")
 

@@ -3,6 +3,7 @@ package com.neo.screenreader.manager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
+import com.neo.screenreader.utils.extensions.NodeInfo
 import com.neo.screenreader.utils.extensions.getLog
 import com.neo.screenreader.utils.extensions.isActionable
 import com.neo.screenreader.utils.extensions.isReadable
@@ -10,11 +11,11 @@ import timber.log.Timber
 
 class FocusManager {
 
-    private var lastNode: AccessibilityNodeInfoCompat? = null
+    private var lastNode: NodeInfo? = null
 
     fun handlerAccessibilityEvent(event: AccessibilityEvent) {
 
-        val node = AccessibilityNodeInfoCompat.wrap(event.source ?: return)
+        val node = NodeInfo.wrap(event.source ?: return)
 
         // node information log
         Timber.d(node.getLog())
@@ -58,7 +59,7 @@ class FocusManager {
         }
     }
 
-    private fun handlerAccessibilityNode(node: AccessibilityNodeInfoCompat) {
+    private fun handlerAccessibilityNode(node: NodeInfo) {
 
         when {
 
@@ -69,7 +70,7 @@ class FocusManager {
 
             node.isActionable -> {
                 Timber.i("selected: ACTIONABLE")
-                node.performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
+                node.performAction(NodeInfo.ACTION_ACCESSIBILITY_FOCUS)
                 return
             }
 
@@ -81,7 +82,7 @@ class FocusManager {
 
             node.isReadable -> {
                 Timber.i("selected: READABLE")
-                node.performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
+                node.performAction(NodeInfo.ACTION_ACCESSIBILITY_FOCUS)
                 return
             }
 
