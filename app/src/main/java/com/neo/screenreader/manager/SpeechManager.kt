@@ -4,22 +4,12 @@ import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.view.accessibility.AccessibilityEvent
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
-import com.neo.screenreader.utils.extensions.ifEmptyOrNull
-import com.neo.screenreader.utils.extensions.isButtonType
-import com.neo.screenreader.utils.extensions.isReadable
+import com.neo.screenreader.utils.extensions.*
+import timber.log.Timber
 
 class SpeechManager(
-    private val tts: TextToSpeech
+    private val textToSpeech: TextToSpeech
 ) {
-
-    fun speak(text: CharSequence) = tts.speak(
-        text,
-        TextToSpeech.QUEUE_FLUSH,
-        null,
-        null
-    )
-
-    fun shutdown() = tts.shutdown()
 
     fun handlerAccessibilityEvent(event: AccessibilityEvent) {
         if (event.eventType == AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED) {
@@ -27,26 +17,67 @@ class SpeechManager(
         }
     }
 
-    private fun speak(node: AccessibilityNodeInfoCompat) {
-        // (content or text or hint) : type : error : hint
+    fun speak(text: CharSequence) {
 
-        val content = getContent(node).ifEmpty {
-            getChildrenContent(node)
-        }
+        Timber.i("speak: $text")
 
-        speak(
-            content
+        textToSpeech.speak(
+            text,
+            TextToSpeech.QUEUE_FLUSH,
+            null,
+            null
         )
+    }
+
+    private fun speak(node: AccessibilityNodeInfoCompat) {
+        speak(getContent(node))
+    }
+
+    fun shutdown() {
+
+        Timber.i("shutdown")
+
+        textToSpeech.shutdown()
+    }
+
+    private fun getType(
+        node: AccessibilityNodeInfoCompat
+    ) = with(node) {
+        when {
+            isCheckable -> {
+                val stateText = if (node.isChecked) {
+                    "ativado"
+                } else {
+                    "desativado"
+                }
+
+                "interruptor $stateText"
+            }
+
+            isButtonType -> {
+                "botão"
+            }
+
+            isEditable -> {
+                "campo de edição"
+            }
+
+            isHeading -> {
+                "título"
+            }
+
+            else -> ""
+        }
     }
 
     private fun getChildrenContent(
         node: AccessibilityNodeInfoCompat
-    ) = with(node) {
-        buildList {
-            for (index in 0 until childCount) {
-                val nodeChild = getChild(index)
+    ): String {
+        return buildList {
+            for (index in 0 until node.childCount) {
+                val nodeChild = node.getChild(index)
 
-                if (nodeChild.isReadable) {
+                if (nodeChild.isAvailableForAccessibility) {
                     add(getContent(nodeChild))
                 }
             }
@@ -56,14 +87,29 @@ class SpeechManager(
     private fun getContent(
         node: AccessibilityNodeInfoCompat
     ) = with(node) {
-        contentDescription.ifEmptyOrNull {
+        Timber.d("getContent()\n${node.getLog()}")
+
+        val value = contentDescription.ifEmptyOrNull {
             text.ifEmptyOrNull {
-                hintText ?: ""
+                hintText.ifEmptyOrNull {
+                    getChildrenContent(node)
+                }
             }
         }
+
+        listOf(
+            value,
+            getType(node),
+            hintText?.takeIf { it != value },
+            error
+        ).filter {
+            !it.isNullOrEmpty()
+        }.joinToString(", ")
     }
 
     companion object {
+
+        private const val TTS_INITIALIZATION_ERROR = "TTS_INITIALIZATION_ERROR"
 
         fun getInstance(context: Context): SpeechManager {
 
@@ -76,10 +122,9 @@ class SpeechManager(
                             "Screen Reader ativado"
                         )
                     } else {
-                        error("TTS_INITIALIZATION_ERROR")
+                        error(TTS_INITIALIZATION_ERROR)
                     }
                 }
-
             )
             return speechManager
         }

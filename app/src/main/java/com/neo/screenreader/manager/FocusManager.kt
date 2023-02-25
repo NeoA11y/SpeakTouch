@@ -47,7 +47,9 @@ class FocusManager {
                 handlerAccessibilityNode(node)
             }
 
-            else -> Unit
+            else -> {
+                Timber.i("ignored")
+            }
         }
     }
 
