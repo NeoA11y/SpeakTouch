@@ -47,6 +47,11 @@ class FocusManager {
                 handlerAccessibilityNode(node)
             }
 
+            AccessibilityEvent.TYPE_VIEW_CLICKED -> {
+                Timber.i("event: TYPE_VIEW_CLICKED")
+                handlerAccessibilityNode(node)
+            }
+
             else -> {
                 Timber.i("ignored")
             }
