@@ -1,16 +1,21 @@
-package com.neo.screenreader
+package com.neo.screenreader.service
 
 import android.accessibilityservice.AccessibilityService
 import android.speech.tts.TextToSpeech
 import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
-import com.neo.screenreader.utils.extensions.*
+import com.neo.screenreader.manager.FocusManager
+import com.neo.screenreader.utils.extensions.availableContent
+import com.neo.screenreader.utils.extensions.eventString
+import com.neo.screenreader.utils.extensions.isEmptyOrNull
+import com.neo.screenreader.utils.extensions.isReadable
 import timber.log.Timber
 
 class ScreenReaderService : AccessibilityService() {
 
     private lateinit var textToSpeech: TextToSpeech
+
+    private val focusManager = FocusManager()
 
     override fun onCreate() {
         super.onCreate()
@@ -35,13 +40,12 @@ class ScreenReaderService : AccessibilityService() {
             event.source?.className
         )
 
+        focusManager.handlerAccessibilityEvent(event)
+
         when (event.eventType) {
 
             AccessibilityEvent.TYPE_VIEW_HOVER_ENTER -> {
 
-                val nodeInfo = event.source ?: return
-
-                handlerAccessibilityFocus(nodeInfo)
             }
 
             AccessibilityEvent.TYPE_ANNOUNCEMENT -> {
@@ -108,9 +112,6 @@ class ScreenReaderService : AccessibilityService() {
             }
             AccessibilityEvent.TYPE_VIEW_FOCUSED -> {
 
-                val nodeInfoCompat = event.source ?: return
-
-                handlerAccessibilityFocus(nodeInfoCompat)
             }
             AccessibilityEvent.TYPE_VIEW_HOVER_EXIT -> {
 
@@ -145,80 +146,6 @@ class ScreenReaderService : AccessibilityService() {
         }
     }
 
-    private fun handlerAccessibilityFocus(nodeInfo: AccessibilityNodeInfo) {
-
-        val nodeInfoCompat = AccessibilityNodeInfoCompat.wrap(nodeInfo)
-
-        Timber.d(
-            "setAccessibilityFocus()\n" +
-                    "class: %s\n" +
-                    "isFocusable: %s\n" +
-                    "isEnabled: %s\n" +
-                    "isClickable: %s\n" +
-                    "isLongClickable: %s\n" +
-                    "text: %s\n" +
-                    "hint: %s\n" +
-                    "contentDescription: %s\n" +
-                    "stateDescription: %s\n" +
-                    "error: %s\n" +
-                    "isHeading: %s\n" +
-                    "paneTitle: %s\n" +
-                    "isScreenReaderFocusable: %s\n" +
-                    "isImportantForAccessibility: %s\n" +
-                    "parent: %s\n",
-            nodeInfoCompat.className,
-            nodeInfoCompat.isEnabled,
-            nodeInfoCompat.isFocusable,
-            nodeInfoCompat.isClickable,
-            nodeInfoCompat.isLongClickable,
-            nodeInfoCompat.text,
-            nodeInfoCompat.hintText,
-            nodeInfoCompat.contentDescription,
-            nodeInfoCompat.stateDescription,
-            nodeInfoCompat.error,
-            nodeInfoCompat.isHeading,
-            nodeInfoCompat.paneTitle,
-            nodeInfoCompat.isScreenReaderFocusable,
-            nodeInfoCompat.isImportantForAccessibility,
-            nodeInfoCompat.parent?.className,
-        )
-
-        when {
-
-            !nodeInfoCompat.isImportantForAccessibility -> {
-                Timber.i("%s: ignored by important accessibility no", nodeInfoCompat.className)
-                return
-            }
-
-            nodeInfoCompat.isActionable -> {
-                Timber.i("%s: selected by actionable", nodeInfoCompat.className)
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
-                return
-            }
-
-            nodeInfoCompat.parent?.isActionable == true -> {
-                Timber.i("%s: up parent by actionable", nodeInfoCompat.className)
-                handlerAccessibilityFocus(nodeInfoCompat.parent.unwrap())
-                return
-            }
-
-            nodeInfoCompat.isReadable -> {
-                Timber.i("%s: selected by readable", nodeInfoCompat.className)
-                nodeInfo.performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
-                return
-            }
-
-            nodeInfoCompat.parent?.isReadable == true -> {
-                Timber.i("%s: up parent by readable", nodeInfoCompat.className)
-                handlerAccessibilityFocus(nodeInfoCompat.parent.unwrap())
-            }
-
-            else -> {
-                Timber.i("%s: ignored", nodeInfoCompat.className)
-            }
-        }
-    }
-
     override fun onInterrupt() {
 
     }
@@ -229,6 +156,3 @@ class ScreenReaderService : AccessibilityService() {
         textToSpeech.shutdown();
     }
 }
-
-private val AccessibilityNodeInfo.availableContent: CharSequence
-    get() = text.isEmptyOrNull { contentDescription ?: "" }
