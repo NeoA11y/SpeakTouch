@@ -1,6 +1,5 @@
 package com.neo.screenreader.utils.extensions
 
-import android.R
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 
 typealias NodeInfo = AccessibilityNodeInfoCompat
@@ -87,25 +86,5 @@ private val NodeAction.name: String
         AccessibilityNodeInfoCompat.ACTION_EXPAND -> "ACTION_EXPAND"
         AccessibilityNodeInfoCompat.ACTION_COLLAPSE -> "ACTION_COLLAPSE"
         AccessibilityNodeInfoCompat.ACTION_SET_TEXT -> "ACTION_SET_TEXT"
-        R.id.accessibilityActionScrollUp -> "ACTION_SCROLL_UP"
-        R.id.accessibilityActionScrollLeft -> "ACTION_SCROLL_LEFT"
-        R.id.accessibilityActionScrollDown -> "ACTION_SCROLL_DOWN"
-        R.id.accessibilityActionScrollRight -> "ACTION_SCROLL_RIGHT"
-        R.id.accessibilityActionPageDown -> "ACTION_PAGE_DOWN"
-        R.id.accessibilityActionPageUp -> "ACTION_PAGE_UP"
-        R.id.accessibilityActionPageLeft -> "ACTION_PAGE_LEFT"
-        R.id.accessibilityActionPageRight -> "ACTION_PAGE_RIGHT"
-        R.id.accessibilityActionShowOnScreen -> "ACTION_SHOW_ON_SCREEN"
-        R.id.accessibilityActionScrollToPosition -> "ACTION_SCROLL_TO_POSITION"
-        R.id.accessibilityActionContextClick -> "ACTION_CONTEXT_CLICK"
-        R.id.accessibilityActionSetProgress -> "ACTION_SET_PROGRESS"
-        R.id.accessibilityActionMoveWindow -> "ACTION_MOVE_WINDOW"
-        R.id.accessibilityActionShowTooltip -> "ACTION_SHOW_TOOLTIP"
-        R.id.accessibilityActionHideTooltip -> "ACTION_HIDE_TOOLTIP"
-        R.id.accessibilityActionPressAndHold -> "ACTION_PRESS_AND_HOLD"
-        R.id.accessibilityActionImeEnter -> "ACTION_IME_ENTER"
-        R.id.accessibilityActionDragStart -> "ACTION_DRAG_START"
-        R.id.accessibilityActionDragDrop -> "ACTION_DRAG_DROP"
-        R.id.accessibilityActionDragCancel -> "ACTION_DRAG_CANCEL"
         else -> label.ifEmptyOrNull { "ACTION_UNKNOWN" }.toString()
     }
