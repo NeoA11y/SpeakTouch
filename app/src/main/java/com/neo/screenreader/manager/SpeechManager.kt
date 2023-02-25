@@ -29,6 +29,14 @@ class SpeechManager(
 
     private fun speak(node: AccessibilityNodeInfoCompat) {
         // (content or text or hint) : type : error : hint
+
+        val content = getContent(node).ifEmpty {
+            getChildrenContent(node)
+        }
+
+        speak(
+            content
+        )
     }
 
     private fun getChildrenContent(
