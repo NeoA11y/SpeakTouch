@@ -109,8 +109,6 @@ class SpeechManager(
 
     companion object {
 
-        private const val TTS_INITIALIZATION_ERROR = "TTS_INITIALIZATION_ERROR"
-
         fun getInstance(context: Context): SpeechManager {
 
             var speechManager: SpeechManager? = null
@@ -122,7 +120,7 @@ class SpeechManager(
                             "Screen Reader ativado"
                         )
                     } else {
-                        error(TTS_INITIALIZATION_ERROR)
+                        error(message = "TTS_INITIALIZATION_ERROR")
                     }
                 }
             )
