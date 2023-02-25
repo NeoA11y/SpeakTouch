@@ -1,19 +1,17 @@
 package com.neo.screenreader.utils.extensions
 
-import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 
 val AccessibilityNodeInfoCompat.isActionable: Boolean
     get() = isClickable || isLongClickable || isClickable
 
 val AccessibilityNodeInfoCompat.isReadable: Boolean
-    get() = !text.isNullOrEmpty() ||
-            !paneTitle.isNullOrEmpty() ||
-            !hintText.isNullOrEmpty() ||
-            !contentDescription.isNullOrEmpty() ||
-            !stateDescription.isNullOrEmpty() ||
-            !error.isNullOrEmpty()
+    get() = !contentDescription.isNullOrEmpty() ||
+                !text.isNullOrEmpty() ||
+                !hintText.isNullOrEmpty()
 
+val AccessibilityNodeInfoCompat.isButtonType: Boolean
+    get() = className == "android.widget.Button"
 
 fun AccessibilityNodeInfoCompat.getLog(): String {
     return String.format(
@@ -49,6 +47,3 @@ fun AccessibilityNodeInfoCompat.getLog(): String {
         parent?.className?.ifEmpty { "unknown" },
     )
 }
-
-val AccessibilityNodeInfo.availableContent: CharSequence
-    get() = text.isEmptyOrNull { contentDescription ?: "" }
