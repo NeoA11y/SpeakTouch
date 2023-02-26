@@ -2,18 +2,23 @@ package com.neo.screenreader.service
 
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
-import com.neo.screenreader.manager.FocusManager
-import com.neo.screenreader.manager.SpeechManager
+import com.neo.screenreader.intercepter.FocusInterceptor
+import com.neo.screenreader.intercepter.SpeechInterceptor
+import com.neo.screenreader.intercepter.interfece.Interceptor
 import com.neo.screenreader.utils.extensions.getEventLog
+import com.neo.screenreader.utils.extensions.getInstance
 import timber.log.Timber
 
 class ScreenReaderService : AccessibilityService() {
 
-    private val speechManager: SpeechManager by lazy {
-        SpeechManager.getInstance(this)
-    }
+    private val interceptors = mutableListOf<Interceptor>()
 
-    private val focusManager = FocusManager()
+    override fun onCreate() {
+        super.onCreate()
+
+        interceptors.add(FocusInterceptor())
+        interceptors.add(SpeechInterceptor.getInstance(this))
+    }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
 
@@ -23,17 +28,18 @@ class ScreenReaderService : AccessibilityService() {
             event.source?.className?.ifEmpty { "unknown" }
         )
 
-        focusManager.handlerAccessibilityEvent(event)
-        speechManager.handlerAccessibilityEvent(event)
-    }
-
-    override fun onInterrupt() {
-
+        interceptors.forEach { it.handler(event) }
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        speechManager.shutdown();
+        interceptors
+            .getInstance<SpeechInterceptor>()
+            .shutdown()
+
+        interceptors.clear()
     }
+
+    override fun onInterrupt() = Unit
 }

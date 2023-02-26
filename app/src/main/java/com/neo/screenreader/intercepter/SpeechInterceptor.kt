@@ -1,17 +1,17 @@
-package com.neo.screenreader.manager
+package com.neo.screenreader.intercepter
 
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.view.accessibility.AccessibilityEvent
-import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
+import com.neo.screenreader.intercepter.interfece.Interceptor
 import com.neo.screenreader.utils.extensions.*
 import timber.log.Timber
 
-class SpeechManager(
+class SpeechInterceptor(
     private val textToSpeech: TextToSpeech
-) {
+) : Interceptor {
 
-    fun handlerAccessibilityEvent(event: AccessibilityEvent) {
+    override fun handler(event: AccessibilityEvent) {
         if (event.eventType == AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED) {
             speak(NodeInfo.wrap(event.source ?: return))
         }
@@ -109,14 +109,14 @@ class SpeechManager(
 
     companion object {
 
-        fun getInstance(context: Context): SpeechManager {
+        fun getInstance(context: Context): SpeechInterceptor {
 
-            var speechManager: SpeechManager? = null
+            var speechInterceptor: SpeechInterceptor? = null
 
-            speechManager = SpeechManager(
+            speechInterceptor = SpeechInterceptor(
                 TextToSpeech(context) { status ->
                     if (status == TextToSpeech.SUCCESS) {
-                        speechManager!!.speak(
+                        speechInterceptor!!.speak(
                             "Screen Reader ativado"
                         )
                     } else {
@@ -124,7 +124,7 @@ class SpeechManager(
                     }
                 }
             )
-            return speechManager
+            return speechInterceptor
         }
     }
 

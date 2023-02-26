@@ -1,19 +1,18 @@
-package com.neo.screenreader.manager
+package com.neo.screenreader.intercepter
 
 import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityNodeInfo
-import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
+import com.neo.screenreader.intercepter.interfece.Interceptor
 import com.neo.screenreader.utils.extensions.NodeInfo
 import com.neo.screenreader.utils.extensions.getLog
 import com.neo.screenreader.utils.extensions.isActionable
 import com.neo.screenreader.utils.extensions.isReadable
 import timber.log.Timber
 
-class FocusManager {
+class FocusInterceptor : Interceptor {
 
     private var lastNode: NodeInfo? = null
 
-    fun handlerAccessibilityEvent(event: AccessibilityEvent) {
+    override fun handler(event: AccessibilityEvent) {
 
         val node = NodeInfo.wrap(event.source ?: return)
 
