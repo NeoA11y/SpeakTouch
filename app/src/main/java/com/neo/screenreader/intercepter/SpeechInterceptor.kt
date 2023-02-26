@@ -58,6 +58,10 @@ class SpeechInterceptor(
                 "botão"
             }
 
+            isImageType-> {
+                "imagem"
+            }
+
             isEditable -> {
                 "campo de edição"
             }

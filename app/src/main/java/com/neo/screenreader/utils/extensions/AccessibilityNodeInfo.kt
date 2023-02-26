@@ -19,6 +19,11 @@ val NodeInfo.isButtonType: Boolean
         "android.widget.ImageButton",
     ).contains(className)
 
+val NodeInfo.isImageType: Boolean
+    get() = listOf(
+        "android.widget.ImageView"
+    ).contains(className)
+
 val NodeInfo.isAvailableForAccessibility: Boolean
     get() = isActionable || isReadable
 
