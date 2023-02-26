@@ -62,10 +62,6 @@ class FocusInterceptor : Interceptor {
 
         when {
 
-            !node.isImportantForAccessibility -> {
-                Timber.i("ignored: IMPORTANT_ACCESSIBILITY_NO")
-            }
-
             node.isActionable -> {
                 Timber.i("selected: ACTIONABLE")
                 node.performAction(NodeInfo.ACTION_ACCESSIBILITY_FOCUS)
