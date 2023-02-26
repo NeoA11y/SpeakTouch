@@ -64,25 +64,21 @@ class FocusInterceptor : Interceptor {
 
             !node.isImportantForAccessibility -> {
                 Timber.i("ignored: IMPORTANT_ACCESSIBILITY_NO")
-                return
             }
 
             node.isActionable -> {
                 Timber.i("selected: ACTIONABLE")
                 node.performAction(NodeInfo.ACTION_ACCESSIBILITY_FOCUS)
-                return
             }
 
             node.parent?.isActionable == true -> {
                 Timber.i("up parent: ACTIONABLE")
                 handlerAccessibilityNode(node.parent)
-                return
             }
 
             node.isReadable -> {
                 Timber.i("selected: READABLE")
                 node.performAction(NodeInfo.ACTION_ACCESSIBILITY_FOCUS)
-                return
             }
 
             node.parent?.isReadable == true -> {
