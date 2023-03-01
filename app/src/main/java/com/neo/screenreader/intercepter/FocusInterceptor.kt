@@ -1,5 +1,6 @@
 package com.neo.screenreader.intercepter
 
+import android.annotation.SuppressLint
 import android.view.accessibility.AccessibilityEvent
 import com.neo.screenreader.intercepter.interfece.Interceptor
 import com.neo.screenreader.utils.extensions.NodeInfo
@@ -9,8 +10,6 @@ import com.neo.screenreader.utils.extensions.isReadable
 import timber.log.Timber
 
 class FocusInterceptor : Interceptor {
-
-    private var lastNode: NodeInfo? = null
 
     override fun handler(event: AccessibilityEvent) {
 
@@ -29,13 +28,7 @@ class FocusInterceptor : Interceptor {
             return
         }
 
-        if (this.lastNode == node) {
-            Timber.i("ignored: IS_SAME_NODE")
-            return
-        } else {
-            this.lastNode = node
-        }
-
+        @SuppressLint("SwitchIntDef")
         when (event.eventType) {
             AccessibilityEvent.TYPE_VIEW_HOVER_ENTER -> {
                 Timber.i("event: TYPE_VIEW_HOVER_ENTER")
@@ -50,10 +43,6 @@ class FocusInterceptor : Interceptor {
             AccessibilityEvent.TYPE_VIEW_CLICKED -> {
                 Timber.i("event: TYPE_VIEW_CLICKED")
                 handlerAccessibilityNode(node)
-            }
-
-            else -> {
-                Timber.i("ignored")
             }
         }
     }
@@ -80,10 +69,6 @@ class FocusInterceptor : Interceptor {
             node.parent?.isReadable == true -> {
                 Timber.i("up parent: READABLE")
                 handlerAccessibilityNode(node.parent)
-            }
-
-            else -> {
-                Timber.i("ignored: NOT_ACCESSIBLE")
             }
         }
     }

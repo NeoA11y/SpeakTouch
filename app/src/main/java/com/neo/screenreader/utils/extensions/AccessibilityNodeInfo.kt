@@ -33,6 +33,7 @@ fun NodeInfo.getLog() = buildList {
     add("isImportantForAccessibility: $isImportantForAccessibility")
 
     add("\nCONTENT")
+    add("id: $viewIdResourceName") // TODO: enable flagReportViewIds
     add("contentDescription: $contentDescription")
     add("text: $text")
     add("hintText: $hintText")
