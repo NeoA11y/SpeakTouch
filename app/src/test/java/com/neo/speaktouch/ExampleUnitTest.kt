@@ -1,4 +1,4 @@
-package com.neo.screenreader
+package com.neo.speaktouch
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

@@ -1,15 +1,15 @@
-package com.neo.screenreader.service
+package com.neo.speaktouch.service
 
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
-import com.neo.screenreader.intercepter.FocusInterceptor
-import com.neo.screenreader.intercepter.SpeechInterceptor
-import com.neo.screenreader.intercepter.interfece.Interceptor
-import com.neo.screenreader.utils.extensions.getLog
-import com.neo.screenreader.utils.extensions.getInstance
+import com.neo.speaktouch.intercepter.FocusInterceptor
+import com.neo.speaktouch.intercepter.SpeechInterceptor
+import com.neo.speaktouch.intercepter.interfece.Interceptor
+import com.neo.speaktouch.utils.extensions.getLog
+import com.neo.speaktouch.utils.extensions.getInstance
 import timber.log.Timber
 
-class ScreenReaderService : AccessibilityService() {
+class SpeakTouchService : AccessibilityService() {
 
     private val interceptors = mutableListOf<Interceptor>()
 

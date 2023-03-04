@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.neo.screenreader'
+    namespace 'com.neo.speaktouch'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.neo.screenreader"
+        applicationId "com.neo.speaktouch"
         minSdk 22
         targetSdk 33
         versionCode 1
