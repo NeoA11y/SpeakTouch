@@ -1,9 +1,9 @@
-package com.neo.screenreader
+package com.neo.speaktouch
 
 import android.app.Application
 import timber.log.Timber
 
-class ScreenReaderApplication : Application() {
+class SpeakTouchApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 

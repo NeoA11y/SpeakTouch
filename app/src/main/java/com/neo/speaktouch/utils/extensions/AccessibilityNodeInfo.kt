@@ -1,4 +1,4 @@
-package com.neo.screenreader.utils.extensions
+package com.neo.speaktouch.utils.extensions
 
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 
