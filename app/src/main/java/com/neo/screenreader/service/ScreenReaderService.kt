@@ -5,7 +5,7 @@ import android.view.accessibility.AccessibilityEvent
 import com.neo.screenreader.intercepter.FocusInterceptor
 import com.neo.screenreader.intercepter.SpeechInterceptor
 import com.neo.screenreader.intercepter.interfece.Interceptor
-import com.neo.screenreader.utils.extensions.getEventLog
+import com.neo.screenreader.utils.extensions.getLog
 import com.neo.screenreader.utils.extensions.getInstance
 import timber.log.Timber
 
@@ -22,11 +22,7 @@ class ScreenReaderService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
 
-        Timber.d(
-            "EVENT: %s, SOURCE: %s",
-            event.getEventLog(),
-            event.source?.className?.ifEmpty { "unknown" }
-        )
+        Timber.d(event.getLog())
 
         interceptors.forEach { it.handler(event) }
     }

@@ -2,89 +2,59 @@ package com.neo.screenreader.intercepter
 
 import android.view.accessibility.AccessibilityEvent
 import com.neo.screenreader.intercepter.interfece.Interceptor
-import com.neo.screenreader.utils.extensions.NodeInfo
-import com.neo.screenreader.utils.extensions.getLog
-import com.neo.screenreader.utils.extensions.isActionable
-import com.neo.screenreader.utils.extensions.isReadable
+import com.neo.screenreader.utils.extensions.*
 import timber.log.Timber
 
 class FocusInterceptor : Interceptor {
-
-    private var lastNode: NodeInfo? = null
 
     override fun handler(event: AccessibilityEvent) {
 
         val node = NodeInfo.wrap(event.source ?: return)
 
-        // node information log
         Timber.d(node.getLog())
 
-        if (!node.isImportantForAccessibility) {
-            Timber.i("ignored: IMPORTANT_ACCESSIBILITY_NO")
-            return
-        }
-
-        if (node.isAccessibilityFocused) {
-            Timber.i("ignored: ALREADY_ACCESSIBILITY_FOCUSED")
-            return
-        }
-
-        if (this.lastNode == node) {
-            Timber.i("ignored: IS_SAME_NODE")
-            return
-        } else {
-            this.lastNode = node
-        }
+        if (node.isAccessibilityFocused) return
 
         when (event.eventType) {
             AccessibilityEvent.TYPE_VIEW_HOVER_ENTER -> {
-                Timber.i("event: TYPE_VIEW_HOVER_ENTER")
+                Timber.d("event: TYPE_VIEW_HOVER_ENTER")
                 handlerAccessibilityNode(node)
             }
 
             AccessibilityEvent.TYPE_VIEW_FOCUSED -> {
-                Timber.i("event: TYPE_VIEW_FOCUSED")
+                Timber.d("event: TYPE_VIEW_FOCUSED")
                 handlerAccessibilityNode(node)
             }
 
             AccessibilityEvent.TYPE_VIEW_CLICKED -> {
-                Timber.i("event: TYPE_VIEW_CLICKED")
+                Timber.d("event: TYPE_VIEW_CLICKED")
                 handlerAccessibilityNode(node)
             }
 
-            else -> {
-                Timber.i("ignored")
-            }
+            else -> Unit
         }
     }
 
     private fun handlerAccessibilityNode(node: NodeInfo) {
+        getFocusableNode(node)?.run {
+            Timber.i("performAction: $className")
+            performAction(NodeInfo.ACTION_ACCESSIBILITY_FOCUS)
+        }
+    }
 
-        when {
+    private fun getFocusableNode(node: NodeInfo): NodeInfo? {
 
-            node.isActionable -> {
-                Timber.i("selected: ACTIONABLE")
-                node.performAction(NodeInfo.ACTION_ACCESSIBILITY_FOCUS)
-            }
+        if (node.isRequiredFocus) {
+            return node
+        }
 
-            node.parent?.isActionable == true -> {
-                Timber.i("up parent: ACTIONABLE")
-                handlerAccessibilityNode(node.parent)
-            }
+        val nearestAncestor = node.getNearestAncestor {
+            it.isRequiredFocus
+        }
 
-            node.isReadable -> {
-                Timber.i("selected: READABLE")
-                node.performAction(NodeInfo.ACTION_ACCESSIBILITY_FOCUS)
-            }
-
-            node.parent?.isReadable == true -> {
-                Timber.i("up parent: READABLE")
-                handlerAccessibilityNode(node.parent)
-            }
-
-            else -> {
-                Timber.i("ignored: NOT_ACCESSIBLE")
-            }
+        return nearestAncestor ?: when {
+            node.isReadable -> node
+            else -> null
         }
     }
 }

@@ -5,13 +5,22 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 typealias NodeInfo = AccessibilityNodeInfoCompat
 typealias NodeAction = AccessibilityNodeInfoCompat.AccessibilityActionCompat
 
+val NodeInfo.hasAnyClick: Boolean
+    get() = isClickable || isLongClickable
+
 val NodeInfo.isActionable: Boolean
-    get() = isClickable || isLongClickable || isCheckable || isEditable
+    get() = hasAnyClick || isFocusable
 
 val NodeInfo.isReadable: Boolean
+    get() = !isIgnore && (hasText || hasStateDescription)
+
+val NodeInfo.hasText: Boolean
     get() = !contentDescription.isNullOrEmpty() ||
             !text.isNullOrEmpty() ||
             !hintText.isNullOrEmpty()
+
+val NodeInfo.hasStateDescription: Boolean
+    get() = !stateDescription.isNullOrEmpty() || isCheckable
 
 val NodeInfo.isButtonType: Boolean
     get() = listOf(
@@ -25,14 +34,33 @@ val NodeInfo.isImageType: Boolean
     ).contains(className)
 
 val NodeInfo.isAvailableForAccessibility: Boolean
-    get() = isActionable || isReadable
+    get() = !isIgnore && (isRequiredFocus || isReadable)
+
+val NodeInfo.isRequiredFocus
+    get() = !isIgnore && (isActionable || isScreenReaderFocusable)
+
+val NodeInfo.isIgnore
+    get() = !isImportantForAccessibility || !isVisibleToUser
+
+fun NodeInfo.getNearestAncestor(
+    predicate: (NodeInfo) -> Boolean
+): NodeInfo? {
+    var current: NodeInfo? = this.parent
+
+    while (current != null && !predicate(current)) {
+        current = current.parent
+    }
+
+    return current
+}
 
 fun NodeInfo.getLog() = buildList {
-    add("class: ${className.ifEmptyOrNull { "unknown" }}")
+    add("class: $className")
     add("packageName: $packageName")
     add("isImportantForAccessibility: $isImportantForAccessibility")
 
     add("\nCONTENT")
+    add("id: $viewIdResourceName") // TODO: enable flagReportViewIds
     add("contentDescription: $contentDescription")
     add("text: $text")
     add("hintText: $hintText")
@@ -44,6 +72,7 @@ fun NodeInfo.getLog() = buildList {
     add("isScrollable: $isScrollable")
     add("isEnabled: $isEnabled")
     add("isChecked: $isChecked")
+    add("stateDescription: $stateDescription")
 
     add("\nFOCUS")
     add("isFocusable: $isFocusable")
@@ -54,6 +83,7 @@ fun NodeInfo.getLog() = buildList {
     add("isScreenReaderFocusable: $isScreenReaderFocusable")
     add("isAvailableForAccessibility: $isAvailableForAccessibility")
     add("isReadable: $isReadable")
+    add("isVisibleToUser: $isVisibleToUser")
 
     add("\nHIERARCHY")
     add("parent: ${parent?.className.ifEmptyOrNull { "unknown" }}")
@@ -61,6 +91,7 @@ fun NodeInfo.getLog() = buildList {
 
     add("\nACTION")
     add("isCheckable: $isCheckable")
+    add("isEditable: $isEditable")
     add("isActionable: $isActionable")
     add("isClickable: $isClickable")
     add("isLongClickable: $isLongClickable")

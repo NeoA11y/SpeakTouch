@@ -45,13 +45,13 @@ class SpeechInterceptor(
     ) = with(node) {
         when {
             isCheckable -> {
-                val stateText = if (node.isChecked) {
+                val state = if (node.isChecked) {
                     "ativado"
                 } else {
                     "desativado"
                 }
 
-                "interruptor $stateText"
+                "interruptor $state"
             }
 
             isButtonType -> {
@@ -91,9 +91,9 @@ class SpeechInterceptor(
     private fun getContent(
         node: NodeInfo
     ) = with(node) {
-        Timber.d("getContent()\n${node.getLog()}")
+        Timber.d("getContent\n${node.getLog()}")
 
-        val value = contentDescription.ifEmptyOrNull {
+        val content = contentDescription.ifEmptyOrNull {
             text.ifEmptyOrNull {
                 hintText.ifEmptyOrNull {
                     getChildrenContent(node)
@@ -102,13 +102,13 @@ class SpeechInterceptor(
         }
 
         listOf(
-            value,
+            stateDescription,
+            content,
             getType(node),
-            hintText?.takeIf { it != value },
+            hintText?.takeIf { it != content },
             error
-        ).filter {
-            !it.isNullOrEmpty()
-        }.joinToString(", ")
+        ).filterNotNullOrEmpty()
+            .joinToString(", ")
     }
 
     companion object {
