@@ -9,3 +9,5 @@ fun <T : CharSequence> T?.ifEmptyOrNull(
         this
     }
 }
+
+fun <T : List<CharSequence?>> T.filterNotNullOrEmpty() = filterNot { it.isNullOrEmpty() }
