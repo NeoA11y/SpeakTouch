@@ -4,6 +4,7 @@ import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.view.accessibility.AccessibilityEvent
 import com.neo.speaktouch.intercepter.interfece.Interceptor
+import com.neo.speaktouch.model.Type
 import com.neo.speaktouch.utils.extensions.*
 import timber.log.Timber
 
@@ -42,35 +43,20 @@ class SpeechInterceptor(
 
     private fun getType(
         node: NodeInfo
-    ) = with(node) {
-        when {
-            isCheckable -> {
-                val state = if (node.isChecked) {
-                    "ativado"
-                } else {
-                    "desativado"
-                }
-
-                "interruptor $state"
-            }
-
-            isButtonType -> {
-                "botão"
-            }
-
-            isImageType-> {
-                "imagem"
-            }
-
-            isEditable -> {
-                "campo de edição"
-            }
-
-            isHeading -> {
-                "título"
-            }
-
-            else -> ""
+    ): String {
+        return when (Type.get(node)) {
+            Type.NONE -> ""
+            Type.IMAGE -> "image"
+            Type.SWITCH -> "switch: ${if (node.isChecked) "enabled" else "disabled"}"
+            Type.TOGGLE -> "toggle button: ${if (node.isChecked) "enabled" else "disabled"}"
+            Type.RADIO -> "option button: ${if (node.isChecked) "enabled" else "disabled"}"
+            Type.CHECKBOX -> "checkbox: ${if (node.isChecked) "enabled" else "disabled"}"
+            Type.CHECKABLE -> "check button: ${if (node.isChecked) "enabled" else "disabled"}"
+            Type.BUTTON -> "button"
+            Type.EDITABLE -> "edit field"
+            Type.OPTIONS -> "options"
+            Type.LIST -> "list"
+            Type.TITLE -> "title"
         }
     }
 
