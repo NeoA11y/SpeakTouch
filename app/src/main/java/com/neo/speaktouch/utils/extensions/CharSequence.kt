@@ -11,3 +11,11 @@ fun <T : CharSequence> T?.ifEmptyOrNull(
 }
 
 fun <T : List<CharSequence?>> T.filterNotNullOrEmpty() = filterNot { it.isNullOrEmpty() }
+
+infix fun CharSequence.instanceOf(childClass: Class<*>): Boolean {
+    if (equals(childClass.name)) return true
+
+    val superClazz = Class.forName(toString())
+
+    return childClass.isAssignableFrom(superClazz)
+}

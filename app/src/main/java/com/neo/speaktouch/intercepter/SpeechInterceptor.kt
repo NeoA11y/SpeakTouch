@@ -3,12 +3,15 @@ package com.neo.speaktouch.intercepter
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.view.accessibility.AccessibilityEvent
+import com.neo.speaktouch.R
 import com.neo.speaktouch.intercepter.interfece.Interceptor
+import com.neo.speaktouch.model.Type
 import com.neo.speaktouch.utils.extensions.*
 import timber.log.Timber
 
 class SpeechInterceptor(
-    private val textToSpeech: TextToSpeech
+    private val textToSpeech: TextToSpeech,
+    private val context: Context
 ) : Interceptor {
 
     override fun handler(event: AccessibilityEvent) {
@@ -42,35 +45,23 @@ class SpeechInterceptor(
 
     private fun getType(
         node: NodeInfo
-    ) = with(node) {
-        when {
-            isCheckable -> {
-                val state = if (node.isChecked) {
-                    "ativado"
-                } else {
-                    "desativado"
-                }
+    ): String {
 
-                "interruptor $state"
-            }
+        fun getState() = context.getText(node.isChecked)
 
-            isButtonType -> {
-                "botão"
-            }
-
-            isImageType-> {
-                "imagem"
-            }
-
-            isEditable -> {
-                "campo de edição"
-            }
-
-            isHeading -> {
-                "título"
-            }
-
-            else -> ""
+        return when (Type.get(node)) {
+            Type.NONE -> ""
+            Type.IMAGE -> context.getString(R.string.text_image_type)
+            Type.SWITCH -> context.getString(R.string.text_switch_type, getState())
+            Type.TOGGLE -> context.getString(R.string.text_toggle_type, getState())
+            Type.RADIO -> context.getString(R.string.text_radio_type, getState())
+            Type.CHECKBOX -> context.getString(R.string.text_checkbox_type, getState())
+            Type.CHECKABLE -> context.getString(R.string.text_checkable_type, getState())
+            Type.BUTTON -> context.getString(R.string.text_button_type)
+            Type.EDITABLE -> context.getString(R.string.text_editable_type)
+            Type.OPTIONS -> context.getString(R.string.text_options_type)
+            Type.LIST -> context.getString(R.string.text_list_type)
+            Type.TITLE -> context.getString(R.string.text_title_type)
         }
     }
 
@@ -102,7 +93,6 @@ class SpeechInterceptor(
         }
 
         listOf(
-            stateDescription,
             content,
             getType(node),
             hintText?.takeIf { it != content },
@@ -118,16 +108,18 @@ class SpeechInterceptor(
             var speechInterceptor: SpeechInterceptor? = null
 
             speechInterceptor = SpeechInterceptor(
-                TextToSpeech(context) { status ->
+                textToSpeech = TextToSpeech(context) { status ->
                     if (status == TextToSpeech.SUCCESS) {
                         speechInterceptor!!.speak(
-                            "Speak Touch ativado"
+                            "Speak Touch ${context.getText(true)}"
                         )
                     } else {
                         error(message = "TTS_INITIALIZATION_ERROR")
                     }
-                }
+                },
+                context = context
             )
+
             return speechInterceptor
         }
     }
