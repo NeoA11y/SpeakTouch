@@ -16,7 +16,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ScreenReader"
+        android:theme="@style/Theme.SpeakTouch"
         tools:targetApi="31">
 
         <service
