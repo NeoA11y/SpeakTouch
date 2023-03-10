@@ -28,7 +28,9 @@ enum class Type {
             if (className instanceOf ImageButton::class.java) return BUTTON
 
             // View->ImageView
-            if (className instanceOf ImageView::class.java) return IMAGE
+            if (className instanceOf ImageView::class.java) {
+                return if (node.isClickable) BUTTON else IMAGE
+            }
 
             /* TextView */
 
@@ -60,7 +62,7 @@ enum class Type {
             // View->ViewGroup->AdapterView->AbsSpinner
             if (className instanceOf AbsSpinner::class.java) return OPTIONS
 
-            /* Additional */
+            /* Independent of inheritance */
 
             if (node.isCheckable) return CHECKABLE
 
@@ -68,7 +70,9 @@ enum class Type {
 
             if (node.collectionInfo != null) return LIST
 
-            if (node.isHeading)  return TITLE
+            if (node.isHeading) return TITLE
+
+            if (node.isClickable) return BUTTON
 
             return NONE
         }
