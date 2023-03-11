@@ -1,5 +1,5 @@
 /*
- * Application of Speak Touch.
+ * Extensions for Iterable.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -16,17 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch
+package com.neo.speaktouch.utils.extensions
 
-import android.app.Application
-import timber.log.Timber
-
-class SpeakTouchApplication : Application() {
-    override fun onCreate() {
-        super.onCreate()
-
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
-    }
+inline fun <reified T> Iterable<Any>.getInstance(): T {
+    return first { it is T } as T
 }
