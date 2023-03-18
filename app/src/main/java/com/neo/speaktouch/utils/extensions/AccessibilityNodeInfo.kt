@@ -8,36 +8,19 @@ typealias NodeAction = AccessibilityNodeInfoCompat.AccessibilityActionCompat
 val NodeInfo.hasAnyClick: Boolean
     get() = isClickable || isLongClickable
 
-val NodeInfo.isActionable: Boolean
-    get() = hasAnyClick || isFocusable
-
 val NodeInfo.isReadable: Boolean
-    get() = !isIgnore && (hasText || hasStateDescription)
+    get() = !isIgnore && hasText
 
 val NodeInfo.hasText: Boolean
     get() = !contentDescription.isNullOrEmpty() ||
             !text.isNullOrEmpty() ||
             !hintText.isNullOrEmpty()
 
-val NodeInfo.hasStateDescription: Boolean
-    get() = !stateDescription.isNullOrEmpty() || isCheckable
-
-val NodeInfo.isButtonType: Boolean
-    get() = listOf(
-        "android.widget.Button",
-        "android.widget.ImageButton",
-    ).contains(className)
-
-val NodeInfo.isImageType: Boolean
-    get() = listOf(
-        "android.widget.ImageView"
-    ).contains(className)
-
 val NodeInfo.isAvailableForAccessibility: Boolean
     get() = !isIgnore && (isRequiredFocus || isReadable)
 
 val NodeInfo.isRequiredFocus
-    get() = !isIgnore && (isActionable || isScreenReaderFocusable)
+    get() = !isIgnore && (hasAnyClick || isScreenReaderFocusable)
 
 val NodeInfo.isIgnore
     get() = !isImportantForAccessibility || !isVisibleToUser
@@ -92,7 +75,6 @@ fun NodeInfo.getLog() = buildList {
     add("\nACTION")
     add("isCheckable: $isCheckable")
     add("isEditable: $isEditable")
-    add("isActionable: $isActionable")
     add("isClickable: $isClickable")
     add("isLongClickable: $isLongClickable")
     add("actions: ${actionList.joinToString(", ") { it.name }}")
