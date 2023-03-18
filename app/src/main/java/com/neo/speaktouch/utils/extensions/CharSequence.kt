@@ -18,9 +18,11 @@
 
 package com.neo.speaktouch.utils.extensions
 
+import timber.log.Timber
+
 fun <T : CharSequence> T?.ifEmptyOrNull(
-    fallback : () -> T
-) : T {
+    fallback: () -> T
+): T {
     return if (this.isNullOrEmpty()) {
         fallback()
     } else {
@@ -33,7 +35,11 @@ fun <T : List<CharSequence?>> T.filterNotNullOrEmpty() = filterNot { it.isNullOr
 infix fun CharSequence.instanceOf(childClass: Class<*>): Boolean {
     if (equals(childClass.name)) return true
 
-    val superClazz = Class.forName(toString())
-
-    return childClass.isAssignableFrom(superClazz)
+    return runCatching {
+        childClass.isAssignableFrom(Class.forName(toString()))
+    }.onFailure {
+        Timber.e(it)
+    }.getOrElse {
+        false
+    }
 }

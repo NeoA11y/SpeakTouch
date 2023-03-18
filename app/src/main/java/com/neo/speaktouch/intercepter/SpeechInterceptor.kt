@@ -40,7 +40,7 @@ class SpeechInterceptor(
 
     fun speak(text: CharSequence) {
 
-        Timber.i("speak: $text")
+        Timber.i("speak:\"$text\"")
 
         textToSpeech.speak(
             text,
@@ -100,7 +100,7 @@ class SpeechInterceptor(
     private fun getContent(
         node: NodeInfo
     ) = with(node) {
-        Timber.d("getContent\n${node.getLog()}")
+        Timber.d("getContent:\n${node.getLog()}")
 
         val content = contentDescription.ifEmptyOrNull {
             text.ifEmptyOrNull {
@@ -112,9 +112,7 @@ class SpeechInterceptor(
 
         listOf(
             content,
-            getType(node),
-            hintText?.takeIf { it != content },
-            error
+            getType(node)
         ).filterNotNullOrEmpty()
             .joinToString(", ")
     }

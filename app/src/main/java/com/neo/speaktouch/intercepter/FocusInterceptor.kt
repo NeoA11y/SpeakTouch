@@ -63,15 +63,17 @@ class FocusInterceptor : Interceptor {
     private fun getFocusableNode(node: NodeInfo): NodeInfo? {
 
         if (node.isRequiredFocus) {
+            // Priority 1
             return node
         }
 
+        // Priority 2
         val nearestAncestor = node.getNearestAncestor {
             it.isRequiredFocus
         }
 
         return nearestAncestor ?: when {
-            node.isReadable -> node
+            node.isReadable -> node // Priority 3
             else -> null
         }
     }
