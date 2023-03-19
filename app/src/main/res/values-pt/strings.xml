@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Speak Touch</string>
+    <!-- type -->
     <string name="text_image_type">imagem</string>
     <string name="text_switch_type">interruptor: %s</string>
     <string name="text_toggle_type">botão alternar: %s</string>
@@ -12,6 +12,8 @@
     <string name="text_options_type">opções</string>
     <string name="text_list_type">lista</string>
     <string name="text_title_type">título</string>
+
+    <!-- state -->
     <string name="text_enabled">ativado</string>
     <string name="text_disabled">desativado</string>
 </resources>
