@@ -10,15 +10,20 @@ def versionPatch = 1 // 0..9
 def buildVersionCode = versionMajor * 100 + versionMinor * 10 + versionPatch
 def buildVersionName = "$versionMajor.$versionMinor.$versionPatch"
 
-task versionCode {
-    doLast {
-        println "versionCode is $buildVersionCode from v$buildVersionName"
-    }
-}
-
 android {
     namespace 'com.neo.speaktouch'
     compileSdk 33
+
+    signingConfigs {
+        release {
+            def keystoreProperties = getKeyStoreProperties()
+
+            storeFile rootProject.file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
+    }
 
     defaultConfig {
         applicationId "com.neo.speaktouch"
@@ -34,6 +39,15 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+
+        debug {
+            minifyEnabled false
+
+            versionNameSuffix '-dev'
+            applicationIdSuffix ".dev"
+            signingConfig signingConfigs.debug
         }
     }
 
@@ -57,4 +71,23 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}
+
+task versionCode {
+    doLast {
+        println "versionCode is $buildVersionCode from v$buildVersionName"
+    }
+}
+
+def getKeyStoreProperties() {
+
+    def keystoreProperties = new Properties()
+
+    def file = rootProject.file("keystore.properties")
+
+    def fileInputStream = new FileInputStream(file)
+
+    keystoreProperties.load(fileInputStream)
+
+    return keystoreProperties
 }
