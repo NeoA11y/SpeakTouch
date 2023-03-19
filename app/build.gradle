@@ -3,6 +3,19 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+def versionMajor = 0 // 0..Infinity
+def versionMinor = 1 // 0..9
+def versionPatch = 1 // 0..9
+
+def buildVersionCode = versionMajor * 100 + versionMinor * 10 + versionPatch
+def buildVersionName = "$versionMajor.$versionMinor.$versionPatch"
+
+task versionCode {
+    doLast {
+        println "versionCode is $buildVersionCode from v$buildVersionName"
+    }
+}
+
 android {
     namespace 'com.neo.speaktouch'
     compileSdk 33
@@ -11,8 +24,8 @@ android {
         applicationId "com.neo.speaktouch"
         minSdk 22
         targetSdk 33
-        versionCode 2
-        versionName "0.1.1"
+        versionCode buildVersionCode
+        versionName buildVersionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -23,10 +36,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
