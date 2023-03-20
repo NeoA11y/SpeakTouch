@@ -4,9 +4,9 @@ A open source screen reader for android.
 ## Build
 1. Clone the repository to your local machine.
 2. Open the project in the [Android Studio](https://developer.android.com/studio) IDE.
-3. Run the app module.
+3. Run the **app** module.
 
-To build the ***release*** **buildType**, it's necessary to create a [kestore](https://developer.android.com/training/articles/keystore) and specify its properties in the `keystore.properties` file (use `keystore.properties.example` as a base).
+For the ***release*** **buildType**, it's necessary to create a [keystore](https://developer.android.com/training/articles/keystore) and specify its properties in the `keystore.properties` file (use `keystore.properties.example` as a base).
 
 ## License
 [![GNU GPLv3 logo](https://www.gnu.org/graphics/gplv3-127x51.png)](https://www.gnu.org/licenses/gpl-3.0.html)
