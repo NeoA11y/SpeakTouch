@@ -39,6 +39,7 @@ java {
 android {
     namespace = "com.neo.speaktouch"
     compileSdk = 33
+    buildToolsVersion = "33.0.2"
 
     signingConfigs {
         create("release") {

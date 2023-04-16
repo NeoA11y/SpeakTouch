@@ -30,6 +30,7 @@ java {
 android {
     namespace = "com.neo.test"
     compileSdk = 33
+    buildToolsVersion = "33.0.2"
 
     defaultConfig {
         applicationId = "com.neo.speaktouch"
