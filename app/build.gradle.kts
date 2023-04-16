@@ -30,6 +30,12 @@ val versionMajor = 0 // 0..Infinity
 val versionMinor = 1 // 0..9
 val versionPatch = 1 // 0..9
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
+
 android {
     namespace = "com.neo.speaktouch"
     compileSdk = 33

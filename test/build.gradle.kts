@@ -21,6 +21,12 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
+
 android {
     namespace = "com.neo.test"
     compileSdk = 33
