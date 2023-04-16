@@ -60,6 +60,11 @@ android {
 
         versionCode = getVersionCode()
         versionName = getVersionName()
+        resourceConfigurations.addAll(listOf(
+            "en",
+            "pl",
+            "pt"
+        ))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
