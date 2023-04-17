@@ -20,7 +20,11 @@ package com.neo.speaktouch.intercepter
 
 import android.view.accessibility.AccessibilityEvent
 import com.neo.speaktouch.intercepter.interfece.Interceptor
-import com.neo.speaktouch.utils.extensions.*
+import com.neo.speaktouch.utils.extensions.NodeInfo
+import com.neo.speaktouch.utils.extensions.getLog
+import com.neo.speaktouch.utils.extensions.getNearestAncestor
+import com.neo.speaktouch.utils.extensions.isReadable
+import com.neo.speaktouch.utils.extensions.isRequiredFocus
 import timber.log.Timber
 
 class FocusInterceptor : Interceptor {

@@ -18,8 +18,8 @@
 
 @file:Suppress("UnstableApiUsage")
 
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -60,11 +60,13 @@ android {
 
         versionCode = getVersionCode()
         versionName = getVersionName()
-        resourceConfigurations.addAll(listOf(
-            "en",
-            "pl",
-            "pt"
-        ))
+        resourceConfigurations.addAll(
+            listOf(
+                "en",
+                "pl",
+                "pt"
+            )
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -18,7 +18,16 @@
 
 package com.neo.speaktouch.model
 
-import android.widget.*
+import android.widget.AbsListView
+import android.widget.AbsSpinner
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.RadioButton
+import android.widget.Switch
+import android.widget.ToggleButton
 import com.neo.speaktouch.utils.extensions.NodeInfo
 import com.neo.speaktouch.utils.extensions.instanceOf
 

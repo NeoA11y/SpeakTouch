@@ -24,7 +24,12 @@ import android.view.accessibility.AccessibilityEvent
 import com.neo.speaktouch.R
 import com.neo.speaktouch.intercepter.interfece.Interceptor
 import com.neo.speaktouch.model.Type
-import com.neo.speaktouch.utils.extensions.*
+import com.neo.speaktouch.utils.extensions.NodeInfo
+import com.neo.speaktouch.utils.extensions.filterNotNullOrEmpty
+import com.neo.speaktouch.utils.extensions.getLog
+import com.neo.speaktouch.utils.extensions.getText
+import com.neo.speaktouch.utils.extensions.ifEmptyOrNull
+import com.neo.speaktouch.utils.extensions.isAvailableForAccessibility
 import timber.log.Timber
 
 class SpeechInterceptor(
