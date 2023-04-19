@@ -1,0 +1,18 @@
+<resources>
+    <!-- type -->
+    <string name="text_image_type">obraz</string>
+    <string name="text_switch_type">przełącznik: %s</string>
+    <string name="text_toggle_type">przycisk przełączania: %s</string>
+    <string name="text_radio_type">przycisk opcji: %s</string>
+    <string name="text_checkbox_type">pole wyboru: %s</string>
+    <string name="text_checkable_type">oznaczenie: %s</string>
+    <string name="text_button_type">przycisk</string>
+    <string name="text_editable_type">pole edycji</string>
+    <string name="text_options_type">opcje</string>
+    <string name="text_list_type">lista</string>
+    <string name="text_title_type">tytuł</string>
+
+    <!-- state -->
+    <string name="text_enabled">włączone</string>
+    <string name="text_disabled">wyłączone</string>
+</resources>
