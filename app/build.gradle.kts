@@ -43,11 +43,11 @@ android {
 
     signingConfigs {
         create("release") {
-            loadProperties("keystore.properties") {
-                storeFile = rootProject.file(this["storeFile"] as String)
-                storePassword = this["storePassword"] as String
-                keyAlias = this["keyAlias"] as String
-                keyPassword = this["keyPassword"] as String
+            loadProperties("keystore.properties") { properties ->
+                storeFile = rootProject.file(properties["storeFile"] as String)
+                storePassword = properties["storePassword"] as String
+                keyAlias = properties["keyAlias"] as String
+                keyPassword = properties["keyPassword"] as String
             }
         }
     }
@@ -130,14 +130,10 @@ tasks.register("versionCode") {
 // functions
 fun loadProperties(
     fileName: String,
-    postResult: Properties.() -> Unit
+    postResult: (Properties) -> Unit
 ) = postResult(
     Properties().apply {
-        load(
-            FileInputStream(
-                rootProject.file(fileName)
-            )
-        )
+        load(FileInputStream(rootProject.file(fileName)))
     }
 )
 
