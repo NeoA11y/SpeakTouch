@@ -29,27 +29,24 @@ import timber.log.Timber
 
 class FocusInterceptor : Interceptor {
 
-    override fun handler(event: AccessibilityEvent) {
+    override fun handle(event: AccessibilityEvent) {
+
+        Timber.i("handle: ${event.className}")
 
         val node = NodeInfo.wrap(event.source ?: return)
-
-        Timber.d(node.getLog())
 
         if (node.isAccessibilityFocused) return
 
         when (event.eventType) {
             AccessibilityEvent.TYPE_VIEW_HOVER_ENTER -> {
-                Timber.d("event: TYPE_VIEW_HOVER_ENTER")
                 handlerAccessibilityNode(node)
             }
 
             AccessibilityEvent.TYPE_VIEW_FOCUSED -> {
-                Timber.d("event: TYPE_VIEW_FOCUSED")
                 handlerAccessibilityNode(node)
             }
 
             AccessibilityEvent.TYPE_VIEW_CLICKED -> {
-                Timber.d("event: TYPE_VIEW_CLICKED")
                 handlerAccessibilityNode(node)
             }
 
@@ -59,7 +56,7 @@ class FocusInterceptor : Interceptor {
 
     private fun handlerAccessibilityNode(node: NodeInfo) {
         getFocusableNode(node)?.run {
-            Timber.i("performAction: $className")
+            Timber.i("focusableNode: ${getLog()}")
             performAction(NodeInfo.ACTION_ACCESSIBILITY_FOCUS)
         }
     }

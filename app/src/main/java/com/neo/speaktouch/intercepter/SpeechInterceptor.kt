@@ -26,10 +26,10 @@ import com.neo.speaktouch.intercepter.interfece.Interceptor
 import com.neo.speaktouch.model.Type
 import com.neo.speaktouch.utils.extensions.NodeInfo
 import com.neo.speaktouch.utils.extensions.filterNotNullOrEmpty
-import com.neo.speaktouch.utils.extensions.getLog
 import com.neo.speaktouch.utils.extensions.getText
 import com.neo.speaktouch.utils.extensions.ifEmptyOrNull
 import com.neo.speaktouch.utils.extensions.isAvailableForAccessibility
+import com.neo.speaktouch.utils.extensions.isRequiredFocus
 import timber.log.Timber
 
 class SpeechInterceptor(
@@ -37,7 +37,7 @@ class SpeechInterceptor(
     private val context: Context
 ) : Interceptor {
 
-    override fun handler(event: AccessibilityEvent) {
+    override fun handle(event: AccessibilityEvent) {
         if (event.eventType == AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED) {
             speak(NodeInfo.wrap(event.source ?: return))
         }
@@ -95,7 +95,7 @@ class SpeechInterceptor(
             for (index in 0 until node.childCount) {
                 val nodeChild = node.getChild(index)
 
-                if (nodeChild.isAvailableForAccessibility) {
+                if (nodeChild.isAvailableForAccessibility && !nodeChild.isRequiredFocus) {
                     add(getContent(nodeChild))
                 }
             }
@@ -105,7 +105,6 @@ class SpeechInterceptor(
     private fun getContent(
         node: NodeInfo
     ) = with(node) {
-        Timber.d("getContent:\n${node.getLog()}")
 
         val content = contentDescription.ifEmptyOrNull {
             text.ifEmptyOrNull {
@@ -135,7 +134,7 @@ class SpeechInterceptor(
                             "Speak Touch ${context.getText(true)}"
                         )
                     } else {
-                        error(message = "TTS_INITIALIZATION_ERROR")
+                        error(message = "text to speech initialization error")
                     }
                 },
                 context = context
