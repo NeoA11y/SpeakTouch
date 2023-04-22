@@ -14,7 +14,7 @@ class SpeechInterceptor(
     private val context: Context
 ) : Interceptor {
 
-    override fun handler(event: AccessibilityEvent) {
+    override fun handle(event: AccessibilityEvent) {
         if (event.eventType == AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED) {
             speak(NodeInfo.wrap(event.source ?: return))
         }
