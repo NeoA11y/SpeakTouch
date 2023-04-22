@@ -14,7 +14,7 @@ class SpeechInterceptor(
     private val context: Context
 ) : Interceptor {
 
-    override fun handler(event: AccessibilityEvent) {
+    override fun handle(event: AccessibilityEvent) {
         if (event.eventType == AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED) {
             speak(NodeInfo.wrap(event.source ?: return))
         }
@@ -72,7 +72,7 @@ class SpeechInterceptor(
             for (index in 0 until node.childCount) {
                 val nodeChild = node.getChild(index)
 
-                if (nodeChild.isAvailableForAccessibility) {
+                if (nodeChild.isAvailableForAccessibility && !nodeChild.isRequiredFocus) {
                     add(getContent(nodeChild))
                 }
             }
