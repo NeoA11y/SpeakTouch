@@ -72,7 +72,7 @@ class SpeechInterceptor(
             for (index in 0 until node.childCount) {
                 val nodeChild = node.getChild(index)
 
-                if (nodeChild.isAvailableForAccessibility) {
+                if (nodeChild.isAvailableForAccessibility && !nodeChild.isRequiredFocus) {
                     add(getContent(nodeChild))
                 }
             }
