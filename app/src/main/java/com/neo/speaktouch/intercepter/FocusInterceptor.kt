@@ -7,7 +7,7 @@ import timber.log.Timber
 
 class FocusInterceptor : Interceptor {
 
-    override fun handler(event: AccessibilityEvent) {
+    override fun handle(event: AccessibilityEvent) {
 
         val node = NodeInfo.wrap(event.source ?: return)
 
