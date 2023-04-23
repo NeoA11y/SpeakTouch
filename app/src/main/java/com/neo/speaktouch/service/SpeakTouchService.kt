@@ -42,7 +42,7 @@ class SpeakTouchService : AccessibilityService() {
 
         Timber.d(event.getLog())
 
-        interceptors.forEach { it.handler(event) }
+        interceptors.forEach { it.handle(event) }
     }
 
     override fun onDestroy() {

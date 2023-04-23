@@ -27,7 +27,7 @@ val NodeInfo.hasAnyClick: Boolean
     get() = isClickable || isLongClickable
 
 val NodeInfo.isReadable: Boolean
-    get() = !isIgnore && hasText
+    get() = !isIgnore && (hasText || isCheckable)
 
 val NodeInfo.hasText: Boolean
     get() = !contentDescription.isNullOrEmpty() ||

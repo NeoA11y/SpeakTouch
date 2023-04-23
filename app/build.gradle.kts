@@ -28,7 +28,7 @@ plugins {
 
 val versionMajor = 0 // 0..Infinity
 val versionMinor = 1 // 0..9
-val versionPatch = 1 // 0..9
+val versionPatch = 2 // 0..9
 
 java {
     toolchain {
