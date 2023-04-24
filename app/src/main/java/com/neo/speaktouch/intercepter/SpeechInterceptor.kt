@@ -26,7 +26,6 @@ import com.neo.speaktouch.intercepter.interfece.Interceptor
 import com.neo.speaktouch.model.Type
 import com.neo.speaktouch.utils.extensions.NodeInfo
 import com.neo.speaktouch.utils.extensions.filterNotNullOrEmpty
-import com.neo.speaktouch.utils.extensions.getLog
 import com.neo.speaktouch.utils.extensions.getText
 import com.neo.speaktouch.utils.extensions.ifEmptyOrNull
 import com.neo.speaktouch.utils.extensions.isAvailableForAccessibility
@@ -106,8 +105,6 @@ class SpeechInterceptor(
     private fun getContent(
         node: NodeInfo
     ) = with(node) {
-        Timber.d("getContent:\n${node.getLog()}")
-
         val content = contentDescription.ifEmptyOrNull {
             text.ifEmptyOrNull {
                 hintText.ifEmptyOrNull {
@@ -135,8 +132,6 @@ class SpeechInterceptor(
                         speechInterceptor!!.speak(
                             "Speak Touch ${context.getText(true)}"
                         )
-                    } else {
-                        error(message = "TTS_INITIALIZATION_ERROR")
                     }
                 },
                 context = context

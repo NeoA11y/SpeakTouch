@@ -55,7 +55,8 @@ fun NodeInfo.getNearestAncestor(
     return current
 }
 
-fun NodeInfo.getLog() = buildList {
+@Suppress("UNUSED")
+fun NodeInfo.getString() = buildList {
     add("class: $className")
     add("packageName: $packageName")
     add("isImportantForAccessibility: $isImportantForAccessibility")

@@ -24,7 +24,7 @@ import com.neo.speaktouch.intercepter.FocusInterceptor
 import com.neo.speaktouch.intercepter.SpeechInterceptor
 import com.neo.speaktouch.intercepter.interfece.Interceptor
 import com.neo.speaktouch.utils.extensions.getInstance
-import com.neo.speaktouch.utils.extensions.getLog
+import com.neo.speaktouch.utils.extensions.getString
 import timber.log.Timber
 
 class SpeakTouchService : AccessibilityService() {
@@ -40,7 +40,7 @@ class SpeakTouchService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
 
-        Timber.d(event.getLog())
+        Timber.d(event.getString())
 
         interceptors.forEach { it.handle(event) }
     }
