@@ -99,8 +99,6 @@ enum class Type {
 
             if (node.isHeading) return TITLE
 
-            if (node.isClickable) return BUTTON
-
             return NONE
         }
     }
