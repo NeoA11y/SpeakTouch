@@ -23,13 +23,13 @@ import android.speech.tts.TextToSpeech
 import android.view.accessibility.AccessibilityEvent
 import com.neo.speaktouch.R
 import com.neo.speaktouch.intercepter.interfece.Interceptor
+import com.neo.speaktouch.utils.`object`.NodeValidator
 import com.neo.speaktouch.model.Type
-import com.neo.speaktouch.utils.extensions.NodeInfo
-import com.neo.speaktouch.utils.extensions.filterNotNullOrEmpty
-import com.neo.speaktouch.utils.extensions.getText
-import com.neo.speaktouch.utils.extensions.ifEmptyOrNull
-import com.neo.speaktouch.utils.extensions.isAvailableForAccessibility
-import com.neo.speaktouch.utils.extensions.isRequiredFocus
+import com.neo.speaktouch.utils.`typealias`.NodeInfo
+import com.neo.speaktouch.utils.extension.filterNotNullOrEmpty
+import com.neo.speaktouch.utils.extension.getString
+import com.neo.speaktouch.utils.extension.getText
+import com.neo.speaktouch.utils.extension.ifEmptyOrNull
 import timber.log.Timber
 
 class SpeechInterceptor(
@@ -56,6 +56,9 @@ class SpeechInterceptor(
     }
 
     private fun speak(node: NodeInfo) {
+
+        Timber.i("speak:${node.getString()}")
+
         speak(getContent(node))
     }
 
@@ -89,13 +92,15 @@ class SpeechInterceptor(
     }
 
     private fun getChildrenContent(
-        node: NodeInfo
+        nodeInfo: NodeInfo
     ): String {
         return buildList {
-            for (index in 0 until node.childCount) {
-                val nodeChild = node.getChild(index)
+            for (index in 0 until nodeInfo.childCount) {
+                val nodeChild = nodeInfo.getChild(index)
 
-                if (nodeChild.isAvailableForAccessibility && !nodeChild.isRequiredFocus) {
+                if (!NodeValidator.isAccessible(nodeChild)) continue
+
+                if (NodeValidator.isChildReadable(nodeChild)) {
                     add(getContent(nodeChild))
                 }
             }

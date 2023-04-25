@@ -1,5 +1,5 @@
 /*
- * Extensions for CharSequence.
+ * Extensions for Context.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -16,30 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.utils.extensions
+package com.neo.speaktouch.utils.extension
 
-import timber.log.Timber
+import android.content.Context
+import com.neo.speaktouch.R
 
-fun <T : CharSequence> T?.ifEmptyOrNull(
-    fallback: () -> T
-): T {
-    return if (this.isNullOrEmpty()) {
-        fallback()
+fun Context.getText(isEnabled: Boolean): String {
+    return if (isEnabled) {
+        getString(R.string.text_enabled)
     } else {
-        this
-    }
-}
-
-fun <T : List<CharSequence?>> T.filterNotNullOrEmpty() = filterNot { it.isNullOrEmpty() }
-
-infix fun CharSequence.instanceOf(childClass: Class<*>): Boolean {
-    if (equals(childClass.name)) return true
-
-    return runCatching {
-        childClass.isAssignableFrom(Class.forName(toString()))
-    }.onFailure {
-        Timber.e(it)
-    }.getOrElse {
-        false
+        getString(R.string.text_disabled)
     }
 }

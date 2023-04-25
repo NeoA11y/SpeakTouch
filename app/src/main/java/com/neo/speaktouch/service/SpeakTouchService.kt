@@ -23,8 +23,8 @@ import android.view.accessibility.AccessibilityEvent
 import com.neo.speaktouch.intercepter.FocusInterceptor
 import com.neo.speaktouch.intercepter.SpeechInterceptor
 import com.neo.speaktouch.intercepter.interfece.Interceptor
-import com.neo.speaktouch.utils.extensions.getInstance
-import com.neo.speaktouch.utils.extensions.getString
+import com.neo.speaktouch.utils.extension.getInstance
+import com.neo.speaktouch.utils.extension.getString
 import timber.log.Timber
 
 class SpeakTouchService : AccessibilityService() {

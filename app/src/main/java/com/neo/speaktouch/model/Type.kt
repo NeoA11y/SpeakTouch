@@ -28,8 +28,8 @@ import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.Switch
 import android.widget.ToggleButton
-import com.neo.speaktouch.utils.extensions.NodeInfo
-import com.neo.speaktouch.utils.extensions.instanceOf
+import com.neo.speaktouch.utils.`typealias`.NodeInfo
+import com.neo.speaktouch.utils.extension.`is`
 
 enum class Type {
     NONE,
@@ -52,42 +52,42 @@ enum class Type {
             /* ImageView */
 
             // View->ImageView->ImageButton
-            if (className instanceOf ImageButton::class.java) return BUTTON
+            if (className `is` ImageButton::class.java) return BUTTON
 
             // View->ImageView
-            if (className instanceOf ImageView::class.java) {
+            if (className `is` ImageView::class.java) {
                 return if (node.isClickable) BUTTON else IMAGE
             }
 
             /* TextView */
 
             // View->TextView->EditText
-            if (className instanceOf EditText::class.java) return EDITABLE
+            if (className `is` EditText::class.java) return EDITABLE
 
             /* Button */
 
             // View->TextView->Button->CompoundButton->Switch
-            if (className instanceOf Switch::class.java) return SWITCH
+            if (className `is` Switch::class.java) return SWITCH
 
             // View->TextView->Button->CompoundButton->ToggleButton
-            if (className instanceOf ToggleButton::class.java) return TOGGLE
+            if (className `is` ToggleButton::class.java) return TOGGLE
 
             // View->TextView->Button->CompoundButton->RadioButton
-            if (className instanceOf RadioButton::class.java) return RADIO
+            if (className `is` RadioButton::class.java) return RADIO
 
             // View->TextView->Button->CompoundButton->CheckBox
-            if (className instanceOf CheckBox::class.java) return CHECKBOX
+            if (className `is` CheckBox::class.java) return CHECKBOX
 
             // View->TextView->Button
-            if (className instanceOf Button::class.java) return BUTTON
+            if (className `is` Button::class.java) return BUTTON
 
             /* AdapterView */
 
             // View->ViewGroup->AdapterView->AbsListView
-            if (className instanceOf AbsListView::class.java) return LIST
+            if (className `is` AbsListView::class.java) return LIST
 
             // View->ViewGroup->AdapterView->AbsSpinner
-            if (className instanceOf AbsSpinner::class.java) return OPTIONS
+            if (className `is` AbsSpinner::class.java) return OPTIONS
 
             /* Independent of inheritance */
 
