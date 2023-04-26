@@ -38,9 +38,8 @@ enum class Type {
     TOGGLE,
     RADIO,
     CHECKBOX,
-    CHECKABLE,
     BUTTON,
-    EDITABLE,
+    EDITFIELD,
     OPTIONS,
     LIST,
     TITLE;
@@ -62,7 +61,7 @@ enum class Type {
             /* TextView */
 
             // View->TextView->EditText
-            if (className `is` EditText::class.java) return EDITABLE
+            if (className `is` EditText::class.java) return EDITFIELD
 
             /* Button */
 
@@ -90,10 +89,6 @@ enum class Type {
             if (className `is` AbsSpinner::class.java) return OPTIONS
 
             /* Independent of inheritance */
-
-            if (node.isCheckable) return CHECKABLE
-
-            if (node.isEditable) return EDITABLE
 
             if (node.collectionInfo != null) return LIST
 
