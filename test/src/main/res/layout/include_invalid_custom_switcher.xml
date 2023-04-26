@@ -9,13 +9,11 @@
     tools:ignore="HardcodedText">
 
     <TextView
-        android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Invalid Custom Switch" />
 
     <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/switcher"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
