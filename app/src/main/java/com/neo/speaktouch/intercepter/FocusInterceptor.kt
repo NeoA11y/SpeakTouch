@@ -32,7 +32,7 @@ class FocusInterceptor : Interceptor {
 
         if (nodeInfo.isAccessibilityFocused) return
 
-        if (!NodeValidator.isAccessible(nodeInfo)) return
+        if (!NodeValidator.isValidForAccessible(nodeInfo)) return
 
         when (event.eventType) {
             AccessibilityEvent.TYPE_VIEW_HOVER_ENTER -> {

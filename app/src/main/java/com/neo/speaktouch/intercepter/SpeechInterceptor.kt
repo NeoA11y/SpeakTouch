@@ -30,6 +30,7 @@ import com.neo.speaktouch.utils.extension.filterNotNullOrEmpty
 import com.neo.speaktouch.utils.extension.getString
 import com.neo.speaktouch.utils.extension.getText
 import com.neo.speaktouch.utils.extension.ifEmptyOrNull
+import com.neo.speaktouch.utils.extension.iterator
 import timber.log.Timber
 
 class SpeechInterceptor(
@@ -95,10 +96,9 @@ class SpeechInterceptor(
         nodeInfo: NodeInfo
     ): String {
         return buildList {
-            for (index in 0 until nodeInfo.childCount) {
-                val nodeChild = nodeInfo.getChild(index)
+            for (nodeChild in nodeInfo) {
 
-                if (!NodeValidator.isAccessible(nodeChild)) continue
+                if (!NodeValidator.isValidForAccessible(nodeChild)) continue
 
                 if (NodeValidator.isChildReadable(nodeChild)) {
                     add(getContent(nodeChild))

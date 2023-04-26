@@ -18,8 +18,9 @@
 
 package com.neo.speaktouch.utils.`object`
 
-import com.neo.speaktouch.utils.`typealias`.NodeInfo
 import com.neo.speaktouch.utils.extension.isNotNullOrEmpty
+import com.neo.speaktouch.utils.extension.iterator
+import com.neo.speaktouch.utils.`typealias`.NodeInfo
 
 object NodeValidator {
 
@@ -35,12 +36,27 @@ object NodeValidator {
         ).any { it.isNotNullOrEmpty() }
     }
 
-    fun isAccessible(node: NodeInfo): Boolean {
+    private fun isRequiredRead(node: NodeInfo): Boolean {
+        return node.isFocusable && hasText(node)
+    }
+
+    private fun hasReadableChild(nodeInfo: NodeInfo): Boolean {
+        for (child in nodeInfo) {
+            if (isChildReadable(child)) return true
+            if (hasReadableChild(child)) return true
+        }
+
+        return false
+    }
+
+    fun isValidForAccessible(node: NodeInfo): Boolean {
         return node.isImportantForAccessibility && node.isVisibleToUser
     }
 
     fun isRequiredFocus(node: NodeInfo): Boolean {
-        return isClickable(node) || node.isScreenReaderFocusable
+        return isRequiredRead(node) ||
+                isClickable(node) &&
+                hasReadableChild(node)
     }
 
     fun isReadable(node: NodeInfo): Boolean {
