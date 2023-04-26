@@ -37,10 +37,10 @@ fun NodeInfo.getNearestAncestor(
 
 operator fun NodeInfo.iterator() = object : Iterator<NodeInfo> {
 
-    var index = 0
+    var index = -1
 
     override fun hasNext(): Boolean {
-        return childCount > index + 1
+        return childCount != index + 1
     }
 
     override fun next(): NodeInfo {
@@ -78,7 +78,7 @@ fun NodeInfo.getString() = buildList {
     add("isScreenReaderFocusable: $isScreenReaderFocusable")
 
     add("\nVALIDATOR")
-    add("isAccessible: ${NodeValidator.isValidForAccessible(this@getString)}")
+    add("isValidForAccessible: ${NodeValidator.isValidForAccessible(this@getString)}")
     add("isReadable: ${NodeValidator.isReadable(this@getString)}")
     add("isRequestFocus: ${NodeValidator.isRequiredFocus(this@getString)}")
     add("isChildReadable: ${NodeValidator.isChildReadable(this@getString)}")
