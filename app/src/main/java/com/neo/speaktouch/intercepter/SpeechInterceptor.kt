@@ -21,21 +21,16 @@ package com.neo.speaktouch.intercepter
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.view.accessibility.AccessibilityEvent
-import com.neo.speaktouch.R
 import com.neo.speaktouch.intercepter.interfece.Interceptor
-import com.neo.speaktouch.model.Type
-import com.neo.speaktouch.utils.extension.filterNotNullOrEmpty
+import com.neo.speaktouch.model.Reader
 import com.neo.speaktouch.utils.extension.getString
 import com.neo.speaktouch.utils.extension.getText
-import com.neo.speaktouch.utils.extension.ifEmptyOrNull
-import com.neo.speaktouch.utils.extension.iterator
-import com.neo.speaktouch.utils.`object`.NodeValidator
 import com.neo.speaktouch.utils.`typealias`.NodeInfo
 import timber.log.Timber
 
 class SpeechInterceptor(
     private val textToSpeech: TextToSpeech,
-    private val context: Context
+    private val reader: Reader
 ) : Interceptor {
 
     override fun handle(event: AccessibilityEvent) {
@@ -61,11 +56,13 @@ class SpeechInterceptor(
         Timber.i("speak:${nodeInfo.getString()}")
 
         speak(
-            getContent(
+            reader.getContent(
                 nodeInfo = nodeInfo,
-                mustReadSelection = true,
-                mustReadType = true,
-                mustReadCheckable = true
+                level = Reader.Level.TEXT(
+                    mustReadSelection = true,
+                    mustReadType = true,
+                    mustReadCheckable = true
+                )
             )
         )
     }
@@ -75,100 +72,6 @@ class SpeechInterceptor(
         Timber.i("shutdown")
 
         textToSpeech.shutdown()
-    }
-
-    private fun getType(
-        node: NodeInfo,
-        mustRead: Boolean
-    ): String? {
-
-        if (!mustRead) return null
-
-        return when (Type.get(node)) {
-            Type.NONE -> null
-            Type.IMAGE -> context.getString(R.string.text_image_type)
-            Type.SWITCH -> context.getString(R.string.text_switch_type)
-            Type.TOGGLE -> context.getString(R.string.text_toggle_type)
-            Type.RADIO -> context.getString(R.string.text_radio_type)
-            Type.CHECKBOX -> context.getString(R.string.text_checkbox_type)
-            Type.BUTTON -> context.getString(R.string.text_button_type)
-            Type.EDITFIELD -> context.getString(R.string.text_editfield_type)
-            Type.OPTIONS -> context.getString(R.string.text_options_type)
-            Type.LIST -> context.getString(R.string.text_list_type)
-            Type.TITLE -> context.getString(R.string.text_title_type)
-        }
-    }
-
-    private fun getChildrenContent(
-        nodeInfo: NodeInfo
-    ): String {
-        return buildList {
-            for (nodeChild in nodeInfo) {
-
-                if (!NodeValidator.isValidForAccessible(nodeChild)) continue
-
-                if (NodeValidator.isChildReadable(nodeChild)) {
-                    add(
-                        getContent(
-                            nodeInfo = nodeChild,
-                            mustReadCheckable = true,
-                            mustReadType = listOf(
-                                Type.SWITCH,
-                                Type.TOGGLE,
-                                Type.RADIO,
-                                Type.CHECKBOX
-                            ).any { it == Type.get(nodeChild) }
-                        )
-                    )
-                }
-            }
-        }.joinToString(", ")
-    }
-
-    private fun getContent(
-        nodeInfo: NodeInfo,
-        mustReadSelection: Boolean = false,
-        mustReadType: Boolean = false,
-        mustReadCheckable: Boolean = false
-    ) = with(nodeInfo) {
-        val content = contentDescription.ifEmptyOrNull {
-            text.ifEmptyOrNull {
-                hintText.ifEmptyOrNull {
-                    getChildrenContent(nodeInfo)
-                }
-            }
-        }
-
-        listOf(
-            content,
-            getType(nodeInfo, mustReadType),
-            getCheckable(nodeInfo, mustReadCheckable),
-            getSelection(nodeInfo, mustReadSelection)
-        ).filterNotNullOrEmpty()
-            .joinToString(", ")
-    }
-
-    private fun getCheckable(
-        nodeInfo: NodeInfo,
-        mustRead: Boolean
-    ): CharSequence? {
-        if (!mustRead) return null
-        if (!nodeInfo.isCheckable) return null
-
-        return if (nodeInfo.isCheckable) {
-            context.getString(R.string.text_enabled)
-        } else {
-            context.getString(R.string.text_enabled)
-        }
-    }
-
-    private fun getSelection(
-        node: NodeInfo,
-        mustRead: Boolean
-    ) = if (mustRead && node.isSelected) {
-        context.getString(R.string.text_selected)
-    } else {
-        null
     }
 
     companion object {
@@ -185,11 +88,10 @@ class SpeechInterceptor(
                         )
                     }
                 },
-                context = context
+                reader = Reader(context)
             )
 
             return speechInterceptor
         }
     }
-
 }
