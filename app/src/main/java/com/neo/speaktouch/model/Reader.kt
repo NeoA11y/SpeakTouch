@@ -30,6 +30,17 @@ class Reader(
     private val context: Context
 ) {
     fun getContent(
+        nodeInfo: NodeInfo
+    ) = getContent(
+        nodeInfo = nodeInfo,
+        level = Level.TEXT(
+            mustReadSelection = true,
+            mustReadType = true,
+            mustReadCheckable = true
+        )
+    )
+
+    private fun getContent(
         nodeInfo: NodeInfo,
         level: Level
     ): String {

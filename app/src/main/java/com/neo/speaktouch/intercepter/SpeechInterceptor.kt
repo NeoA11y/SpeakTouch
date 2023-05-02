@@ -55,16 +55,7 @@ class SpeechInterceptor(
 
         Timber.i("speak:${nodeInfo.getString()}")
 
-        speak(
-            reader.getContent(
-                nodeInfo = nodeInfo,
-                level = Reader.Level.TEXT(
-                    mustReadSelection = true,
-                    mustReadType = true,
-                    mustReadCheckable = true
-                )
-            )
-        )
+        speak(reader.getContent(nodeInfo))
     }
 
     fun shutdown() {
