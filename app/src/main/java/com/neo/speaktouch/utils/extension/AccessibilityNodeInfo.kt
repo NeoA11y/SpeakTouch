@@ -49,7 +49,7 @@ operator fun NodeInfo.iterator() = object : Iterator<NodeInfo> {
 
 }
 
-fun NodeInfo.getString() = buildList {
+fun NodeInfo.getLog(vararg extra: String) = buildList {
 
     add("class: $className")
     add("packageName: $packageName")
@@ -78,10 +78,10 @@ fun NodeInfo.getString() = buildList {
     add("isScreenReaderFocusable: $isScreenReaderFocusable")
 
     add("\nVALIDATOR")
-    add("isValidForAccessible: ${NodeValidator.isValidForAccessible(this@getString)}")
-    add("isReadable: ${NodeValidator.isReadable(this@getString)}")
-    add("isRequestFocus: ${NodeValidator.isRequiredFocus(this@getString)}")
-    add("isChildReadable: ${NodeValidator.isChildReadable(this@getString)}")
+    add("isValidForAccessible: ${NodeValidator.isValidForAccessible(this@getLog)}")
+    add("isReadable: ${NodeValidator.isReadable(this@getLog)}")
+    add("isRequestFocus: ${NodeValidator.isRequiredFocus(this@getLog)}")
+    add("isReadableAsChild: ${NodeValidator.isReadableAsChild(this@getLog)}")
 
     add("\nHIERARCHY")
     add("parent: ${parent?.className.ifEmptyOrNull { "unknown" }}")
@@ -93,6 +93,11 @@ fun NodeInfo.getString() = buildList {
     add("isClickable: $isClickable")
     add("isLongClickable: $isLongClickable")
     add("actions: ${actionList.joinToString(", ") { it.name }}")
+
+    if (extra.isNotEmpty()) {
+        add("\nEXTRA")
+        addAll(extra)
+    }
 
 }.joinToString("\n")
 

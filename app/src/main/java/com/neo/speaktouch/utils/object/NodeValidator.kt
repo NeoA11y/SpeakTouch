@@ -42,7 +42,7 @@ object NodeValidator {
 
     private fun hasReadableChild(nodeInfo: NodeInfo): Boolean {
         for (child in nodeInfo) {
-            if (isChildReadable(child)) return true
+            if (isReadableAsChild(child)) return true
             if (hasReadableChild(child)) return true
         }
 
@@ -63,7 +63,7 @@ object NodeValidator {
         return hasText(node) || node.isCheckable
     }
 
-    fun isChildReadable(nodeInfo: NodeInfo): Boolean {
+    fun isReadableAsChild(nodeInfo: NodeInfo): Boolean {
         return isReadable(nodeInfo) && !isRequiredFocus(nodeInfo)
     }
 }

@@ -21,10 +21,12 @@ package com.neo.speaktouch.model
 import android.content.Context
 import com.neo.speaktouch.R
 import com.neo.speaktouch.utils.extension.filterNotNullOrEmpty
+import com.neo.speaktouch.utils.extension.getLog
 import com.neo.speaktouch.utils.extension.ifEmptyOrNull
 import com.neo.speaktouch.utils.extension.iterator
 import com.neo.speaktouch.utils.`object`.NodeValidator
 import com.neo.speaktouch.utils.`typealias`.NodeInfo
+import timber.log.Timber
 
 class Reader(
     private val context: Context
@@ -32,8 +34,8 @@ class Reader(
     fun getContent(
         nodeInfo: NodeInfo
     ) = getContent(
-        nodeInfo = nodeInfo,
-        level = Level.TEXT(
+        nodeInfo,
+        Level.Text(
             mustReadSelection = true,
             mustReadType = true,
             mustReadCheckable = true
@@ -41,17 +43,23 @@ class Reader(
     )
 
     private fun getContent(
-        nodeInfo: NodeInfo,
+        node: NodeInfo,
         level: Level
     ): String {
+        Timber.d(
+            node.getLog(
+                "level: $level"
+            )
+        )
+
         return when (level) {
-            is Level.TEXT -> with(nodeInfo) {
+            is Level.Text -> with(node) {
                 val content = contentDescription.ifEmptyOrNull {
                     text.ifEmptyOrNull {
                         hintText.ifEmptyOrNull {
                             getContent(
-                                nodeInfo,
-                                Level.CHILDREN
+                                node,
+                                Level.Children
                             )
                         }
                     }
@@ -59,34 +67,33 @@ class Reader(
 
                 listOf(
                     content,
-                    getType(nodeInfo, level.mustReadType),
-                    getCheckable(nodeInfo, level.mustReadCheckable),
-                    getSelection(nodeInfo, level.mustReadSelection)
+                    getType(node, level.mustReadType),
+                    getCheckable(node, level.mustReadCheckable),
+                    getSelection(node, level.mustReadSelection)
                 ).filterNotNullOrEmpty()
             }
 
-            is Level.CHILDREN -> buildList {
-                for (child in nodeInfo) {
+            is Level.Children -> buildList {
+                for (child in node) {
 
                     if (!NodeValidator.isValidForAccessible(child)) continue
+                    if (!NodeValidator.isReadableAsChild(child)) continue
 
-                    if (NodeValidator.isChildReadable(child)) {
-                        add(
-                            getContent(
-                                child,
-                                Level.TEXT(
-                                    mustReadSelection = false,
-                                    mustReadCheckable = true,
-                                    mustReadType = listOf(
-                                        Type.SWITCH,
-                                        Type.TOGGLE,
-                                        Type.RADIO,
-                                        Type.CHECKBOX
-                                    ).any { it == Type.get(child) }
-                                )
+                    add(
+                        getContent(
+                            child,
+                            Level.Text(
+                                mustReadSelection = false,
+                                mustReadCheckable = true,
+                                mustReadType = listOf(
+                                    Type.SWITCH,
+                                    Type.TOGGLE,
+                                    Type.RADIO,
+                                    Type.CHECKBOX
+                                ).any { it == Type.get(child) }
                             )
                         )
-                    }
+                    )
                 }
             }
         }.joinToString(", ")
@@ -139,12 +146,12 @@ class Reader(
 
     sealed interface Level {
 
-        data class TEXT(
+        data class Text(
             val mustReadSelection: Boolean,
             val mustReadType: Boolean,
             val mustReadCheckable: Boolean
         ) : Level
 
-        object CHILDREN : Level
+        object Children : Level
     }
 }

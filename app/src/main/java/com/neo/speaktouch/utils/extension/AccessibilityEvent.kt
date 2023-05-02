@@ -20,7 +20,7 @@ package com.neo.speaktouch.utils.extension
 
 import android.view.accessibility.AccessibilityEvent
 
-fun AccessibilityEvent.getString(): String {
+fun AccessibilityEvent.getLog(): String {
     return buildList {
         val eventName = when (eventType) {
             AccessibilityEvent.TYPE_VIEW_CLICKED -> "TYPE_VIEW_CLICKED"

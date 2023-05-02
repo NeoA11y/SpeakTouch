@@ -23,7 +23,7 @@ import android.speech.tts.TextToSpeech
 import android.view.accessibility.AccessibilityEvent
 import com.neo.speaktouch.intercepter.interfece.Interceptor
 import com.neo.speaktouch.model.Reader
-import com.neo.speaktouch.utils.extension.getString
+import com.neo.speaktouch.utils.extension.getLog
 import com.neo.speaktouch.utils.extension.getText
 import com.neo.speaktouch.utils.`typealias`.NodeInfo
 import timber.log.Timber
@@ -53,7 +53,7 @@ class SpeechInterceptor(
 
     private fun speak(nodeInfo: NodeInfo) {
 
-        Timber.i("speak:${nodeInfo.getString()}")
+        Timber.i("speak:${nodeInfo.getLog()}")
 
         speak(reader.getContent(nodeInfo))
     }
