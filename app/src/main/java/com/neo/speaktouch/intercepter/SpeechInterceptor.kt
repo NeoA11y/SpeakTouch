@@ -21,15 +21,17 @@ package com.neo.speaktouch.intercepter
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.view.accessibility.AccessibilityEvent
+import com.neo.speaktouch.R
 import com.neo.speaktouch.intercepter.interfece.Interceptor
 import com.neo.speaktouch.model.Reader
+import com.neo.speaktouch.model.UiText
 import com.neo.speaktouch.utils.extension.getLog
-import com.neo.speaktouch.utils.extension.getText
 import com.neo.speaktouch.utils.`typealias`.NodeInfo
 import timber.log.Timber
 
 class SpeechInterceptor(
     private val textToSpeech: TextToSpeech,
+    private val context: Context,
     private val reader: Reader
 ) : Interceptor {
 
@@ -41,7 +43,7 @@ class SpeechInterceptor(
 
     fun speak(text: CharSequence) {
 
-        Timber.i("speak:\"$text\"")
+        Timber.i("speak:  \"$text\"")
 
         textToSpeech.speak(
             text,
@@ -51,9 +53,15 @@ class SpeechInterceptor(
         )
     }
 
+    private fun speak(text: UiText) {
+        Timber.i("speak: $text")
+
+        speak(text.resolved(context))
+    }
+
     private fun speak(nodeInfo: NodeInfo) {
 
-        Timber.i("speak:${nodeInfo.getLog()}")
+        Timber.i("speak: ${nodeInfo.getLog()}")
 
         speak(reader.getContent(nodeInfo))
     }
@@ -75,11 +83,16 @@ class SpeechInterceptor(
                 textToSpeech = TextToSpeech(context) { status ->
                     if (status == TextToSpeech.SUCCESS) {
                         speechInterceptor!!.speak(
-                            "Speak Touch ${context.getText(true)}"
+                            UiText(
+                                text = "%s %s",
+                                UiText(R.string.app_name),
+                                UiText(R.string.text_enabled)
+                            ),
                         )
                     }
                 },
-                reader = Reader(context)
+                reader = Reader(context),
+                context = context
             )
 
             return speechInterceptor
