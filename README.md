@@ -8,14 +8,16 @@ For the ***release*** **buildType**, it's necessary to create a [keystore](https
 To build you need Android Studio Flamingo | 2022.2.1 or later. The latest stable version is always prefered.
 
 1. Clone the repository to your local machine.
-2. Open project in the [the latest version of Android Studio](https://developer.android.com/studio) IDE.
+2. Open project in [the latest version of Android Studio](https://developer.android.com/studio) IDE.
 3. Run the **app** module.
 
 ### Command line
 1. Download and install JDK 17 or newer.
-2. Clone the repository to your local machine.
-3. `cd` to directory of the newly cloned repository (`cd SpeakTouch`).
-4. Build with `./gradlew build`. Alternatively, you can `./gradlew assembleDebug` or `./gradlew assembleRelease` if you need only debug or release build type, respectively.
+2. Download and install [Android Command Line Tools](https://developer.android.com/studio#command-tools).
+3. set `ANDROID_HOME` environment variable.
+4. Clone the repository to your local machine.
+5. `cd` to directory of the newly cloned repository (`cd SpeakTouch`).
+6. Build with `./gradlew build`. Alternatively, you can `./gradlew assembleDebug` or `./gradlew assembleRelease` if you need only debug or release build type, respectively.
 
 ## License
 [![GNU GPLv3 logo](https://www.gnu.org/graphics/gplv3-127x51.png)](https://www.gnu.org/licenses/gpl-3.0.html)
