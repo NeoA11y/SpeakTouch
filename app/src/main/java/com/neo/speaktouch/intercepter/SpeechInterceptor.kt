@@ -19,6 +19,7 @@
 package com.neo.speaktouch.intercepter
 
 import android.content.Context
+import android.media.AudioAttributes
 import android.speech.tts.TextToSpeech
 import android.view.accessibility.AccessibilityEvent
 import com.neo.speaktouch.R
@@ -79,9 +80,15 @@ class SpeechInterceptor(
 
             var speechInterceptor: SpeechInterceptor? = null
 
+        val audioAttributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_ASSISTANCE_ACCESSIBILITY)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+            .build()
+
             speechInterceptor = SpeechInterceptor(
                 textToSpeech = TextToSpeech(context) { status ->
                     if (status == TextToSpeech.SUCCESS) {
+                        speechInterceptor!!.textToSpeech.setAudioAttributes(audioAttributes)
                         speechInterceptor!!.speak(
                             UiText(
                                 text = "%s %s",
