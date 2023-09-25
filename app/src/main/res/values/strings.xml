@@ -3,13 +3,12 @@
 
     <!-- type -->
     <string name="text_image_type">image</string>
-    <string name="text_switch_type">switch: %s</string>
-    <string name="text_toggle_type">toggle button: %s</string>
-    <string name="text_radio_type">option button: %s</string>
-    <string name="text_checkbox_type">checkbox: %s</string>
-    <string name="text_checkable_type">check: %s</string>
+    <string name="text_switch_type">switch</string>
+    <string name="text_toggle_type">toggle button</string>
+    <string name="text_radio_type">option button</string>
+    <string name="text_checkbox_type">checkbox</string>
     <string name="text_button_type">button</string>
-    <string name="text_editable_type">edit field</string>
+    <string name="text_editfield_type">edit field</string>
     <string name="text_options_type">options</string>
     <string name="text_list_type">list</string>
     <string name="text_title_type">title</string>
@@ -17,4 +16,5 @@
     <!-- state -->
     <string name="text_enabled">enabled</string>
     <string name="text_disabled">disabled</string>
+    <string name="text_selected">selected</string>
 </resources>
