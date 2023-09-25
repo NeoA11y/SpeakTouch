@@ -37,7 +37,7 @@ object NodeValidator {
     }
 
     private fun isRequiredRead(node: NodeInfo): Boolean {
-        return node.isFocusable && hasText(node)
+        return node.isFocusable && isReadable(node)
     }
 
     private fun hasReadableChild(nodeInfo: NodeInfo): Boolean {
