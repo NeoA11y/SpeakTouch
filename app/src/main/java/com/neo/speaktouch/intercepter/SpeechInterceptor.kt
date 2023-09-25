@@ -80,10 +80,10 @@ class SpeechInterceptor(
 
             var speechInterceptor: SpeechInterceptor? = null
 
-        val audioAttributes = AudioAttributes.Builder()
-            .setUsage(AudioAttributes.USAGE_ASSISTANCE_ACCESSIBILITY)
-            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-            .build()
+            val audioAttributes = AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_ASSISTANCE_ACCESSIBILITY)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .build()
 
             speechInterceptor = SpeechInterceptor(
                 textToSpeech = TextToSpeech(context) { status ->
