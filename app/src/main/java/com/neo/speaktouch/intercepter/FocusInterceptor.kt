@@ -20,64 +20,55 @@ package com.neo.speaktouch.intercepter
 
 import android.view.accessibility.AccessibilityEvent
 import com.neo.speaktouch.intercepter.interfece.Interceptor
-import com.neo.speaktouch.utils.extensions.NodeInfo
-import com.neo.speaktouch.utils.extensions.getLog
-import com.neo.speaktouch.utils.extensions.getNearestAncestor
-import com.neo.speaktouch.utils.extensions.isReadable
-import com.neo.speaktouch.utils.extensions.isRequiredFocus
-import timber.log.Timber
+import com.neo.speaktouch.utils.`object`.NodeValidator
+import com.neo.speaktouch.utils.`typealias`.NodeInfo
+import com.neo.speaktouch.utils.extension.getNearestAncestor
 
 class FocusInterceptor : Interceptor {
 
     override fun handle(event: AccessibilityEvent) {
 
-        val node = NodeInfo.wrap(event.source ?: return)
+        val nodeInfo = NodeInfo.wrap(event.source ?: return)
 
-        Timber.d(node.getLog())
+        if (nodeInfo.isAccessibilityFocused) return
 
-        if (node.isAccessibilityFocused) return
+        if (!NodeValidator.isValidForAccessible(nodeInfo)) return
 
         when (event.eventType) {
             AccessibilityEvent.TYPE_VIEW_HOVER_ENTER -> {
-                Timber.d("event: TYPE_VIEW_HOVER_ENTER")
-                handlerAccessibilityNode(node)
+                handlerAccessibilityNode(nodeInfo)
             }
 
             AccessibilityEvent.TYPE_VIEW_FOCUSED -> {
-                Timber.d("event: TYPE_VIEW_FOCUSED")
-                handlerAccessibilityNode(node)
+                handlerAccessibilityNode(nodeInfo)
             }
 
             AccessibilityEvent.TYPE_VIEW_CLICKED -> {
-                Timber.d("event: TYPE_VIEW_CLICKED")
-                handlerAccessibilityNode(node)
+                handlerAccessibilityNode(nodeInfo)
             }
 
             else -> Unit
         }
     }
 
-    private fun handlerAccessibilityNode(node: NodeInfo) {
-        getFocusableNode(node)?.run {
-            Timber.i("performAction: $className")
+    private fun handlerAccessibilityNode(nodeInfo: NodeInfo) {
+        getFocusableNode(nodeInfo)?.run {
             performAction(NodeInfo.ACTION_ACCESSIBILITY_FOCUS)
         }
     }
 
-    private fun getFocusableNode(node: NodeInfo): NodeInfo? {
+    private fun getFocusableNode(nodeInfo: NodeInfo): NodeInfo? {
 
-        if (node.isRequiredFocus) {
-            // Priority 1
-            return node
+        if (NodeValidator.isRequiredFocus(nodeInfo)) {
+            return nodeInfo
         }
 
-        // Priority 2
-        val nearestAncestor = node.getNearestAncestor {
-            it.isRequiredFocus
-        }
+        val ancestor = nodeInfo.getNearestAncestor(
+            NodeValidator::isRequiredFocus
+        )
 
-        return nearestAncestor ?: when {
-            node.isReadable -> node // Priority 3
+        return ancestor ?: when {
+            NodeValidator.isReadable(nodeInfo) -> nodeInfo
             else -> null
         }
     }

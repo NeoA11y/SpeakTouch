@@ -1,5 +1,5 @@
 /*
- * Extensions for Context.
+ * NodeInfo typealias.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -16,15 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.utils.extensions
+package com.neo.speaktouch.utils.`typealias`
 
-import android.content.Context
-import com.neo.speaktouch.R
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 
-fun Context.getText(isEnabled: Boolean): String {
-    return if (isEnabled) {
-        getString(R.string.text_enabled)
-    } else {
-        getString(R.string.text_disabled)
-    }
-}
+typealias NodeInfo = AccessibilityNodeInfoCompat
+typealias NodeAction = AccessibilityNodeInfoCompat.AccessibilityActionCompat

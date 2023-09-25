@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.utils.extensions
+package com.neo.speaktouch.utils.extension
 
 import android.view.accessibility.AccessibilityEvent
 

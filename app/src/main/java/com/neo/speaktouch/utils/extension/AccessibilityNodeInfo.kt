@@ -16,32 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.utils.extensions
+package com.neo.speaktouch.utils.extension
 
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
-
-typealias NodeInfo = AccessibilityNodeInfoCompat
-typealias NodeAction = AccessibilityNodeInfoCompat.AccessibilityActionCompat
-
-val NodeInfo.hasAnyClick: Boolean
-    get() = isClickable || isLongClickable
-
-val NodeInfo.isReadable: Boolean
-    get() = !isIgnore && (hasText || isCheckable)
-
-val NodeInfo.hasText: Boolean
-    get() = !contentDescription.isNullOrEmpty() ||
-            !text.isNullOrEmpty() ||
-            !hintText.isNullOrEmpty()
-
-val NodeInfo.isAvailableForAccessibility: Boolean
-    get() = !isIgnore && (isRequiredFocus || isReadable)
-
-val NodeInfo.isRequiredFocus
-    get() = !isIgnore && (hasAnyClick || isScreenReaderFocusable)
-
-val NodeInfo.isIgnore
-    get() = !isImportantForAccessibility || !isVisibleToUser
+import com.neo.speaktouch.utils.`object`.NodeValidator
+import com.neo.speaktouch.utils.`typealias`.NodeAction
+import com.neo.speaktouch.utils.`typealias`.NodeInfo
 
 fun NodeInfo.getNearestAncestor(
     predicate: (NodeInfo) -> Boolean
@@ -55,7 +35,22 @@ fun NodeInfo.getNearestAncestor(
     return current
 }
 
-fun NodeInfo.getLog() = buildList {
+operator fun NodeInfo.iterator() = object : Iterator<NodeInfo> {
+
+    var index = -1
+
+    override fun hasNext(): Boolean {
+        return childCount != index + 1
+    }
+
+    override fun next(): NodeInfo {
+        return getChild(++index)
+    }
+
+}
+
+fun NodeInfo.getLog(vararg extra: String) = buildList {
+
     add("class: $className")
     add("packageName: $packageName")
     add("isImportantForAccessibility: $isImportantForAccessibility")
@@ -73,18 +68,20 @@ fun NodeInfo.getLog() = buildList {
     add("isScrollable: $isScrollable")
     add("isEnabled: $isEnabled")
     add("isChecked: $isChecked")
+    add("isSelected: $isSelected")
     add("stateDescription: $stateDescription")
 
     add("\nFOCUS")
     add("isFocusable: $isFocusable")
     add("isFocused: $isFocused")
     add("isAccessibilityFocused: $isAccessibilityFocused")
-
-    add("\nREADE")
     add("isScreenReaderFocusable: $isScreenReaderFocusable")
-    add("isAvailableForAccessibility: $isAvailableForAccessibility")
-    add("isReadable: $isReadable")
-    add("isVisibleToUser: $isVisibleToUser")
+
+    add("\nVALIDATOR")
+    add("isValidForAccessible: ${NodeValidator.isValidForAccessible(this@getLog)}")
+    add("isReadable: ${NodeValidator.isReadable(this@getLog)}")
+    add("isRequestFocus: ${NodeValidator.isRequiredFocus(this@getLog)}")
+    add("isReadableAsChild: ${NodeValidator.isReadableAsChild(this@getLog)}")
 
     add("\nHIERARCHY")
     add("parent: ${parent?.className.ifEmptyOrNull { "unknown" }}")
@@ -96,6 +93,11 @@ fun NodeInfo.getLog() = buildList {
     add("isClickable: $isClickable")
     add("isLongClickable: $isLongClickable")
     add("actions: ${actionList.joinToString(", ") { it.name }}")
+
+    if (extra.isNotEmpty()) {
+        add("\nEXTRA")
+        addAll(extra)
+    }
 
 }.joinToString("\n")
 

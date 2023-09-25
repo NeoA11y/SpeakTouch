@@ -23,19 +23,16 @@ import android.speech.tts.TextToSpeech
 import android.view.accessibility.AccessibilityEvent
 import com.neo.speaktouch.R
 import com.neo.speaktouch.intercepter.interfece.Interceptor
-import com.neo.speaktouch.model.Type
-import com.neo.speaktouch.utils.extensions.NodeInfo
-import com.neo.speaktouch.utils.extensions.filterNotNullOrEmpty
-import com.neo.speaktouch.utils.extensions.getLog
-import com.neo.speaktouch.utils.extensions.getText
-import com.neo.speaktouch.utils.extensions.ifEmptyOrNull
-import com.neo.speaktouch.utils.extensions.isAvailableForAccessibility
-import com.neo.speaktouch.utils.extensions.isRequiredFocus
+import com.neo.speaktouch.model.Reader
+import com.neo.speaktouch.model.UiText
+import com.neo.speaktouch.utils.extension.getLog
+import com.neo.speaktouch.utils.`typealias`.NodeInfo
 import timber.log.Timber
 
 class SpeechInterceptor(
     private val textToSpeech: TextToSpeech,
-    private val context: Context
+    private val context: Context,
+    private val reader: Reader
 ) : Interceptor {
 
     override fun handle(event: AccessibilityEvent) {
@@ -46,7 +43,7 @@ class SpeechInterceptor(
 
     fun speak(text: CharSequence) {
 
-        Timber.i("speak:\"$text\"")
+        Timber.i("speak:  \"$text\"")
 
         textToSpeech.speak(
             text,
@@ -56,8 +53,17 @@ class SpeechInterceptor(
         )
     }
 
-    private fun speak(node: NodeInfo) {
-        speak(getContent(node))
+    private fun speak(text: UiText) {
+        Timber.i("speak: $text")
+
+        speak(text.resolved(context))
+    }
+
+    private fun speak(nodeInfo: NodeInfo) {
+
+        Timber.i("speak: ${nodeInfo.getLog()}")
+
+        speak(reader.getContent(nodeInfo))
     }
 
     fun shutdown() {
@@ -65,62 +71,6 @@ class SpeechInterceptor(
         Timber.i("shutdown")
 
         textToSpeech.shutdown()
-    }
-
-    private fun getType(
-        node: NodeInfo
-    ): String {
-
-        fun getState() = context.getText(node.isChecked)
-
-        return when (Type.get(node)) {
-            Type.NONE -> ""
-            Type.IMAGE -> context.getString(R.string.text_image_type)
-            Type.SWITCH -> context.getString(R.string.text_switch_type, getState())
-            Type.TOGGLE -> context.getString(R.string.text_toggle_type, getState())
-            Type.RADIO -> context.getString(R.string.text_radio_type, getState())
-            Type.CHECKBOX -> context.getString(R.string.text_checkbox_type, getState())
-            Type.CHECKABLE -> context.getString(R.string.text_checkable_type, getState())
-            Type.BUTTON -> context.getString(R.string.text_button_type)
-            Type.EDITABLE -> context.getString(R.string.text_editable_type)
-            Type.OPTIONS -> context.getString(R.string.text_options_type)
-            Type.LIST -> context.getString(R.string.text_list_type)
-            Type.TITLE -> context.getString(R.string.text_title_type)
-        }
-    }
-
-    private fun getChildrenContent(
-        node: NodeInfo
-    ): String {
-        return buildList {
-            for (index in 0 until node.childCount) {
-                val nodeChild = node.getChild(index)
-
-                if (nodeChild.isAvailableForAccessibility && !nodeChild.isRequiredFocus) {
-                    add(getContent(nodeChild))
-                }
-            }
-        }.joinToString(", ")
-    }
-
-    private fun getContent(
-        node: NodeInfo
-    ) = with(node) {
-        Timber.d("getContent:\n${node.getLog()}")
-
-        val content = contentDescription.ifEmptyOrNull {
-            text.ifEmptyOrNull {
-                hintText.ifEmptyOrNull {
-                    getChildrenContent(node)
-                }
-            }
-        }
-
-        listOf(
-            content,
-            getType(node)
-        ).filterNotNullOrEmpty()
-            .joinToString(", ")
     }
 
     companion object {
@@ -133,17 +83,19 @@ class SpeechInterceptor(
                 textToSpeech = TextToSpeech(context) { status ->
                     if (status == TextToSpeech.SUCCESS) {
                         speechInterceptor!!.speak(
-                            "Speak Touch ${context.getText(true)}"
+                            UiText(
+                                text = "%s %s",
+                                UiText(R.string.app_name),
+                                UiText(R.string.text_enabled)
+                            ),
                         )
-                    } else {
-                        error(message = "TTS_INITIALIZATION_ERROR")
                     }
                 },
+                reader = Reader(context),
                 context = context
             )
 
             return speechInterceptor
         }
     }
-
 }
