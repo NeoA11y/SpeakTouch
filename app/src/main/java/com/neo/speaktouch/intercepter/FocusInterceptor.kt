@@ -32,7 +32,7 @@ class FocusInterceptor : Interceptor {
 
         if (nodeInfo.isAccessibilityFocused) return
 
-        if (!NodeValidator.isValidForAccessible(nodeInfo)) return
+        if (!NodeValidator.isValidForAccessibility(nodeInfo)) return
 
         when (event.eventType) {
             AccessibilityEvent.TYPE_VIEW_HOVER_ENTER -> {
@@ -59,16 +59,16 @@ class FocusInterceptor : Interceptor {
 
     private fun getFocusableNode(nodeInfo: NodeInfo): NodeInfo? {
 
-        if (NodeValidator.isRequiredFocus(nodeInfo)) {
+        if (NodeValidator.mustFocus(nodeInfo)) {
             return nodeInfo
         }
 
         val ancestor = nodeInfo.getNearestAncestor(
-            NodeValidator::isRequiredFocus
+            NodeValidator::mustFocus
         )
 
         return ancestor ?: when {
-            NodeValidator.isReadable(nodeInfo) -> nodeInfo
+            NodeValidator.hasContentToRead(nodeInfo) -> nodeInfo
             else -> null
         }
     }

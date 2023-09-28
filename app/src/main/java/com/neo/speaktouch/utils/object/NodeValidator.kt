@@ -28,13 +28,15 @@ object NodeValidator {
      * @return true if [node] has any action
      */
     private fun isClickable(node: NodeInfo): Boolean {
+
         return node.isClickable || node.isLongClickable
     }
 
     /**
      * @return true if [node] has some text to read
      */
-    private fun hasText(node: NodeInfo): Boolean {
+    private fun hasTextToRead(node: NodeInfo): Boolean {
+
         return listOf(
             node.text,
             node.hintText,
@@ -45,8 +47,9 @@ object NodeValidator {
     /**
      * @return true if [node] should be read directly
      */
-    private fun isRequiredRead(node: NodeInfo): Boolean {
-        return node.isFocusable && isReadable(node)
+    private fun mustReadContent(node: NodeInfo): Boolean {
+
+        return hasContentToRead(node) && node.isFocusable
     }
 
     /**
@@ -55,6 +58,7 @@ object NodeValidator {
     private fun hasReadableChild(node: NodeInfo): Boolean {
 
         for (child in node) {
+            if (!isValidForAccessibility(child)) continue
             if (isReadableAsChild(child)) return true
         }
 
@@ -62,33 +66,44 @@ object NodeValidator {
     }
 
     /**
-     * @return true if [node] should be ignored
+     * @return true if [node] must be ignored
      */
-    fun isValidForAccessible(node: NodeInfo): Boolean {
+    fun isValidForAccessibility(node: NodeInfo): Boolean {
+
         return node.isImportantForAccessibility && node.isVisibleToUser
     }
 
     /**
-     * @return true if it is mandatory to focus on [node]
+     * @return true if is mandatory to focus on [node]
      */
-    fun isRequiredFocus(node: NodeInfo): Boolean {
+    fun mustFocus(node: NodeInfo): Boolean {
 
-        if (isRequiredRead(node)) return true
+        return mustReadContent(node) || mustReadChildren(node)
+    }
+
+    /**
+     * @return true if is mandatory read [node]'s children
+     */
+    fun mustReadChildren(node: NodeInfo) : Boolean {
+
+        if (mustReadContent(node)) return false
 
         return isClickable(node) && hasReadableChild(node)
     }
 
     /**
-     * @return true if [node] has some information that can be read, either text or state
+     * @return true if [node] has content (text or state)
      */
-    fun isReadable(node: NodeInfo): Boolean {
-        return hasText(node) || node.isCheckable
+    fun hasContentToRead(node: NodeInfo): Boolean {
+
+        return hasTextToRead(node) || node.isCheckable
     }
 
     /**
      * @return true if [node] cannot be read directly
      */
     fun isReadableAsChild(node: NodeInfo): Boolean {
-        return isReadable(node) && !isRequiredFocus(node)
+
+        return hasContentToRead(node) && !mustFocus(node)
     }
 }
