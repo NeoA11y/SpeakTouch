@@ -24,10 +24,16 @@ import com.neo.speaktouch.utils.`typealias`.NodeInfo
 
 object NodeValidator {
 
+    /**
+     * @return true if [node] has any action
+     */
     private fun isClickable(node: NodeInfo): Boolean {
         return node.isClickable || node.isLongClickable
     }
 
+    /**
+     * @return true if [node] has some text to read
+     */
     private fun hasText(node: NodeInfo): Boolean {
         return listOf(
             node.text,
@@ -36,33 +42,53 @@ object NodeValidator {
         ).any { it.isNotNullOrEmpty() }
     }
 
+    /**
+     * @return true if [node] should be read directly
+     */
     private fun isRequiredRead(node: NodeInfo): Boolean {
         return node.isFocusable && isReadable(node)
     }
 
-    private fun hasReadableChild(nodeInfo: NodeInfo): Boolean {
-        for (child in nodeInfo) {
+    /**
+     * @return true if [node] has a readable child
+     */
+    private fun hasReadableChild(node: NodeInfo): Boolean {
+
+        for (child in node) {
             if (isReadableAsChild(child)) return true
         }
 
         return false
     }
 
+    /**
+     * @return true if [node] should be ignored
+     */
     fun isValidForAccessible(node: NodeInfo): Boolean {
         return node.isImportantForAccessibility && node.isVisibleToUser
     }
 
+    /**
+     * @return true if it is mandatory to focus on [node]
+     */
     fun isRequiredFocus(node: NodeInfo): Boolean {
-        return isRequiredRead(node) ||
-                isClickable(node) &&
-                hasReadableChild(node)
+
+        if (isRequiredRead(node)) return true
+
+        return isClickable(node) && hasReadableChild(node)
     }
 
+    /**
+     * @return true if [node] has some information that can be read, either text or state
+     */
     fun isReadable(node: NodeInfo): Boolean {
         return hasText(node) || node.isCheckable
     }
 
-    fun isReadableAsChild(nodeInfo: NodeInfo): Boolean {
-        return isReadable(nodeInfo) && !isRequiredFocus(nodeInfo)
+    /**
+     * @return true if [node] cannot be read directly
+     */
+    fun isReadableAsChild(node: NodeInfo): Boolean {
+        return isReadable(node) && !isRequiredFocus(node)
     }
 }
