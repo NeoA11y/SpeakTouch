@@ -43,7 +43,6 @@ object NodeValidator {
     private fun hasReadableChild(nodeInfo: NodeInfo): Boolean {
         for (child in nodeInfo) {
             if (isReadableAsChild(child)) return true
-            if (hasReadableChild(child)) return true
         }
 
         return false
