@@ -40,3 +40,24 @@ jobs:
         with:
           name: debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Comment PR with APK
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.PULL_REQUEST_ACCESS_TOKEN }}
+          script: |
+            const artifactResponse = await github.actions.listArtifactsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            
+            const artifact = artifactResponse.data.artifacts.find(artifact => artifact.name === 'debug-apk');
+            
+            if (artifact) {
+              await github.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `Debug APK: [${artifact.name}](${artifact.archive_download_url})`,
+              });
+            }
