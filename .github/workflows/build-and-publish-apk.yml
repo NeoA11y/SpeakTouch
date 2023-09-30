@@ -18,5 +18,19 @@ jobs:
           distribution: 'adopt'
           cache: gradle
 
+      - name: Decode Keystore
+        env:
+          KEYSTORE: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE" > keystore.txt
+          base64 -d keystore.txt > keystore.jks
+
+      - name: Decode Properties
+        env:
+          PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES_BASE64 }}
+        run: |
+          echo "$PROPERTIES" > keystore-properties.txt
+          base64 -d keystore-properties.txt > keystore.properties
+
       - name: Build APK
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleRelease
