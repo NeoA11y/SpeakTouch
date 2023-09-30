@@ -1,0 +1,57 @@
+name: "Build and Publish APK"
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          cache: gradle
+
+      - name: Decode Keystore
+        env:
+          KEYSTORE: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE" > keystore.txt
+          base64 -d keystore.txt > keystore.jks
+
+      - name: Decode Properties
+        env:
+          PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES_BASE64 }}
+        run: |
+          echo "$PROPERTIES" > keystore-properties.txt
+          base64 -d keystore-properties.txt > keystore.properties
+
+      - name: Assemble APK
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-debug.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Comment on pull request
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.PULL_REQUEST_ACCESS_TOKEN }}
+          script: |
+            
+            const message = `🤖 Everything went well with the build! Download the app from the pull request artifacts.`;
+            
+            await github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message,
+            });
