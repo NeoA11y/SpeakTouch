@@ -1,5 +1,5 @@
 /*
- * Vibration compatibility.
+ * Vibration utility wrapper.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -16,19 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.utils.`object`
+package com.neo.speaktouch.utils
 
 import android.content.Context
-import android.content.res.Resources
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import com.neo.speaktouch.R
-import com.neo.speaktouch.utils.extension.toLongArray
 
-object VibratorUtil {
+class VibrationUtil(private val vibrator: Vibrator) {
 
-    fun vibrateEffectHeavyClick(vibrator: Vibrator) {
+    @Suppress("deprecation")
+    constructor(context: Context) : this(
+        context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    )
+
+    fun vibrateEffectHeavyClick() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             vibrator.vibrate(
                 VibrationEffect.createPredefined(
@@ -36,15 +38,13 @@ object VibratorUtil {
                 )
             )
         } else {
-            @Suppress("deprecation")
-            vibrator.vibrate(
-                LegacyVibrationEffect.HeavyClick.pattern,
-                REPEAT
+            vibrateLegacy(
+                LegacyVibrationEffect.HeavyClick
             )
         }
     }
 
-    fun vibrateEffectTick(vibrator: Vibrator) {
+    fun vibrateEffectTick() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             vibrator.vibrate(
                 VibrationEffect.createPredefined(
@@ -52,33 +52,29 @@ object VibratorUtil {
                 )
             )
         } else {
-            @Suppress("deprecation")
-            vibrator.vibrate(
-                LegacyVibrationEffect.Tick.pattern,
-                REPEAT
+            vibrateLegacy(
+                LegacyVibrationEffect.Tick,
             )
         }
     }
 
     @Suppress("deprecation")
-    fun createVibrator(context: Context): Vibrator {
-
-        return context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    fun vibrateLegacy(
+        legacyVibrationEffect: LegacyVibrationEffect,
+        repeat: Int = DEFAULT_REPEAT,
+    ) {
+        vibrator.vibrate(
+            legacyVibrationEffect.pattern,
+            repeat
+        )
     }
 
-    private const val REPEAT = -1
+    fun hasVibrator() = vibrator.hasVibrator()
+
+    fun finish() = vibrator.cancel()
+
+    companion object {
+        private const val DEFAULT_REPEAT = -1
+    }
 }
 
-
-sealed class LegacyVibrationEffect(val pattern : LongArray) {
-    object HeavyClick : LegacyVibrationEffect(
-        pattern = longArrayOf(
-            0, 50, 50
-        )
-    )
-    object Tick : LegacyVibrationEffect(
-        pattern = longArrayOf(
-            0, 30
-        )
-    )
-}

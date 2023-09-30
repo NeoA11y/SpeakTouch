@@ -18,17 +18,18 @@
 
 package com.neo.speaktouch.intercepter
 
-import android.os.Vibrator
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.neo.speaktouch.intercepter.interfece.Interceptor
-import com.neo.speaktouch.utils.`object`.VibratorUtil
+import com.neo.speaktouch.utils.VibrationUtil
 
-class HapticInterceptor(val vibrator: Vibrator) : Interceptor {
+class HapticInterceptor(
+    private val vibration: VibrationUtil
+) : Interceptor {
 
     override fun handle(event: AccessibilityEvent) {
 
-        if (!vibrator.hasVibrator()) return
+        if (!vibration.hasVibrator()) return
 
         if (event.eventType == AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED) {
             handleFocusVibration(event.source ?: return)
@@ -38,15 +39,14 @@ class HapticInterceptor(val vibrator: Vibrator) : Interceptor {
     private fun handleFocusVibration(nodeInfo: AccessibilityNodeInfo) {
 
         if (nodeInfo.isClickable) {
-            VibratorUtil.vibrateEffectHeavyClick(
-                vibrator,
-            )
+            vibration.vibrateEffectHeavyClick()
             return
         }
 
-        VibratorUtil.vibrateEffectTick(
-            vibrator,
-        )
+        vibration.vibrateEffectTick()
+
         return
     }
+
+    override fun finish() = vibration.finish()
 }

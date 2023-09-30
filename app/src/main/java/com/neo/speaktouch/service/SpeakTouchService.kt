@@ -25,7 +25,7 @@ import com.neo.speaktouch.intercepter.HapticInterceptor
 import com.neo.speaktouch.intercepter.SpeechInterceptor
 import com.neo.speaktouch.intercepter.interfece.Interceptor
 import com.neo.speaktouch.utils.extension.getLog
-import com.neo.speaktouch.utils.`object`.VibratorUtil
+import com.neo.speaktouch.utils.VibrationUtil
 import timber.log.Timber
 
 class SpeakTouchService : AccessibilityService() {
@@ -41,7 +41,7 @@ class SpeakTouchService : AccessibilityService() {
 
         interceptors.add(
             HapticInterceptor(
-                vibrator = VibratorUtil.createVibrator(this),
+                vibration = VibrationUtil(this),
             )
         )
     }
