@@ -25,10 +25,7 @@ import com.neo.speaktouch.intercepter.HapticInterceptor
 import com.neo.speaktouch.intercepter.SpeechInterceptor
 import com.neo.speaktouch.intercepter.interfece.Interceptor
 import com.neo.speaktouch.utils.extension.getLog
-import com.neo.speaktouch.utils.`object`.VibratorCompat
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.neo.speaktouch.utils.`object`.VibratorUtil
 import timber.log.Timber
 
 class SpeakTouchService : AccessibilityService() {
@@ -44,8 +41,7 @@ class SpeakTouchService : AccessibilityService() {
 
         interceptors.add(
             HapticInterceptor(
-                vibrator = VibratorCompat.createVibrator(this),
-                resources = resources
+                vibrator = VibratorUtil.createVibrator(this),
             )
         )
     }
