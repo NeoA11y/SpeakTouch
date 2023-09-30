@@ -67,9 +67,9 @@ class SpeechInterceptor(
         speak(reader.getContent(nodeInfo))
     }
 
-    fun shutdown() {
+    override fun finish() {
 
-        Timber.i("shutdown")
+        Timber.i("finish")
 
         textToSpeech.shutdown()
     }

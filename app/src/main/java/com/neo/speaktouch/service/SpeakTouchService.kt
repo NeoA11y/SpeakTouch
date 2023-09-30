@@ -21,10 +21,14 @@ package com.neo.speaktouch.service
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
 import com.neo.speaktouch.intercepter.FocusInterceptor
+import com.neo.speaktouch.intercepter.HapticInterceptor
 import com.neo.speaktouch.intercepter.SpeechInterceptor
 import com.neo.speaktouch.intercepter.interfece.Interceptor
-import com.neo.speaktouch.utils.extension.getInstance
 import com.neo.speaktouch.utils.extension.getLog
+import com.neo.speaktouch.utils.`object`.VibratorCompat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class SpeakTouchService : AccessibilityService() {
@@ -35,23 +39,30 @@ class SpeakTouchService : AccessibilityService() {
         super.onCreate()
 
         interceptors.add(FocusInterceptor())
+
         interceptors.add(SpeechInterceptor.getInstance(this))
+
+        interceptors.add(
+            HapticInterceptor(
+                vibrator = VibratorCompat.createVibrator(this),
+                resources = resources
+            )
+        )
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
 
         Timber.d(event.getLog())
 
-        interceptors.forEach { it.handle(event) }
+        interceptors.forEach {
+            it.handle(event)
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        interceptors
-            .getInstance<SpeechInterceptor>()
-            .shutdown()
-
+        interceptors.forEach(Interceptor::finish)
         interceptors.clear()
     }
 

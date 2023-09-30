@@ -1,5 +1,5 @@
 /*
- * Interface of interceptors.
+ * Extensions for IntArray.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -16,11 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.intercepter.interfece
+package com.neo.speaktouch.utils.extension
 
-import android.view.accessibility.AccessibilityEvent
-
-interface Interceptor {
-    fun handle(event: AccessibilityEvent)
-    fun finish() = Unit
-}
+fun IntArray.toLongArray() = LongArray(size) { this[it].toLong() }
