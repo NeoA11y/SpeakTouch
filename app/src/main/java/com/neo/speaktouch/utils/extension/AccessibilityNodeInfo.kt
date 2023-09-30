@@ -78,9 +78,9 @@ fun NodeInfo.getLog(vararg extra: String) = buildList {
     add("isScreenReaderFocusable: $isScreenReaderFocusable")
 
     add("\nVALIDATOR")
-    add("isValidForAccessible: ${NodeValidator.isValidForAccessible(this@getLog)}")
-    add("isReadable: ${NodeValidator.isReadable(this@getLog)}")
-    add("isRequestFocus: ${NodeValidator.isRequiredFocus(this@getLog)}")
+    add("isValidForAccessible: ${NodeValidator.isValidForAccessibility(this@getLog)}")
+    add("isReadable: ${NodeValidator.hasContentToRead(this@getLog)}")
+    add("isRequestFocus: ${NodeValidator.mustFocus(this@getLog)}")
     add("isReadableAsChild: ${NodeValidator.isReadableAsChild(this@getLog)}")
 
     add("\nHIERARCHY")

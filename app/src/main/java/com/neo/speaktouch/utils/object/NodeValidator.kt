@@ -24,11 +24,19 @@ import com.neo.speaktouch.utils.`typealias`.NodeInfo
 
 object NodeValidator {
 
+    /**
+     * @return true if [node] has any action
+     */
     private fun isClickable(node: NodeInfo): Boolean {
+
         return node.isClickable || node.isLongClickable
     }
 
-    private fun hasText(node: NodeInfo): Boolean {
+    /**
+     * @return true if [node] has some text to read
+     */
+    private fun hasTextToRead(node: NodeInfo): Boolean {
+
         return listOf(
             node.text,
             node.hintText,
@@ -36,34 +44,66 @@ object NodeValidator {
         ).any { it.isNotNullOrEmpty() }
     }
 
-    private fun isRequiredRead(node: NodeInfo): Boolean {
-        return node.isFocusable && isReadable(node)
+    /**
+     * @return true if [node] should be read directly
+     */
+    private fun mustReadContent(node: NodeInfo): Boolean {
+
+        return hasContentToRead(node) && node.isFocusable
     }
 
-    private fun hasReadableChild(nodeInfo: NodeInfo): Boolean {
-        for (child in nodeInfo) {
+    /**
+     * @return true if [node] has a readable child
+     */
+    private fun hasReadableChild(node: NodeInfo): Boolean {
+
+        for (child in node) {
+            if (!isValidForAccessibility(child)) continue
             if (isReadableAsChild(child)) return true
-            if (hasReadableChild(child)) return true
         }
 
         return false
     }
 
-    fun isValidForAccessible(node: NodeInfo): Boolean {
+    /**
+     * @return true if [node] must be ignored
+     */
+    fun isValidForAccessibility(node: NodeInfo): Boolean {
+
         return node.isImportantForAccessibility && node.isVisibleToUser
     }
 
-    fun isRequiredFocus(node: NodeInfo): Boolean {
-        return isRequiredRead(node) ||
-                isClickable(node) &&
-                hasReadableChild(node)
+    /**
+     * @return true if is mandatory to focus on [node]
+     */
+    fun mustFocus(node: NodeInfo): Boolean {
+
+        return mustReadContent(node) || mustReadChildren(node)
     }
 
-    fun isReadable(node: NodeInfo): Boolean {
-        return hasText(node) || node.isCheckable
+    /**
+     * @return true if is mandatory read [node]'s children
+     */
+    fun mustReadChildren(node: NodeInfo) : Boolean {
+
+        if (mustReadContent(node)) return false
+
+        return isClickable(node) && hasReadableChild(node)
     }
 
-    fun isReadableAsChild(nodeInfo: NodeInfo): Boolean {
-        return isReadable(nodeInfo) && !isRequiredFocus(nodeInfo)
+    /**
+     * @return true if [node] has content (text or state)
+     */
+    fun hasContentToRead(node: NodeInfo): Boolean {
+
+        return hasTextToRead(node) || node.isCheckable
+    }
+
+    /**
+     * @return true if [node] cannot be read directly
+     */
+    fun isReadableAsChild(node: NodeInfo): Boolean {
+
+        return hasContentToRead(node) && !mustFocus(node)
     }
 }
