@@ -1,4 +1,4 @@
-name: Build and Publish APK
+name: "Build and Publish APK"
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Java
         uses: actions/setup-java@v2
@@ -33,4 +33,10 @@ jobs:
           base64 -d keystore-properties.txt > keystore.properties
 
       - name: Build APK
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK to PR
+        uses: actions/upload-artifact@v2
+        with:
+          name: debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
