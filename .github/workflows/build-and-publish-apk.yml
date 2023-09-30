@@ -32,32 +32,32 @@ jobs:
           echo "$PROPERTIES" > keystore-properties.txt
           base64 -d keystore-properties.txt > keystore.properties
 
-      - name: Build APK
+      - name: Assemble APK
         run: ./gradlew assembleDebug
 
-      - name: Upload APK to PR
+      - name: Upload APK as artifact
         uses: actions/upload-artifact@v2
         with:
           name: debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
 
-      - name: Comment PR with APK
+      - name: Comment on pull request
         uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.PULL_REQUEST_ACCESS_TOKEN }}
           script: |
-            const artifactResponse = await github.actions.listArtifactsForRepo({
+            const response = await github.actions.listArtifactsForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
             });
             
-            const artifact = artifactResponse.data.artifacts.find(artifact => artifact.name === 'debug-apk');
+            const artifact = response.data.artifacts.find(artifact => artifact.name === 'debug-apk');
             
-            if (artifact) {
-              await github.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: `Debug APK: [${artifact.name}](${artifact.archive_download_url})`,
-              });
-            }
+            const artifactMessage = `🤖 Everything went well with the build! [Download ${artifact.name}](${artifact.archive_download_url})`;
+            
+            await github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: artifactMessage,
+            });
