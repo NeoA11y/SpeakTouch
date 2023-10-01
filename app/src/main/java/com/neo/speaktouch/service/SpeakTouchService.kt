@@ -23,6 +23,7 @@ import android.view.accessibility.AccessibilityEvent
 import com.neo.speaktouch.intercepter.FocusInterceptor
 import com.neo.speaktouch.intercepter.SpeechInterceptor
 import com.neo.speaktouch.intercepter.interfece.Interceptor
+import com.neo.speaktouch.utils.SpeechInterceptorFactory
 import com.neo.speaktouch.utils.extension.getInstance
 import com.neo.speaktouch.utils.extension.getLog
 import timber.log.Timber
@@ -35,7 +36,7 @@ class SpeakTouchService : AccessibilityService() {
         super.onCreate()
 
         interceptors.add(FocusInterceptor())
-        interceptors.add(SpeechInterceptor.getInstance(this))
+        interceptors.add(SpeechInterceptorFactory.create(this))
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {

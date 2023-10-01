@@ -19,10 +19,8 @@
 package com.neo.speaktouch.intercepter
 
 import android.content.Context
-import android.media.AudioAttributes
 import android.speech.tts.TextToSpeech
 import android.view.accessibility.AccessibilityEvent
-import com.neo.speaktouch.R
 import com.neo.speaktouch.intercepter.interfece.Interceptor
 import com.neo.speaktouch.model.Reader
 import com.neo.speaktouch.model.UiText
@@ -31,7 +29,7 @@ import com.neo.speaktouch.utils.`typealias`.NodeInfo
 import timber.log.Timber
 
 class SpeechInterceptor(
-    private val textToSpeech: TextToSpeech,
+    private val tts: TextToSpeech,
     private val context: Context,
     private val reader: Reader
 ) : Interceptor {
@@ -46,7 +44,7 @@ class SpeechInterceptor(
 
         Timber.i("speak:  \"$text\"")
 
-        textToSpeech.speak(
+        tts.speak(
             text,
             TextToSpeech.QUEUE_FLUSH,
             null,
@@ -54,7 +52,7 @@ class SpeechInterceptor(
         )
     }
 
-    private fun speak(text: UiText) {
+    fun speak(text: UiText) {
         Timber.i("speak: $text")
 
         speak(text.resolved(context))
@@ -71,38 +69,6 @@ class SpeechInterceptor(
 
         Timber.i("shutdown")
 
-        textToSpeech.shutdown()
-    }
-
-    companion object {
-
-        fun getInstance(context: Context): SpeechInterceptor {
-
-            var speechInterceptor: SpeechInterceptor? = null
-
-            val audioAttributes = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_ASSISTANCE_ACCESSIBILITY)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                .build()
-
-            speechInterceptor = SpeechInterceptor(
-                textToSpeech = TextToSpeech(context) { status ->
-                    if (status == TextToSpeech.SUCCESS) {
-                        speechInterceptor!!.textToSpeech.setAudioAttributes(audioAttributes)
-                        speechInterceptor!!.speak(
-                            UiText(
-                                text = "%s %s",
-                                UiText(R.string.app_name),
-                                UiText(R.string.text_enabled)
-                            ),
-                        )
-                    }
-                },
-                reader = Reader(context),
-                context = context
-            )
-
-            return speechInterceptor
-        }
+        tts.shutdown()
     }
 }
