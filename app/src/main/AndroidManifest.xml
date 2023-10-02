@@ -29,8 +29,8 @@
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
 
-                <category android:name="android.accessibilityservice.category.FEEDBACK_AUDIBLE" />
-                <category android:name="android.accessibilityservice.category.FEEDBACK_HAPTIC" />
+<!--                <category android:name="android.accessibilityservice.category.FEEDBACK_AUDIBLE" />-->
+<!--                <category android:name="android.accessibilityservice.category.FEEDBACK_HAPTIC" />-->
                 <category android:name="android.accessibilityservice.category.FEEDBACK_SPOKEN" />
             </intent-filter>
 
