@@ -20,6 +20,7 @@ package com.neo.speaktouch.utils
 
 import android.content.Context
 import android.os.Build
+import android.os.VibrationAttributes
 import android.os.VibrationEffect
 import android.os.Vibrator
 
@@ -31,31 +32,62 @@ class VibrationUtil(private val vibrator: Vibrator) {
     )
 
     fun vibrateEffectHeavyClick() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            vibrator.vibrate(
+                VibrationEffect.createPredefined(
+                    VibrationEffect.EFFECT_HEAVY_CLICK
+                ),
+                VibrationAttributes.createForUsage(
+                    VibrationAttributes.USAGE_ACCESSIBILITY
+                )
+            )
+
+            return
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             vibrator.vibrate(
                 VibrationEffect.createPredefined(
                     VibrationEffect.EFFECT_HEAVY_CLICK
                 )
             )
-        } else {
-            vibrateLegacy(
-                LegacyVibrationEffect.HeavyClick
-            )
+
+            return
         }
+
+        vibrateLegacy(
+            LegacyVibrationEffect.HeavyClick
+        )
     }
 
     fun vibrateEffectTick() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            vibrator.vibrate(
+                VibrationEffect.createPredefined(
+                    VibrationEffect.EFFECT_TICK
+                ),
+                VibrationAttributes.createForUsage(
+                    VibrationAttributes.USAGE_ACCESSIBILITY
+                )
+            )
+
+            return
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             vibrator.vibrate(
                 VibrationEffect.createPredefined(
                     VibrationEffect.EFFECT_TICK
                 )
             )
-        } else {
-            vibrateLegacy(
-                LegacyVibrationEffect.Tick,
-            )
+
+            return
         }
+
+        vibrateLegacy(
+            LegacyVibrationEffect.Tick,
+        )
     }
 
     @Suppress("deprecation")
