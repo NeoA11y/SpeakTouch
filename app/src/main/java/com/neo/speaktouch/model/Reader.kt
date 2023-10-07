@@ -76,7 +76,7 @@ class Reader(
             is Level.Children -> buildList {
                 for (child in node) {
 
-                    if (!NodeValidator.isValidForAccessible(child)) continue
+                    if (!NodeValidator.isValidForAccessibility(child)) continue
                     if (!NodeValidator.isReadableAsChild(child)) continue
 
                     add(

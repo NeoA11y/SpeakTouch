@@ -34,6 +34,7 @@ fun <T : List<CharSequence?>> T.filterNotNullOrEmpty() = filterNot { it.isNullOr
 
 infix fun CharSequence.`is`(childClass: Class<*>): Boolean {
     if (equals(childClass.name)) return true
+    if (isEmpty()) return false
 
     return runCatching {
         childClass.isAssignableFrom(Class.forName(toString()))
