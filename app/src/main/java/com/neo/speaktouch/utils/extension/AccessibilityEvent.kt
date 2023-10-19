@@ -56,3 +56,9 @@ fun AccessibilityEvent.getLog(): String {
         add("source: ${source?.className}")
     }.joinToString(", ")
 }
+
+val AccessibilityEvent.isTouchInteractionStart
+    get() = eventType == AccessibilityEvent.TYPE_TOUCH_INTERACTION_START
+
+val AccessibilityEvent.isAccessibilityFocused
+    get() = eventType == AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED

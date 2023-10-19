@@ -27,6 +27,8 @@ import com.neo.speaktouch.intercepter.interfece.Interceptor
 import com.neo.speaktouch.model.Reader
 import com.neo.speaktouch.model.UiText
 import com.neo.speaktouch.utils.extension.getLog
+import com.neo.speaktouch.utils.extension.isAccessibilityFocused
+import com.neo.speaktouch.utils.extension.isTouchInteractionStart
 import com.neo.speaktouch.utils.`typealias`.NodeInfo
 import timber.log.Timber
 
@@ -37,7 +39,15 @@ class SpeechInterceptor(
 ) : Interceptor {
 
     override fun handle(event: AccessibilityEvent) {
-        if (event.eventType == AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED) {
+
+        if (event.isTouchInteractionStart && textToSpeech.isSpeaking) {
+
+            textToSpeech.stop()
+
+            return
+        }
+
+        if (event.isAccessibilityFocused) {
             speak(NodeInfo.wrap(event.source ?: return))
         }
     }
