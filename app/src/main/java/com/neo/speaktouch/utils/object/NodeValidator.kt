@@ -104,6 +104,8 @@ object NodeValidator {
      */
     fun isReadableAsChild(node: NodeInfo): Boolean {
 
-        return hasContentToRead(node) && !mustFocus(node)
+        if (mustFocus(node)) return false
+
+        return hasContentToRead(node) || hasReadableChild(node)
     }
 }
