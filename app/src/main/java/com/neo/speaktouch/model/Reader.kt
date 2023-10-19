@@ -152,6 +152,6 @@ class Reader(
             val mustReadCheckable: Boolean
         ) : Level
 
-        object Children : Level
+        data object Children : Level
     }
 }
