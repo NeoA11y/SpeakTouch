@@ -26,14 +26,17 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
-val versionMajor = 0 // 0..Infinity
-val versionMinor = 1 // 0..9
-val versionPatch = 2 // 0..9
-
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
+        vendor.set(JvmVendorSpec.ADOPTIUM)
     }
+}
+
+appVersion(VersionConfig.Type.DEV) {
+    major = 1
+    minor = 0
+    patch = 0
 }
 
 android {
@@ -58,8 +61,6 @@ android {
         minSdk = 22
         targetSdk = 33
 
-        versionCode = getVersionCode()
-        versionName = getVersionName()
         resourceConfigurations.addAll(
             listOf(
                 "en",
@@ -86,21 +87,12 @@ android {
         getByName("debug") {
             isMinifyEnabled = false
 
-            versionNameSuffix = "-dev"
-            applicationIdSuffix = ".dev"
+            applicationIdSuffix = ".debug"
 
             signingConfig = signingConfigs.getByName("debug")
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
     buildFeatures {
         buildConfig = true
     }
@@ -120,13 +112,6 @@ dependencies {
     androidTestImplementation(libs.androidx.test.espresso)
 }
 
-// tasks
-tasks.register("versionCode") {
-    doLast {
-        println("versionCode is ${getVersionCode()} from v${getVersionName()}")
-    }
-}
-
 // functions
 fun loadProperties(
     fileName: String,
@@ -136,6 +121,3 @@ fun loadProperties(
         load(FileInputStream(rootProject.file(fileName)))
     }
 )
-
-fun getVersionCode() = versionMajor * 100 + versionMinor * 10 + versionPatch
-fun getVersionName() = "$versionMajor.$versionMinor.$versionPatch"
