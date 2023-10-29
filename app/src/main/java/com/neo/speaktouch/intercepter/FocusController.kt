@@ -20,6 +20,7 @@ package com.neo.speaktouch.intercepter
 
 import android.view.accessibility.AccessibilityNodeInfo
 import com.neo.speaktouch.utils.extension.getFocusedOrNull
+import com.neo.speaktouch.utils.extension.getLastOrNull
 import com.neo.speaktouch.utils.extension.getNextOrNull
 import com.neo.speaktouch.utils.extension.getPreviousOrNull
 import com.neo.speaktouch.utils.extension.performFocus
@@ -38,7 +39,11 @@ class FocusController(
         // focus in the previous element
         parent.getPreviousOrNull(target)?.run {
 
-            performFocus()
+            if (childCount == 0) {
+                performFocus()
+            } else {
+                getLastOrNull()?.performFocus()
+            }
 
             return
         }

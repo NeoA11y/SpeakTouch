@@ -152,6 +152,13 @@ fun AccessibilityNodeInfo.getNextOrNull(
     return null
 }
 
+fun AccessibilityNodeInfo.getLastOrNull(): AccessibilityNodeInfo? {
+
+    if (childCount == 0) return null
+
+    return getChild(childCount - 1)
+}
+
 fun AccessibilityNodeInfo.getPreviousOrNull(
     target: AccessibilityNodeInfo
 ): AccessibilityNodeInfo? {
