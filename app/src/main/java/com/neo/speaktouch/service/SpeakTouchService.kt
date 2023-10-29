@@ -79,12 +79,17 @@ class SpeakTouchService : AccessibilityService() {
 
         val target = findFocus(AccessibilityNodeInfo.FOCUS_ACCESSIBILITY) ?: rootInActiveWindow
 
+        val parent = target?.parent ?: return
+
         // focus in the previous element
-        target?.getPreviousOrNull()?.run {
+        parent.getPreviousOrNull(target)?.run {
             focus()
 
             return
         }
+
+        // focus in the parent
+        parent.focus()
     }
 
     private fun moveFocusToNext() {
@@ -111,40 +116,40 @@ class SpeakTouchService : AccessibilityService() {
 }
 
 private fun AccessibilityNodeInfo.getNextOrNull(
-    current: AccessibilityNodeInfo? = null
+    target: AccessibilityNodeInfo? = null
 ): AccessibilityNodeInfo? {
 
     if (childCount == 0) return null
 
-    if (current == null) return getChild(0)
+    if (target == null) return getChild(0)
 
-    val currentIndex = indexOfChild(current)
+    val currentIndex = indexOfChild(target)
 
     if (childCount > currentIndex + 1) return getChild(currentIndex + 1)
 
     return null
 }
 
-private fun AccessibilityNodeInfo.getPreviousOrNull(): AccessibilityNodeInfo? {
+private fun AccessibilityNodeInfo.getPreviousOrNull(
+    target: AccessibilityNodeInfo
+): AccessibilityNodeInfo? {
 
-    val parent = parent ?: return null
+    val currentIndex = indexOfChild(target)
 
-    val currentIndex = parent.indexOfChild(this)
+    if (currentIndex == 0) return null
 
-    if (currentIndex == 0) return parent
-
-    return parent.getChild(currentIndex - 1)
+    return getChild(currentIndex - 1)
 }
 
 private fun AccessibilityNodeInfo.indexOfChild(
-    current: AccessibilityNodeInfo
+    target: AccessibilityNodeInfo
 ): Int {
 
     for (index in 0 until childCount) {
 
         val child = getChild(index)
 
-        if (child == current) {
+        if (child == target) {
             return index
         }
     }
