@@ -128,6 +128,6 @@ private val NodeAction.name: String
         else -> label.ifEmptyOrNull { "ACTION_UNKNOWN" }.toString()
     }
 
-fun AccessibilityNodeInfo.focus() {
+fun AccessibilityNodeInfo.performFocus() {
     performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
 }

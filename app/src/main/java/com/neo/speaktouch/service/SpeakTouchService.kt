@@ -20,11 +20,11 @@ package com.neo.speaktouch.service
 
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityNodeInfo
+import com.neo.speaktouch.intercepter.FocusController
 import com.neo.speaktouch.intercepter.FocusInterceptor
+import com.neo.speaktouch.intercepter.GestureInterceptor
 import com.neo.speaktouch.intercepter.SpeechInterceptor
 import com.neo.speaktouch.intercepter.interfece.Interceptor
-import com.neo.speaktouch.utils.extension.focus
 import com.neo.speaktouch.utils.extension.getInstance
 import com.neo.speaktouch.utils.extension.getLog
 import timber.log.Timber
@@ -33,8 +33,14 @@ class SpeakTouchService : AccessibilityService() {
 
     private val interceptors = mutableListOf<Interceptor>()
 
+    private lateinit var gestureInterceptor: GestureInterceptor
+
     override fun onCreate() {
         super.onCreate()
+
+        gestureInterceptor = GestureInterceptor(
+            FocusController { rootInActiveWindow }
+        )
 
         interceptors.add(FocusInterceptor())
         interceptors.add(SpeechInterceptor.getInstance(this))
@@ -61,98 +67,7 @@ class SpeakTouchService : AccessibilityService() {
 
     @Deprecated("Deprecated in Java")
     override fun onGesture(gestureId: Int): Boolean {
-
-        if (gestureId == GESTURE_SWIPE_UP) {
-            moveFocusToPrevious()
-            return true
-        }
-
-        if (gestureId == GESTURE_SWIPE_DOWN) {
-            moveFocusToNext()
-            return true
-        }
-
-        return false
-    }
-
-    private fun moveFocusToPrevious() {
-
-        val target = findFocus(AccessibilityNodeInfo.FOCUS_ACCESSIBILITY) ?: rootInActiveWindow
-
-        val parent = target?.parent ?: return
-
-        // focus in the previous element
-        parent.getPreviousOrNull(target)?.run {
-            focus()
-
-            return
-        }
-
-        // focus in the parent
-        parent.focus()
-    }
-
-    private fun moveFocusToNext() {
-
-        val target = findFocus(AccessibilityNodeInfo.FOCUS_ACCESSIBILITY) ?: rootInActiveWindow
-
-        // focus in the next child of the target
-        target.getNextOrNull()?.run {
-            focus()
-
-            return
-        }
-
-        // focus in the next element from the parent
-        target.parent?.getNextOrNull(target)?.run {
-            focus()
-
-            return
-        }
-
-        // focus in the next parent
-        target.parent?.parent?.getNextOrNull(target.parent)?.focus()
+        return gestureInterceptor.handle(gestureId)
     }
 }
 
-private fun AccessibilityNodeInfo.getNextOrNull(
-    target: AccessibilityNodeInfo? = null
-): AccessibilityNodeInfo? {
-
-    if (childCount == 0) return null
-
-    if (target == null) return getChild(0)
-
-    val currentIndex = indexOfChild(target)
-
-    if (childCount > currentIndex + 1) return getChild(currentIndex + 1)
-
-    return null
-}
-
-private fun AccessibilityNodeInfo.getPreviousOrNull(
-    target: AccessibilityNodeInfo
-): AccessibilityNodeInfo? {
-
-    val currentIndex = indexOfChild(target)
-
-    if (currentIndex == 0) return null
-
-    return getChild(currentIndex - 1)
-}
-
-private fun AccessibilityNodeInfo.indexOfChild(
-    target: AccessibilityNodeInfo
-): Int {
-
-    for (index in 0 until childCount) {
-
-        val child = getChild(index)
-
-        if (child == target) {
-            return index
-        }
-    }
-
-    error("Child not found")
-}
