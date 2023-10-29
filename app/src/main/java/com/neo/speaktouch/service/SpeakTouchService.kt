@@ -63,7 +63,7 @@ class SpeakTouchService : AccessibilityService() {
     override fun onGesture(gestureId: Int): Boolean {
 
         if (gestureId == GESTURE_SWIPE_UP) {
-
+            moveFocusToPrevious()
             return true
         }
 
@@ -73,6 +73,18 @@ class SpeakTouchService : AccessibilityService() {
         }
 
         return false
+    }
+
+    private fun moveFocusToPrevious() {
+
+        val target = findFocus(AccessibilityNodeInfo.FOCUS_ACCESSIBILITY) ?: rootInActiveWindow
+
+        // focus in the previous element
+        target?.getPreviousOrNull()?.run {
+            focus()
+
+            return
+        }
     }
 
     private fun moveFocusToNext() {
@@ -111,6 +123,17 @@ private fun AccessibilityNodeInfo.getNextOrNull(
     if (childCount > currentIndex + 1) return getChild(currentIndex + 1)
 
     return null
+}
+
+private fun AccessibilityNodeInfo.getPreviousOrNull(): AccessibilityNodeInfo? {
+
+    val parent = parent ?: return null
+
+    val currentIndex = parent.indexOfChild(this)
+
+    if (currentIndex == 0) return parent
+
+    return parent.getChild(currentIndex - 1)
 }
 
 private fun AccessibilityNodeInfo.indexOfChild(
