@@ -18,6 +18,7 @@
 
 package com.neo.speaktouch.utils.extension
 
+import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.utils.`object`.NodeValidator
 import com.neo.speaktouch.utils.`typealias`.NodeAction
@@ -126,3 +127,7 @@ private val NodeAction.name: String
         AccessibilityNodeInfoCompat.ACTION_SET_TEXT -> "ACTION_SET_TEXT"
         else -> label.ifEmptyOrNull { "ACTION_UNKNOWN" }.toString()
     }
+
+fun AccessibilityNodeInfo.focus() {
+    performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
+}

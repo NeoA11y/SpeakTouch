@@ -20,9 +20,11 @@ package com.neo.speaktouch.service
 
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityNodeInfo
 import com.neo.speaktouch.intercepter.FocusInterceptor
 import com.neo.speaktouch.intercepter.SpeechInterceptor
 import com.neo.speaktouch.intercepter.interfece.Interceptor
+import com.neo.speaktouch.utils.extension.focus
 import com.neo.speaktouch.utils.extension.getInstance
 import com.neo.speaktouch.utils.extension.getLog
 import timber.log.Timber
@@ -56,4 +58,73 @@ class SpeakTouchService : AccessibilityService() {
     }
 
     override fun onInterrupt() = Unit
+
+    @Deprecated("Deprecated in Java")
+    override fun onGesture(gestureId: Int): Boolean {
+
+        if (gestureId == GESTURE_SWIPE_UP) {
+
+            return true
+        }
+
+        if (gestureId == GESTURE_SWIPE_DOWN) {
+            moveFocusToNext()
+            return true
+        }
+
+        return false
+    }
+
+    private fun moveFocusToNext() {
+
+        val target = findFocus(AccessibilityNodeInfo.FOCUS_ACCESSIBILITY) ?: rootInActiveWindow
+
+        // focus in the next child of the target
+        target.getNextOrNull()?.run {
+            focus()
+
+            return
+        }
+
+        // focus in the next element from the parent
+        target.parent?.getNextOrNull(target)?.run {
+            focus()
+
+            return
+        }
+
+        // focus in the next parent
+        target.parent?.parent?.getNextOrNull(target.parent)?.focus()
+    }
+}
+
+private fun AccessibilityNodeInfo.getNextOrNull(
+    current: AccessibilityNodeInfo? = null
+): AccessibilityNodeInfo? {
+
+    if (childCount == 0) return null
+
+    if (current == null) return getChild(0)
+
+    val currentIndex = indexOfChild(current)
+
+    if (childCount > currentIndex + 1) return getChild(currentIndex + 1)
+
+    return null
+}
+
+private fun AccessibilityNodeInfo.indexOfChild(
+    current: AccessibilityNodeInfo
+): Int {
+
+    for (index in 0 until childCount) {
+
+        val child = getChild(index)
+
+        if (child == current) {
+            return index
+        }
+    }
+
+    error("Child not found")
 }
