@@ -19,6 +19,9 @@
 package com.neo.speaktouch.intercepter
 
 import android.view.accessibility.AccessibilityNodeInfo
+import com.neo.speaktouch.utils.extension.getFocusedOrNull
+import com.neo.speaktouch.utils.extension.getNextOrNull
+import com.neo.speaktouch.utils.extension.getPreviousOrNull
 import com.neo.speaktouch.utils.extension.performFocus
 
 class FocusController(
@@ -34,6 +37,7 @@ class FocusController(
 
         // focus in the previous element
         parent.getPreviousOrNull(target)?.run {
+
             performFocus()
 
             return
@@ -48,6 +52,7 @@ class FocusController(
 
         // focus in the next child of the target
         target.getNextOrNull()?.run {
+
             performFocus()
 
             return
@@ -55,6 +60,7 @@ class FocusController(
 
         // focus in the next element from the parent
         target.parent?.getNextOrNull(target)?.run {
+
             performFocus()
 
             return
@@ -63,50 +69,4 @@ class FocusController(
         // focus in the next parent
         target.parent?.parent?.getNextOrNull(target.parent)?.performFocus()
     }
-}
-
-fun AccessibilityNodeInfo.getFocusedOrNull(): AccessibilityNodeInfo? {
-    return findFocus(AccessibilityNodeInfo.FOCUS_ACCESSIBILITY)
-}
-
-fun AccessibilityNodeInfo.getNextOrNull(
-    target: AccessibilityNodeInfo? = null
-): AccessibilityNodeInfo? {
-
-    if (childCount == 0) return null
-
-    if (target == null) return getChild(0)
-
-    val currentIndex = indexOfChild(target)
-
-    if (childCount > currentIndex + 1) return getChild(currentIndex + 1)
-
-    return null
-}
-
-fun AccessibilityNodeInfo.getPreviousOrNull(
-    target: AccessibilityNodeInfo
-): AccessibilityNodeInfo? {
-
-    val currentIndex = indexOfChild(target)
-
-    if (currentIndex == 0) return null
-
-    return getChild(currentIndex - 1)
-}
-
-fun AccessibilityNodeInfo.indexOfChild(
-    target: AccessibilityNodeInfo
-): Int {
-
-    for (index in 0 until childCount) {
-
-        val child = getChild(index)
-
-        if (child == target) {
-            return index
-        }
-    }
-
-    error("Child not found")
 }

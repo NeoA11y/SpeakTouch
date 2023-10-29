@@ -131,3 +131,50 @@ private val NodeAction.name: String
 fun AccessibilityNodeInfo.performFocus() {
     performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
 }
+
+
+fun AccessibilityNodeInfo.getFocusedOrNull(): AccessibilityNodeInfo? {
+    return findFocus(AccessibilityNodeInfo.FOCUS_ACCESSIBILITY)
+}
+
+fun AccessibilityNodeInfo.getNextOrNull(
+    target: AccessibilityNodeInfo? = null
+): AccessibilityNodeInfo? {
+
+    if (childCount == 0) return null
+
+    if (target == null) return getChild(0)
+
+    val currentIndex = indexOfChild(target)
+
+    if (childCount > currentIndex + 1) return getChild(currentIndex + 1)
+
+    return null
+}
+
+fun AccessibilityNodeInfo.getPreviousOrNull(
+    target: AccessibilityNodeInfo
+): AccessibilityNodeInfo? {
+
+    val currentIndex = indexOfChild(target)
+
+    if (currentIndex == 0) return null
+
+    return getChild(currentIndex - 1)
+}
+
+fun AccessibilityNodeInfo.indexOfChild(
+    target: AccessibilityNodeInfo
+): Int {
+
+    for (index in 0 until childCount) {
+
+        val child = getChild(index)
+
+        if (child == target) {
+            return index
+        }
+    }
+
+    error("Child not found")
+}
