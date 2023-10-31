@@ -137,7 +137,7 @@ fun AccessibilityNodeInfo.getFocusedOrNull(): AccessibilityNodeInfo? {
     return findFocus(AccessibilityNodeInfo.FOCUS_ACCESSIBILITY)
 }
 
-fun AccessibilityNodeInfo.getNextOrNull(
+fun AccessibilityNodeInfo.getNextChildOrNull(
     target: AccessibilityNodeInfo? = null
 ): AccessibilityNodeInfo? {
 

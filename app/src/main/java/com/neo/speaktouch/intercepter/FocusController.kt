@@ -21,7 +21,7 @@ package com.neo.speaktouch.intercepter
 import android.view.accessibility.AccessibilityNodeInfo
 import com.neo.speaktouch.utils.extension.getFocusedOrNull
 import com.neo.speaktouch.utils.extension.getLastOrNull
-import com.neo.speaktouch.utils.extension.getNextOrNull
+import com.neo.speaktouch.utils.extension.getNextChildOrNull
 import com.neo.speaktouch.utils.extension.getPreviousOrNull
 import com.neo.speaktouch.utils.extension.performFocus
 
@@ -55,23 +55,58 @@ class FocusController(
     fun focusNext() {
         val target = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
 
-        // focus in the next child of the target
-        target.getNextOrNull()?.run {
+        runNotNull(target.getNextChildOrNull()) {
 
             performFocus()
 
             return
         }
 
-        // focus in the next element from the parent
-        target.parent?.getNextOrNull(target)?.run {
+        target.ancestors {
+            runNotNull(current.getNextChildOrNull(previous)) {
 
-            performFocus()
+                performFocus()
 
-            return
+                stop = true
+            }
         }
+    }
+}
 
-        // focus in the next parent
-        target.parent?.parent?.getNextOrNull(target.parent)?.performFocus()
+inline fun <T> runNotNull(
+    value: T?,
+    block: T.() -> Unit
+) {
+    if (value != null) {
+        block(value)
+    }
+}
+
+data class AncestorScope(
+    val current: AccessibilityNodeInfo,
+    val previous: AccessibilityNodeInfo,
+) {
+    var stop: Boolean = false
+}
+
+fun AccessibilityNodeInfo.ancestors(
+    block: AncestorScope.() -> Unit,
+) {
+    var current: AccessibilityNodeInfo? = parent
+    var previous: AccessibilityNodeInfo = this
+
+    while (current != null) {
+
+        val scope = AncestorScope(
+            current = current,
+            previous = previous
+        )
+
+        scope.block()
+
+        if (scope.stop) return
+
+        previous = current
+        current = previous.parent
     }
 }
