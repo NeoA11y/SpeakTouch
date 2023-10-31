@@ -92,21 +92,20 @@ data class AncestorScope(
 fun AccessibilityNodeInfo.ancestors(
     block: AncestorScope.() -> Unit,
 ) {
-    var current: AccessibilityNodeInfo? = parent
-    var previous: AccessibilityNodeInfo = this
+    var scope = AncestorScope(
+        current = parent ?: return,
+        previous = this
+    )
 
-    while (current != null) {
-
-        val scope = AncestorScope(
-            current = current,
-            previous = previous
-        )
+    while (true) {
 
         scope.block()
 
         if (scope.stop) return
 
-        previous = current
-        current = previous.parent
+        scope = AncestorScope(
+            current = scope.current.parent ?: return,
+            previous = scope.current
+        )
     }
 }
