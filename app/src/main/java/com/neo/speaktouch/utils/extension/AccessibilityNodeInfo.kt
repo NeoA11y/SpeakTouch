@@ -142,39 +142,6 @@ fun AccessibilityNodeInfo.getFocusedOrNull(): AccessibilityNodeInfo? {
     return findFocus(AccessibilityNodeInfo.FOCUS_ACCESSIBILITY)
 }
 
-fun AccessibilityNodeInfo.getNextChildOrNull(
-    target: AccessibilityNodeInfo? = null
-): AccessibilityNodeInfo? {
-
-    if (childCount == 0) return null
-
-    if (target == null) return getChild(0)
-
-    val currentIndex = indexOfChild(target)
-
-    if (childCount > currentIndex + 1) return getChild(currentIndex + 1)
-
-    return null
-}
-
-fun AccessibilityNodeInfo.getLastOrNull(): AccessibilityNodeInfo? {
-
-    if (childCount == 0) return null
-
-    return getChild(childCount - 1)
-}
-
-fun AccessibilityNodeInfo.getPreviousOrNull(
-    target: AccessibilityNodeInfo
-): AccessibilityNodeInfo? {
-
-    val currentIndex = indexOfChild(target)
-
-    if (currentIndex == 0) return null
-
-    return getChild(currentIndex - 1)
-}
-
 fun AccessibilityNodeInfo.indexOfChild(
     target: AccessibilityNodeInfo
 ): Int {
