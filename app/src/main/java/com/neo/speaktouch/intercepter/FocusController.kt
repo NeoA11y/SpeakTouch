@@ -34,22 +34,32 @@ class FocusController(
     fun focusPrevious() {
         val target = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
 
-        val parent = target.parent ?: return
+        target.ancestors {
 
-        // focus in the previous element
-        parent.getPreviousOrNull(target)?.run {
+            val direction = Direction.Previous(
+                start = current.indexOfChild(previous) - 1
+            )
 
-            if (childCount == 0) {
-                performFocus()
-            } else {
-                getLastOrNull()?.performFocus()
+            current.descendants(direction) {
+
+                val result = current.descendants(
+                    Direction.Previous(start = current.childCount)
+                ) actual@{
+                    current.performFocus()
+
+                    this@ancestors.stop = true
+                    this@descendants.stop = true
+                    this@actual.stop = true
+                }
+
+                if (result) return@descendants
+
+                current.performFocus()
+
+                this@ancestors.stop = true
+                this@descendants.stop = true
             }
-
-            return
         }
-
-        // focus in the parent
-        parent.performFocus()
     }
 
     fun focusNext() {
@@ -109,7 +119,7 @@ fun AccessibilityNodeInfo.descendants(
 ): Boolean {
 
     val range = when (direction) {
-        is Direction.Previous -> direction.start downTo childCount
+        is Direction.Previous -> direction.start downTo 0
         is Direction.Next -> direction.start until childCount
     }
 
