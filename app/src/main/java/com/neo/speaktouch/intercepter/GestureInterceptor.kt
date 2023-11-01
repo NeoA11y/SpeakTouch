@@ -25,12 +25,13 @@ class GestureInterceptor(
 ) {
 
     fun handle(gestureId: Int): Boolean {
-        if (gestureId == AccessibilityService.GESTURE_SWIPE_UP) {
+
+        if (gestureId == AccessibilityService.GESTURE_SWIPE_LEFT) {
             focusController.focusPrevious()
             return true
         }
 
-        if (gestureId == AccessibilityService.GESTURE_SWIPE_DOWN) {
+        if (gestureId == AccessibilityService.GESTURE_SWIPE_RIGHT) {
             focusController.focusNext()
             return true
         }
