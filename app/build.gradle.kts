@@ -96,6 +96,10 @@ android {
     buildFeatures {
         buildConfig = true
     }
+
+    compileOptions {
+        kotlinOptions.freeCompilerArgs += "-Xcontext-receivers"
+    }
 }
 
 dependencies {
