@@ -126,13 +126,15 @@ fun AccessibilityNodeInfo.descendants(
 
         if (scope.stop) return true
 
-        child.descendants(
+        val result = child.descendants(
             block = block,
             direction = when (direction) {
                 is Direction.Previous -> Direction.Previous(start = childCount)
                 is Direction.Next -> Direction.Next(start = 0)
             }
         )
+
+        if (result) return true
     }
 
     return false
