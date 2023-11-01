@@ -34,7 +34,7 @@ class FocusController(
 
     val focusedA11yNodeInfo get() = a11yNodeInfoRoot().getFocusedOrNull()
 
-    fun focusPrevious() {
+    fun moveFocusToPrevious() {
         val target = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
 
         target.ancestors {
@@ -68,7 +68,7 @@ class FocusController(
         }
     }
 
-    fun focusNext() {
+    fun moveFocusToNext() {
         val target = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
 
         target.descendants(
