@@ -38,6 +38,11 @@ data class ScanScope(
     val previous: AccessibilityNodeInfo,
 ) {
     var stop: Boolean = false
+
+    fun ifRunning(block: () -> Unit) {
+        if (stop) return
+        block()
+    }
 }
 
 // descendants

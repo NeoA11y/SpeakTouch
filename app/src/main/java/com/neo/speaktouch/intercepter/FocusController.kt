@@ -52,28 +52,27 @@ class FocusController(
                     current.performFocus()
                 }
 
-                if (stop) return@descendants
-
-                current.performFocus()
+                ifRunning {
+                    current.performFocus()
+                }
             }
 
-            if (stop) return@ancestors
-
-            current.performFocus()
+            ifRunning {
+                current.performFocus()
+            }
         }
     }
 
     fun focusNext() {
         val target = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
 
-        val result = target.descendants(
+        target.descendants(
             Direction.Next(start = 0)
         ) {
-
             current.performFocus()
+        }.also {
+            if (it) return
         }
-
-        if (result) return
 
         target.ancestors {
 
