@@ -33,28 +33,51 @@ sealed class Direction {
     ) : Direction()
 }
 
-data class DescendantsScope(
+data class ScanScope(
     val current: AccessibilityNodeInfo,
     val previous: AccessibilityNodeInfo,
 ) {
     var stop: Boolean = false
 }
 
+// descendants
+
+context(ScanScope)
 fun AccessibilityNodeInfo.descendants(
     direction: Direction,
-    block: DescendantsScope.() -> Unit,
+    block: ScanScope.() -> Unit,
+): Boolean {
+    stop = internalDescendants(
+        direction = direction,
+        block = block
+    )
+
+    return stop
+}
+
+fun AccessibilityNodeInfo.descendants(
+    direction: Direction,
+    block: ScanScope.() -> Unit,
+) = internalDescendants(
+    direction = direction,
+    block = block
+)
+
+private fun AccessibilityNodeInfo.internalDescendants(
+    direction: Direction,
+    block: ScanScope.() -> Unit,
 ): Boolean {
 
     val range = when (direction) {
         is Direction.Previous -> direction.start downTo 0
-        is Direction.Next -> direction.start .. lastIndex
+        is Direction.Next -> direction.start..lastIndex
     }
 
     for (index in range) {
 
         val child = getChild(index) ?: continue
 
-        val scope = DescendantsScope(
+        val scope = ScanScope(
             current = child,
             previous = this
         )
@@ -63,7 +86,7 @@ fun AccessibilityNodeInfo.descendants(
 
         if (scope.stop) return true
 
-        val result = child.descendants(
+        val result = child.internalDescendants(
             block = block,
             direction = when (direction) {
                 is Direction.Previous -> Direction.Previous(start = lastIndex)
@@ -77,18 +100,26 @@ fun AccessibilityNodeInfo.descendants(
     return false
 }
 
-data class AncestorScope(
-    val current: AccessibilityNodeInfo,
-    val previous: AccessibilityNodeInfo,
-) {
-    var stop: Boolean = false
+// ancestors
+
+context(ScanScope)
+fun AccessibilityNodeInfo.ancestors(
+    block: ScanScope.() -> Unit
+): Boolean {
+    stop = internalAncestors(block)
+
+    return stop
 }
 
 fun AccessibilityNodeInfo.ancestors(
-    block: AncestorScope.() -> Unit
+    block: ScanScope.() -> Unit
+) = internalAncestors(block)
+
+private fun AccessibilityNodeInfo.internalAncestors(
+    block: ScanScope.() -> Unit
 ): Boolean {
 
-    var scope = AncestorScope(
+    var scope = ScanScope(
         current = parent ?: return false,
         previous = this
     )
@@ -101,7 +132,7 @@ fun AccessibilityNodeInfo.ancestors(
 
         val current = scope.current
 
-        scope = AncestorScope(
+        scope = ScanScope(
             current = current.parent ?: return false,
             previous = current
         )

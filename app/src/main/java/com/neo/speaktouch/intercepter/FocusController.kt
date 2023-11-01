@@ -40,13 +40,13 @@ class FocusController(
 
         target.ancestors {
 
-            stop = current.descendants(
+            current.descendants(
                 Direction.Previous(
                     start = current.indexOfChild(previous) - 1
                 )
             ) {
 
-                stop = current.descendants(
+                current.descendants(
                     Direction.Previous(start = current.lastIndex)
                 ) {
                     current.performFocus()
@@ -89,7 +89,7 @@ class FocusController(
                 start = current.indexOfChild(previous) + 1
             )
 
-            stop = current.descendants(direction) {
+            current.descendants(direction) {
 
                 current.performFocus()
 
