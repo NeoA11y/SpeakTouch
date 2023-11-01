@@ -19,15 +19,16 @@
 package com.neo.speaktouch.intercepter
 
 import android.view.accessibility.AccessibilityNodeInfo
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.utils.extension.Direction
 import com.neo.speaktouch.utils.extension.ancestors
 import com.neo.speaktouch.utils.extension.descendants
 import com.neo.speaktouch.utils.extension.getFocusedOrNull
-import com.neo.speaktouch.utils.extension.getLastOrNull
-import com.neo.speaktouch.utils.extension.getPreviousOrNull
+import com.neo.speaktouch.utils.extension.getNearestAncestor
 import com.neo.speaktouch.utils.extension.indexOfChild
 import com.neo.speaktouch.utils.extension.lastIndex
 import com.neo.speaktouch.utils.extension.performFocus
+import com.neo.speaktouch.utils.`object`.NodeValidator
 
 class FocusController(
     private val a11yNodeInfoRoot: () -> AccessibilityNodeInfo
@@ -49,16 +50,22 @@ class FocusController(
                 current.descendants(
                     Direction.Previous(start = current.lastIndex)
                 ) {
-                    current.performFocus()
+                    if (NodeFilter.Focusable.filter(current)) {
+                        current.performFocus()
+                    }
                 }
 
                 ifRunning {
-                    current.performFocus()
+                    if (NodeFilter.Focusable.filter(current)) {
+                        current.performFocus()
+                    }
                 }
             }
 
             ifRunning {
-                current.performFocus()
+                if (NodeFilter.Focusable.filter(current)) {
+                    current.performFocus()
+                }
             }
         }
     }
@@ -69,7 +76,9 @@ class FocusController(
         target.descendants(
             Direction.Next(start = 0)
         ) {
-            current.performFocus()
+            if (NodeFilter.Focusable.filter(current)) {
+                current.performFocus()
+            }
         }.also {
             if (it) return
         }
@@ -81,9 +90,34 @@ class FocusController(
                     start = current.indexOfChild(previous) + 1
                 )
             ) {
-
-                current.performFocus()
+                if (NodeFilter.Focusable.filter(current)) {
+                    current.performFocus()
+                }
             }
+        }
+    }
+}
+
+sealed interface NodeFilter {
+    fun filter(node: AccessibilityNodeInfo): Boolean
+
+    object Focusable : NodeFilter {
+        override fun filter(node: AccessibilityNodeInfo): Boolean {
+            val compat = AccessibilityNodeInfoCompat.wrap(node)
+
+            if (!NodeValidator.isValidForAccessibility(compat)) return false
+
+            if (NodeValidator.mustFocus(compat)) return true
+
+            return NodeValidator.hasContentToRead(compat) && !mustFocusOnAncestor(compat)
+        }
+
+        private fun mustFocusOnAncestor(
+            node: AccessibilityNodeInfoCompat
+        ): Boolean {
+            return node.getNearestAncestor {
+                NodeValidator.mustFocus(it)
+            } != null
         }
     }
 }
