@@ -20,6 +20,7 @@ package com.neo.speaktouch.intercepter
 
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
+import com.neo.speaktouch.model.NodeFilter
 import com.neo.speaktouch.utils.extension.Direction
 import com.neo.speaktouch.utils.extension.ancestors
 import com.neo.speaktouch.utils.extension.descendants
@@ -94,30 +95,6 @@ class FocusController(
                     current.performFocus()
                 }
             }
-        }
-    }
-}
-
-sealed interface NodeFilter {
-    fun filter(node: AccessibilityNodeInfo): Boolean
-
-    object Focusable : NodeFilter {
-        override fun filter(node: AccessibilityNodeInfo): Boolean {
-            val compat = AccessibilityNodeInfoCompat.wrap(node)
-
-            if (!NodeValidator.isValidForAccessibility(compat)) return false
-
-            if (NodeValidator.mustFocus(compat)) return true
-
-            return NodeValidator.hasContentToRead(compat) && !mustFocusOnAncestor(compat)
-        }
-
-        private fun mustFocusOnAncestor(
-            node: AccessibilityNodeInfoCompat
-        ): Boolean {
-            return node.getNearestAncestor {
-                NodeValidator.mustFocus(it)
-            } != null
         }
     }
 }
