@@ -94,7 +94,7 @@ private fun AccessibilityNodeInfo.internalDescendants(
         val result = child.internalDescendants(
             block = block,
             direction = when (direction) {
-                is Direction.Previous -> Direction.Previous(start = lastIndex)
+                is Direction.Previous -> Direction.Previous(start = child.lastIndex)
                 is Direction.Next -> Direction.Next(start = 0)
             }
         )
