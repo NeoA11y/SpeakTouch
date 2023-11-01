@@ -33,10 +33,11 @@ sealed class Direction {
     ) : Direction()
 }
 
-data class ScanScope(
-    val current: AccessibilityNodeInfo,
-    val previous: AccessibilityNodeInfo,
-) {
+sealed class ScanScope {
+
+    abstract val current: AccessibilityNodeInfo
+    abstract val previous: AccessibilityNodeInfo
+
     var stop: Boolean = false
 
     fun ifRunning(block: () -> Unit) {
@@ -45,12 +46,27 @@ data class ScanScope(
     }
 }
 
+class AncestorsScanScope(
+    override val current: AccessibilityNodeInfo,
+    override val previous: AccessibilityNodeInfo
+) : ScanScope()
+
+class DescendantsScanScope(
+    override val current: AccessibilityNodeInfo,
+    override val previous: AccessibilityNodeInfo
+) : ScanScope() {
+
+    var runChildren: () -> Unit = {}
+        internal set
+
+}
+
 // descendants
 
 context(ScanScope)
 fun AccessibilityNodeInfo.descendants(
     direction: Direction,
-    block: ScanScope.() -> Unit,
+    block: DescendantsScanScope.() -> Unit,
 ): Boolean {
     stop = internalDescendants(
         direction = direction,
@@ -70,7 +86,7 @@ fun AccessibilityNodeInfo.descendants(
 
 private fun AccessibilityNodeInfo.internalDescendants(
     direction: Direction,
-    block: ScanScope.() -> Unit,
+    block: DescendantsScanScope.() -> Unit,
 ): Boolean {
 
     val range = when (direction) {
@@ -82,24 +98,31 @@ private fun AccessibilityNodeInfo.internalDescendants(
 
         val child = getChild(index) ?: continue
 
-        val scope = ScanScope(
+        val scope = DescendantsScanScope(
             current = child,
             previous = this
-        )
+        ).apply {
+            runChildren = {
+                ifRunning {
+                    stop = child.internalDescendants(
+                        block = block,
+                        direction = when (direction) {
+                            is Direction.Previous -> {
+                                Direction.Previous(start = child.lastIndex)
+                            }
 
-        scope.block()
+                            is Direction.Next -> {
+                                Direction.Next(start = 0)
+                            }
+                        }
+                    )
+                }
+            }
+
+            block()
+        }
 
         if (scope.stop) return true
-
-        val result = child.internalDescendants(
-            block = block,
-            direction = when (direction) {
-                is Direction.Previous -> Direction.Previous(start = child.lastIndex)
-                is Direction.Next -> Direction.Next(start = 0)
-            }
-        )
-
-        if (result) return true
     }
 
     return false
@@ -124,7 +147,7 @@ private fun AccessibilityNodeInfo.internalAncestors(
     block: ScanScope.() -> Unit
 ): Boolean {
 
-    var scope = ScanScope(
+    var scope = AncestorsScanScope(
         current = parent ?: return false,
         previous = this
     )
@@ -137,7 +160,7 @@ private fun AccessibilityNodeInfo.internalAncestors(
 
         val current = scope.current
 
-        scope = ScanScope(
+        scope = AncestorsScanScope(
             current = current.parent ?: return false,
             previous = current
         )
