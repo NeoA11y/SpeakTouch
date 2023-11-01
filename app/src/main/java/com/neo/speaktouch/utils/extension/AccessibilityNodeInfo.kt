@@ -132,6 +132,11 @@ fun AccessibilityNodeInfo.performFocus() {
     performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
 }
 
+context(ScanScope)
+fun AccessibilityNodeInfo.performFocus(stop : Boolean = true) {
+    this@ScanScope.stop = stop
+    performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
+}
 
 fun AccessibilityNodeInfo.getFocusedOrNull(): AccessibilityNodeInfo? {
     return findFocus(AccessibilityNodeInfo.FOCUS_ACCESSIBILITY)
