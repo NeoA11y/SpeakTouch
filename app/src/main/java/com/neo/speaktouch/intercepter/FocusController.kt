@@ -36,28 +36,25 @@ class FocusController(
 
         target.ancestors {
 
-            val direction = Direction.Previous(
-                start = current.indexOfChild(previous) - 1
-            )
+            stop = current.descendants(
+                Direction.Previous(
+                    start = current.indexOfChild(previous) - 1
+                )
+            ) {
 
-            current.descendants(direction) {
-
-                val result = current.descendants(
+                stop = current.descendants(
                     Direction.Previous(start = current.childCount)
-                ) actual@{
+                ) {
                     current.performFocus()
 
-                    this@ancestors.stop = true
-                    this@descendants.stop = true
-                    this@actual.stop = true
+                    stop = true
                 }
 
-                if (result) return@descendants
+                if (stop) return@descendants
 
                 current.performFocus()
 
-                this@ancestors.stop = true
-                this@descendants.stop = true
+                stop = true
             }
         }
     }
@@ -82,12 +79,11 @@ class FocusController(
                 start = current.indexOfChild(previous) + 1
             )
 
-            current.descendants(direction) {
+            stop = current.descendants(direction) {
 
                 current.performFocus()
 
-                this@ancestors.stop = true
-                this@descendants.stop = true
+                stop = true
             }
         }
     }
