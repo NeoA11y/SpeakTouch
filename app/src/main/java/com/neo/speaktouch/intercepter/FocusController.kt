@@ -23,7 +23,9 @@ import com.neo.speaktouch.utils.extension.getFocusedOrNull
 import com.neo.speaktouch.utils.extension.getLastOrNull
 import com.neo.speaktouch.utils.extension.getNextChildOrNull
 import com.neo.speaktouch.utils.extension.getPreviousOrNull
+import com.neo.speaktouch.utils.extension.indexOfChild
 import com.neo.speaktouch.utils.extension.performFocus
+import java.util.Stack
 
 class FocusController(
     private val a11yNodeInfoRoot: () -> AccessibilityNodeInfo
@@ -55,23 +57,64 @@ class FocusController(
     fun focusNext() {
         val target = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
 
-        runNotNull(target.getNextChildOrNull()) {
+        val result = target.descendants {
 
-            performFocus()
+            current.performFocus()
 
-            return
+            stop = true
         }
 
+        if (result) return
+
         target.ancestors {
-            runNotNull(current.getNextChildOrNull(previous)) {
 
-                performFocus()
+            current.descendants {
 
-                stop = true
+                current.performFocus()
+
+                this@ancestors.stop = true
+                this@descendants.stop = true
             }
         }
     }
 }
+
+data class DescendantsScope(
+    val current: AccessibilityNodeInfo,
+    val previous: AccessibilityNodeInfo,
+) {
+    var stop: Boolean = false
+}
+
+fun AccessibilityNodeInfo.descendants(
+    startIndex: Int = 0,
+    block: DescendantsScope.() -> Unit,
+): Boolean {
+
+    for (index in startIndex until childCount) {
+
+        val child = getChildOrNull(index) ?: continue
+
+        val scope = DescendantsScope(
+            current = child,
+            previous = this
+        )
+
+        scope.block()
+
+        if (scope.stop) return true
+
+        child.descendants(block = block)
+    }
+
+    return false
+}
+
+fun AccessibilityNodeInfo.getChildOrNull(
+    index: Int
+) = runCatching {
+    getChild(index)
+}.getOrNull()
 
 inline fun <T> runNotNull(
     value: T?,
@@ -87,13 +130,21 @@ data class AncestorScope(
     val previous: AccessibilityNodeInfo,
 ) {
     var stop: Boolean = false
+
+    fun AccessibilityNodeInfo.descendants(
+        block: DescendantsScope.() -> Unit
+    ) = descendants(
+        startIndex = indexOfChild(previous) + 1,
+        block = block
+    )
 }
 
-fun AccessibilityNodeInfo.ancestors(
-    block: AncestorScope.() -> Unit,
-) {
+inline fun AccessibilityNodeInfo.ancestors(
+    block: AncestorScope.() -> Unit
+): Boolean {
+
     var scope = AncestorScope(
-        current = parent ?: return,
+        current = parent ?: return false,
         previous = this
     )
 
@@ -101,11 +152,13 @@ fun AccessibilityNodeInfo.ancestors(
 
         scope.block()
 
-        if (scope.stop) return
+        if (scope.stop) return true
+
+        val current = scope.current
 
         scope = AncestorScope(
-            current = scope.current.parent ?: return,
-            previous = scope.current
+            current = current.parent ?: return false,
+            previous = current
         )
     }
 }
