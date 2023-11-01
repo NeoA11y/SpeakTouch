@@ -185,3 +185,5 @@ fun AccessibilityNodeInfo.indexOfChild(
 
     error("Child not found")
 }
+
+val AccessibilityNodeInfo.lastIndex get() = childCount - 1
