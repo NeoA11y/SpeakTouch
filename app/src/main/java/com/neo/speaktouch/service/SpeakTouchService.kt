@@ -20,7 +20,7 @@ package com.neo.speaktouch.service
 
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
-import com.neo.speaktouch.intercepter.FocusController
+import com.neo.speaktouch.controller.FocusController
 import com.neo.speaktouch.intercepter.FocusInterceptor
 import com.neo.speaktouch.intercepter.GestureInterceptor
 import com.neo.speaktouch.intercepter.SpeechInterceptor

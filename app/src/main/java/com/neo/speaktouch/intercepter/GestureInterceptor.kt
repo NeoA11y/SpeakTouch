@@ -19,6 +19,7 @@
 package com.neo.speaktouch.intercepter
 
 import android.accessibilityservice.AccessibilityService
+import com.neo.speaktouch.controller.FocusController
 
 class GestureInterceptor(
     private val focusController: FocusController
