@@ -66,10 +66,12 @@ class DescendantsScanScope(
 context(ScanScope)
 fun AccessibilityNodeInfo.descendants(
     direction: Direction,
+    runChildrenOnFinal : Boolean = true,
     block: DescendantsScanScope.() -> Unit,
 ): Boolean {
     stop = internalDescendants(
         direction = direction,
+        runChildrenOnFinal = runChildrenOnFinal,
         block = block
     )
 
@@ -78,14 +80,17 @@ fun AccessibilityNodeInfo.descendants(
 
 fun AccessibilityNodeInfo.descendants(
     direction: Direction,
+    runChildrenOnFinal : Boolean = true,
     block: ScanScope.() -> Unit,
 ) = internalDescendants(
     direction = direction,
+    runChildrenOnFinal = runChildrenOnFinal,
     block = block
 )
 
 private fun AccessibilityNodeInfo.internalDescendants(
     direction: Direction,
+    runChildrenOnFinal : Boolean = true,
     block: DescendantsScanScope.() -> Unit,
 ): Boolean {
 
@@ -106,6 +111,7 @@ private fun AccessibilityNodeInfo.internalDescendants(
                 ifRunning {
                     stop = child.internalDescendants(
                         block = block,
+                        runChildrenOnFinal = runChildrenOnFinal,
                         direction = when (direction) {
                             is Direction.Previous -> {
                                 Direction.Previous(start = child.lastIndex)
@@ -121,6 +127,8 @@ private fun AccessibilityNodeInfo.internalDescendants(
 
             block()
         }
+
+        if (runChildrenOnFinal) scope.runChildren()
 
         if (scope.stop) return true
     }

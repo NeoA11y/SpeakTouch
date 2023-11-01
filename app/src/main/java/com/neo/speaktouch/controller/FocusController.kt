@@ -42,7 +42,8 @@ class FocusController(
             current.descendants(
                 Direction.Previous(
                     start = current.indexOfChild(previous) - 1
-                )
+                ),
+                runChildrenOnFinal = false
             ) {
 
                 runChildren()
@@ -85,8 +86,6 @@ class FocusController(
                 if (NodeFilter.Focusable.filter(current)) {
                     current.performFocus()
                 }
-
-                runChildren()
             }
         }
     }
