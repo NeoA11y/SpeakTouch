@@ -1,5 +1,5 @@
 /*
- * Interface of interceptors.
+ * Legacy effects equivalent to android.os.VibrationEffect.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -16,11 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.intercepter.interfece
+package com.neo.speaktouch.utils
 
-import android.view.accessibility.AccessibilityEvent
+sealed class LegacyVibrationEffect(val pattern: LongArray) {
+    object HeavyClick : LegacyVibrationEffect(
+        pattern = longArrayOf(
+            0, 50, 50
+        )
+    )
 
-interface Interceptor {
-    fun handle(event: AccessibilityEvent)
-    fun finish() = Unit
+    object Tick : LegacyVibrationEffect(
+        pattern = longArrayOf(
+            0, 30
+        )
+    )
 }
