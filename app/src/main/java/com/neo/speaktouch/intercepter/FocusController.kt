@@ -21,11 +21,9 @@ package com.neo.speaktouch.intercepter
 import android.view.accessibility.AccessibilityNodeInfo
 import com.neo.speaktouch.utils.extension.getFocusedOrNull
 import com.neo.speaktouch.utils.extension.getLastOrNull
-import com.neo.speaktouch.utils.extension.getNextChildOrNull
 import com.neo.speaktouch.utils.extension.getPreviousOrNull
 import com.neo.speaktouch.utils.extension.indexOfChild
 import com.neo.speaktouch.utils.extension.performFocus
-import java.util.Stack
 
 class FocusController(
     private val a11yNodeInfoRoot: () -> AccessibilityNodeInfo
@@ -57,7 +55,9 @@ class FocusController(
     fun focusNext() {
         val target = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
 
-        val result = target.descendants {
+        val result = target.descendants(
+            Direction.Next(start = 0)
+        ) {
 
             current.performFocus()
 
@@ -68,7 +68,11 @@ class FocusController(
 
         target.ancestors {
 
-            current.descendants {
+            val direction = Direction.Next(
+                start = current.indexOfChild(previous) + 1
+            )
+
+            current.descendants(direction) {
 
                 current.performFocus()
 
@@ -86,12 +90,30 @@ data class DescendantsScope(
     var stop: Boolean = false
 }
 
+sealed class Direction {
+
+    abstract val start: Int
+
+    data class Previous(
+        override val start: Int
+    ) : Direction()
+
+    data class Next(
+        override val start: Int
+    ) : Direction()
+}
+
 fun AccessibilityNodeInfo.descendants(
-    startIndex: Int = 0,
+    direction: Direction,
     block: DescendantsScope.() -> Unit,
 ): Boolean {
 
-    for (index in startIndex until childCount) {
+    val range = when (direction) {
+        is Direction.Previous -> direction.start downTo childCount
+        is Direction.Next -> direction.start until childCount
+    }
+
+    for (index in range) {
 
         val child = getChildOrNull(index) ?: continue
 
@@ -104,7 +126,13 @@ fun AccessibilityNodeInfo.descendants(
 
         if (scope.stop) return true
 
-        child.descendants(block = block)
+        child.descendants(
+            block = block,
+            direction = when (direction) {
+                is Direction.Previous -> Direction.Previous(start = childCount)
+                is Direction.Next -> Direction.Next(start = 0)
+            }
+        )
     }
 
     return false
@@ -130,13 +158,6 @@ data class AncestorScope(
     val previous: AccessibilityNodeInfo,
 ) {
     var stop: Boolean = false
-
-    fun AccessibilityNodeInfo.descendants(
-        block: DescendantsScope.() -> Unit
-    ) = descendants(
-        startIndex = indexOfChild(previous) + 1,
-        block = block
-    )
 }
 
 inline fun AccessibilityNodeInfo.ancestors(
