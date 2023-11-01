@@ -56,6 +56,12 @@ class FocusController(
 
                 stop = true
             }
+
+            if (stop) return@ancestors
+
+            current.performFocus()
+
+            stop = true
         }
     }
 
