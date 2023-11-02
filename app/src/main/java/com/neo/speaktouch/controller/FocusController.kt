@@ -31,10 +31,12 @@ class FocusController(
     private val a11yNodeInfoRoot: () -> AccessibilityNodeInfo
 ) {
 
-    val focusedA11yNodeInfo get() = a11yNodeInfoRoot().getFocusedOrNull()
+    private val focusedA11yNodeInfo get() = a11yNodeInfoRoot().getFocusedOrNull()
+
+    fun getTarget() = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
 
     fun moveFocusToPrevious(
-        target: AccessibilityNodeInfo = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
+        target: AccessibilityNodeInfo = getTarget()
     ) = nodeScan {
 
         target.ancestors {
@@ -59,7 +61,7 @@ class FocusController(
     }
 
     fun moveFocusToNext(
-        target: AccessibilityNodeInfo = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
+        target: AccessibilityNodeInfo = getTarget()
     ) = nodeScan {
 
         target.descendants(

@@ -20,15 +20,11 @@ package com.neo.speaktouch.utils.extension
 
 import android.view.accessibility.AccessibilityNodeInfo
 
-class NodeScanStopException : Exception()
-
 fun nodeScan(block: NodeScan.() -> Unit) {
     try {
         NodeScan().block()
     } catch (_: NodeScanStopException) {
         // success finish
-    } finally {
-        // failure finish
     }
 }
 
@@ -71,9 +67,8 @@ open class NodeScan {
 
             NodeScanScope.Descendant(
                 current = child,
-                previous = this
-            ).apply {
-                mRecursive = {
+                previous = this,
+                recursive = {
                     child.descendants(
                         block = block,
                         direction = when (direction) {
@@ -87,7 +82,7 @@ open class NodeScan {
                         }
                     )
                 }
-            }.block()
+            ).block()
         }
     }
 }
@@ -105,12 +100,8 @@ sealed class NodeScanScope : NodeScan() {
     class Descendant(
         override val current: AccessibilityNodeInfo,
         override val previous: AccessibilityNodeInfo,
-    ) : NodeScanScope() {
-
-        internal var mRecursive: () -> Unit = {}
-
-        fun recursive() = mRecursive()
-    }
+        val recursive: () -> Unit = {}
+    ) : NodeScanScope()
 
     fun stop() {
         throw NodeScanStopException()
@@ -129,3 +120,5 @@ sealed class Direction {
         override val start: Int
     ) : Direction()
 }
+
+class NodeScanStopException : Exception()
