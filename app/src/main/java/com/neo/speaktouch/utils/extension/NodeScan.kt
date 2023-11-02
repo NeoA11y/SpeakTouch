@@ -20,6 +20,10 @@ package com.neo.speaktouch.utils.extension
 
 import android.view.accessibility.AccessibilityNodeInfo
 
+/**
+ * Open a nodes scan block.
+ * @see NodeScan
+ */
 fun nodeScan(block: NodeScan.() -> Unit) {
     try {
         NodeScan().block()
@@ -30,8 +34,13 @@ fun nodeScan(block: NodeScan.() -> Unit) {
 
 open class NodeScan {
 
+    /**
+     * Scan ancestral nodes.
+     * Call [NodeScanScope.Ancestor.stop] to stop scanning.
+     * @see NodeScanScope.Ancestor
+     */
     fun AccessibilityNodeInfo.ancestors(
-        block: NodeScanScope.() -> Unit
+        block: NodeScanScope.Ancestor.() -> Unit
     ) {
         var scope = NodeScanScope.Ancestor(
             current = parent ?: return,
@@ -52,6 +61,12 @@ open class NodeScan {
         }
     }
 
+    /**
+     * Scan descendant nodes.
+     * Call [NodeScanScope.Descendant.recursive] to scan deeply.
+     * Call [NodeScanScope.Descendant.stop] to stop scanning.
+     * @see NodeScanScope.Descendant
+     */
     fun AccessibilityNodeInfo.descendants(
         direction: Direction,
         block: NodeScanScope.Descendant.() -> Unit
@@ -108,6 +123,9 @@ sealed class NodeScanScope : NodeScan() {
     }
 }
 
+/**
+ * Scan direction.
+ */
 sealed class Direction {
 
     abstract val start: Int
