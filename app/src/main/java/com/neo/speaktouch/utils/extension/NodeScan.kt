@@ -44,7 +44,7 @@ open class NodeScan {
     ) {
         var scope = NodeScanScope.Ancestor(
             current = parent ?: return,
-            previous = this
+            child = this
         )
 
         while (true) {
@@ -56,7 +56,7 @@ open class NodeScan {
 
             scope = NodeScanScope.Ancestor(
                 current = parent,
-                previous = current
+                child = current
             )
         }
     }
@@ -72,8 +72,8 @@ open class NodeScan {
         block: NodeScanScope.Descendant.() -> Unit
     ) {
         val range = when (direction) {
-            is Direction.Previous -> direction.start downTo 0
-            is Direction.Next -> direction.start..lastIndex
+            is Direction.Left -> direction.start downTo 0
+            is Direction.Right -> direction.start..lastIndex
         }
 
         for (index in range) {
@@ -82,17 +82,17 @@ open class NodeScan {
 
             NodeScanScope.Descendant(
                 current = child,
-                previous = this,
+                parent = this,
                 recursive = {
                     child.descendants(
                         block = block,
                         direction = when (direction) {
-                            is Direction.Previous -> {
-                                Direction.Previous(start = child.lastIndex)
+                            is Direction.Left -> {
+                                Direction.Left(child.lastIndex)
                             }
 
-                            is Direction.Next -> {
-                                Direction.Next(start = 0)
+                            is Direction.Right -> {
+                                Direction.Right(start = 0)
                             }
                         }
                     )
@@ -104,17 +104,30 @@ open class NodeScan {
 
 sealed class NodeScanScope : NodeScan() {
 
-    abstract val current: AccessibilityNodeInfo
-    abstract val previous: AccessibilityNodeInfo
-
+    /**
+     * Ancestor node scope.
+     * @property current current node
+     * @property child node from which this ancestor was accessed
+     */
     class Ancestor(
-        override val current: AccessibilityNodeInfo,
-        override val previous: AccessibilityNodeInfo
-    ) : NodeScanScope()
+        val current: AccessibilityNodeInfo,
+        val child: AccessibilityNodeInfo
+    ) : NodeScanScope() {
 
+        fun indexOfChild() = current.indexOfChild(child)
+        fun leftIndexOfChild() = indexOfChild().dec()
+        fun rightIndexOfChild() = indexOfChild().inc()
+    }
+
+    /**
+     * Descendant node scope.
+     * @property current current node
+     * @property parent node from which this descendant was accessed
+     * @property recursive call this function to scan deeply
+     */
     class Descendant(
-        override val current: AccessibilityNodeInfo,
-        override val previous: AccessibilityNodeInfo,
+        val current: AccessibilityNodeInfo,
+        val parent: AccessibilityNodeInfo,
         val recursive: () -> Unit = {}
     ) : NodeScanScope()
 
@@ -130,12 +143,12 @@ sealed class Direction {
 
     abstract val start: Int
 
-    data class Previous(
+    data class Left(
         override val start: Int
     ) : Direction()
 
-    data class Next(
-        override val start: Int
+    data class Right(
+        override val start: Int = 0
     ) : Direction()
 }
 

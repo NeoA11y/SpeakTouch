@@ -21,9 +21,7 @@ package com.neo.speaktouch.controller
 import android.view.accessibility.AccessibilityNodeInfo
 import com.neo.speaktouch.model.NodeFilter
 import com.neo.speaktouch.utils.extension.Direction
-import com.neo.speaktouch.utils.extension.NodeScan
 import com.neo.speaktouch.utils.extension.getFocusedOrNull
-import com.neo.speaktouch.utils.extension.indexOfChild
 import com.neo.speaktouch.utils.extension.performFocus
 import com.neo.speaktouch.utils.extension.nodeScan
 
@@ -36,38 +34,39 @@ class FocusController(
     fun getTarget() = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
 
     fun moveFocusToPrevious(
-        target: AccessibilityNodeInfo = getTarget()
+        target: AccessibilityNodeInfo = getTarget(),
+        nodeFilter: NodeFilter = NodeFilter.Focusable
     ) = nodeScan {
 
         target.ancestors {
 
             current.descendants(
-                Direction.Previous(
-                    start = current.indexOfChild(previous) - 1
+                Direction.Left(
+                    start = leftIndexOfChild()
                 )
             ) {
 
                 recursive()
 
-                if (NodeFilter.Focusable.filter(current)) {
+                if (nodeFilter.filter(current)) {
                     current.performFocus()
                 }
             }
 
-            if (NodeFilter.Focusable.filter(current)) {
+            if (nodeFilter.filter(current)) {
                 current.performFocus()
             }
         }
     }
 
     fun moveFocusToNext(
-        target: AccessibilityNodeInfo = getTarget()
+        target: AccessibilityNodeInfo = getTarget(),
+        nodeFilter: NodeFilter = NodeFilter.Focusable
     ) = nodeScan {
 
-        target.descendants(
-            Direction.Next(start = 0)
-        ) {
-            if (NodeFilter.Focusable.filter(current)) {
+        target.descendants(Direction.Right()) {
+
+            if (nodeFilter.filter(current)) {
                 current.performFocus()
             }
 
@@ -77,11 +76,12 @@ class FocusController(
         target.ancestors {
 
             current.descendants(
-                Direction.Next(
-                    start = current.indexOfChild(previous) + 1
+                Direction.Right(
+                    start = rightIndexOfChild()
                 )
             ) {
-                if (NodeFilter.Focusable.filter(current)) {
+
+                if (nodeFilter.filter(current)) {
                     current.performFocus()
                 }
 
