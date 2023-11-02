@@ -21,12 +21,11 @@ package com.neo.speaktouch.controller
 import android.view.accessibility.AccessibilityNodeInfo
 import com.neo.speaktouch.model.NodeFilter
 import com.neo.speaktouch.utils.extension.Direction
-import com.neo.speaktouch.utils.extension.ancestors
-import com.neo.speaktouch.utils.extension.descendants
+import com.neo.speaktouch.utils.extension.NodeScan
 import com.neo.speaktouch.utils.extension.getFocusedOrNull
 import com.neo.speaktouch.utils.extension.indexOfChild
-import com.neo.speaktouch.utils.extension.lastIndex
 import com.neo.speaktouch.utils.extension.performFocus
+import com.neo.speaktouch.utils.extension.nodeScan
 
 class FocusController(
     private val a11yNodeInfoRoot: () -> AccessibilityNodeInfo
@@ -34,37 +33,34 @@ class FocusController(
 
     val focusedA11yNodeInfo get() = a11yNodeInfoRoot().getFocusedOrNull()
 
-    fun moveFocusToPrevious() {
-        val target = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
+    fun moveFocusToPrevious(
+        target: AccessibilityNodeInfo = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
+    ) = nodeScan {
 
         target.ancestors {
 
             current.descendants(
                 Direction.Previous(
                     start = current.indexOfChild(previous) - 1
-                ),
-                runChildrenOnFinal = false
+                )
             ) {
 
-                runChildren()
+                recursive()
 
-                ifRunning {
-                    if (NodeFilter.Focusable.filter(current)) {
-                        current.performFocus()
-                    }
-                }
-            }
-
-            ifRunning {
                 if (NodeFilter.Focusable.filter(current)) {
                     current.performFocus()
                 }
             }
+
+            if (NodeFilter.Focusable.filter(current)) {
+                current.performFocus()
+            }
         }
     }
 
-    fun moveFocusToNext() {
-        val target = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
+    fun moveFocusToNext(
+        target: AccessibilityNodeInfo = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
+    ) = nodeScan {
 
         target.descendants(
             Direction.Next(start = 0)
@@ -72,8 +68,8 @@ class FocusController(
             if (NodeFilter.Focusable.filter(current)) {
                 current.performFocus()
             }
-        }.also {
-            if (it) return
+
+            recursive()
         }
 
         target.ancestors {
@@ -86,6 +82,8 @@ class FocusController(
                 if (NodeFilter.Focusable.filter(current)) {
                     current.performFocus()
                 }
+
+                recursive()
             }
         }
     }
