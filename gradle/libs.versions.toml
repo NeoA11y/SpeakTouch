@@ -5,15 +5,17 @@ androidx-constraintlayout = "2.1.4"
 androidx-core = "1.12.0"
 androidx-test-espresso = "3.5.1"
 androidx-test-junit = "1.1.5"
-kotlin = "1.9.10"
+kotlin = "1.9.20"
 material = "1.10.0"
 test-junit = "4.13.2"
 timber = "5.0.1"
 
 [libraries]
+android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx-constraintlayout" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
@@ -23,7 +25,3 @@ androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref
 
 # Test
 junit = { group = "junit", name = "junit", version.ref = "test-junit" }
-
-[plugins]
-android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
