@@ -21,71 +21,71 @@ package com.neo.speaktouch.controller
 import android.view.accessibility.AccessibilityNodeInfo
 import com.neo.speaktouch.model.NodeFilter
 import com.neo.speaktouch.utils.extension.Direction
-import com.neo.speaktouch.utils.extension.ancestors
-import com.neo.speaktouch.utils.extension.descendants
 import com.neo.speaktouch.utils.extension.getFocusedOrNull
-import com.neo.speaktouch.utils.extension.indexOfChild
-import com.neo.speaktouch.utils.extension.lastIndex
 import com.neo.speaktouch.utils.extension.performFocus
+import com.neo.speaktouch.utils.extension.nodeScan
 
 class FocusController(
     private val a11yNodeInfoRoot: () -> AccessibilityNodeInfo
 ) {
 
-    val focusedA11yNodeInfo get() = a11yNodeInfoRoot().getFocusedOrNull()
+    private val focusedA11yNodeInfo get() = a11yNodeInfoRoot().getFocusedOrNull()
 
-    fun moveFocusToPrevious() {
-        val target = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
+    fun getTarget() = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
+
+    fun moveFocusToPrevious(
+        target: AccessibilityNodeInfo = getTarget(),
+        nodeFilter: NodeFilter = NodeFilter.Focusable
+    ) = nodeScan {
 
         target.ancestors {
 
             current.descendants(
-                Direction.Previous(
-                    start = current.indexOfChild(previous) - 1
-                ),
-                runChildrenOnFinal = false
+                Direction.Left(
+                    start = leftIndexOfChild()
+                )
             ) {
 
-                runChildren()
+                recursive()
 
-                ifRunning {
-                    if (NodeFilter.Focusable.filter(current)) {
-                        current.performFocus()
-                    }
+                if (nodeFilter.filter(current)) {
+                    current.performFocus()
                 }
             }
 
-            ifRunning {
-                if (NodeFilter.Focusable.filter(current)) {
-                    current.performFocus()
-                }
+            if (nodeFilter.filter(current)) {
+                current.performFocus()
             }
         }
     }
 
-    fun moveFocusToNext() {
-        val target = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
+    fun moveFocusToNext(
+        target: AccessibilityNodeInfo = getTarget(),
+        nodeFilter: NodeFilter = NodeFilter.Focusable
+    ) = nodeScan {
 
-        target.descendants(
-            Direction.Next(start = 0)
-        ) {
-            if (NodeFilter.Focusable.filter(current)) {
+        target.descendants(Direction.Right()) {
+
+            if (nodeFilter.filter(current)) {
                 current.performFocus()
             }
-        }.also {
-            if (it) return
+
+            recursive()
         }
 
         target.ancestors {
 
             current.descendants(
-                Direction.Next(
-                    start = current.indexOfChild(previous) + 1
+                Direction.Right(
+                    start = rightIndexOfChild()
                 )
             ) {
-                if (NodeFilter.Focusable.filter(current)) {
+
+                if (nodeFilter.filter(current)) {
                     current.performFocus()
                 }
+
+                recursive()
             }
         }
     }
