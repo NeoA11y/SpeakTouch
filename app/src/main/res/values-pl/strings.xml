@@ -2,7 +2,7 @@
     <!-- type -->
     <string name="text_image_type">obraz</string>
     <string name="text_switch_type">przełącznik</string>
-    <string name="text_toggle_type">przycisk przełączania: %s</string>
+    <string name="text_toggle_type">przycisk przełączania</string>
     <string name="text_radio_type">przycisk opcji</string>
     <string name="text_checkbox_type">pole wyboru</string>
     <string name="text_button_type">przycisk</string>
