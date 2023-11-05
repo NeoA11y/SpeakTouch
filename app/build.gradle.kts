@@ -59,7 +59,7 @@ android {
         applicationId = "com.neo.speaktouch"
 
         minSdk = 22
-        targetSdk = 33
+        targetSdk = 34
 
         resourceConfigurations.addAll(
             listOf(

@@ -25,11 +25,19 @@ import com.neo.speaktouch.utils.`typealias`.NodeInfo
 object NodeValidator {
 
     /**
-     * @return true if [node] has any action
+     * @return true if [node] has any click
      */
     private fun isClickable(node: NodeInfo): Boolean {
 
         return node.isClickable || node.isLongClickable
+    }
+
+    /**
+     * @return true if [node] has any interaction
+     */
+    private fun hasInteraction(node: NodeInfo): Boolean {
+
+        return isClickable(node) || node.isFocusable
     }
 
     /**
@@ -49,7 +57,7 @@ object NodeValidator {
      */
     private fun mustReadContent(node: NodeInfo): Boolean {
 
-        return hasContentToRead(node) && node.isFocusable
+        return hasContentToRead(node) && hasInteraction(node)
     }
 
     /**
