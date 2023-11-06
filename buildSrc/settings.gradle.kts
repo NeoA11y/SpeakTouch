@@ -1,7 +1,7 @@
 /*
  * BuildSrc module Gradle settings file
  *
- * Copyright (C) 2023 Irineu A. Silva.
+ * Copyright (C) 2023 Patryk Miś.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
