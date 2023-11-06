@@ -1,8 +1,5 @@
-import org.gradle.api.Project
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
-
 /*
- * Configure the app version.
+ * App version representation.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -77,32 +74,4 @@ data class VersionConfig(
         private const val MINOR_WEIGHT = 10
         private const val PATH_WEIGHT = 1
     }
-}
-
-fun Project.appVersion(
-    type: VersionConfig.Type? = null,
-    block: VersionConfig.() -> Unit
-) {
-
-    val version = VersionConfig(type = type).also(block)
-
-    val defaultConfig = android().defaultConfig
-
-    defaultConfig.apply {
-        versionCode = version.getCode()
-        versionName = version.getName()
-    }
-
-    tasks.register("appVersion") {
-        doLast {
-            println(
-                "versionCode is ${defaultConfig.versionCode} " +
-                        "from versionName ${defaultConfig.versionName}"
-            )
-        }
-    }
-}
-
-private fun Project.android(): BaseAppModuleExtension {
-    return extensions.getByName("android") as BaseAppModuleExtension
 }
