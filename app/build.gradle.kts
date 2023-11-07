@@ -1,5 +1,5 @@
 /*
- * app module build configurations.
+ * App build configurations.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -17,9 +17,6 @@
  */
 
 @file:Suppress("UnstableApiUsage")
-
-import java.io.FileInputStream
-import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -46,11 +43,11 @@ android {
 
     signingConfigs {
         create("release") {
-            loadProperties("keystore.properties") { properties ->
-                storeFile = rootProject.file(properties["storeFile"] as String)
-                storePassword = properties["storePassword"] as String
-                keyAlias = properties["keyAlias"] as String
-                keyPassword = properties["keyPassword"] as String
+            properties(name = "keystore.properties") { properties ->
+                storeFile = rootProject.file(properties.getProperty("storeFile"))
+                storePassword = properties.getProperty("storePassword")
+                keyAlias = properties.getProperty("keyAlias")
+                keyPassword = properties.getProperty("keyPassword")
             }
         }
     }
@@ -73,18 +70,13 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = false
-
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
 
             signingConfig = signingConfigs.getByName("release")
         }
 
-        getByName("debug") {
+        debug {
             isMinifyEnabled = false
 
             applicationIdSuffix = ".debug"
@@ -115,13 +107,3 @@ dependencies {
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.androidx.test.espresso)
 }
-
-// functions
-fun loadProperties(
-    fileName: String,
-    postResult: (Properties) -> Unit
-) = postResult(
-    Properties().apply {
-        load(FileInputStream(rootProject.file(fileName)))
-    }
-)
