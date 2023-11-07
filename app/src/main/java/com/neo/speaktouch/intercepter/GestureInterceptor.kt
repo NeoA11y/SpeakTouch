@@ -2,6 +2,7 @@
  * Intercepts user gestures.
  *
  * Copyright (C) 2023 Irineu A. Silva.
+ * Copyright (C) 2023 Patryk Miś.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,22 +20,40 @@
 package com.neo.speaktouch.intercepter
 
 import android.accessibilityservice.AccessibilityService
+import android.os.Build
 import com.neo.speaktouch.controller.FocusController
 
 class GestureInterceptor(
-    private val focusController: FocusController
+    private val focusController: FocusController,
+    private val accessibilityService: AccessibilityService
 ) {
 
     fun handle(gestureId: Int): Boolean {
 
-        if (gestureId == AccessibilityService.GESTURE_SWIPE_LEFT) {
-            focusController.moveFocusToPrevious()
-            return true
-        }
-
-        if (gestureId == AccessibilityService.GESTURE_SWIPE_RIGHT) {
-            focusController.moveFocusToNext()
-            return true
+        when (gestureId) {
+            AccessibilityService.GESTURE_SWIPE_LEFT -> {
+                focusController.moveFocusToPrevious()
+                return true
+            }
+            AccessibilityService.GESTURE_SWIPE_RIGHT -> {
+                focusController.moveFocusToNext()
+                return true
+            }
+            AccessibilityService.GESTURE_SWIPE_DOWN_AND_LEFT -> {
+                accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+                return true
+            }
+            else -> {
+                // Handle multi-finger gestures on Android S and up
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    when (gestureId) {
+                        AccessibilityService.GESTURE_2_FINGER_DOUBLE_TAP -> {
+                            accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_KEYCODE_HEADSETHOOK)
+                            return true
+                        }
+                    }
+                }
+            }
         }
 
         return false
