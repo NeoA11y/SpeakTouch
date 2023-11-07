@@ -30,28 +30,30 @@ class GestureInterceptor(
 
     fun handle(gestureId: Int): Boolean {
 
-        if (gestureId == AccessibilityService.GESTURE_SWIPE_LEFT) {
-            focusController.moveFocusToPrevious()
-            return true
-        }
-
-        if (gestureId == AccessibilityService.GESTURE_SWIPE_RIGHT) {
-            focusController.moveFocusToNext()
-            return true
-        }
-
-        if (gestureId == AccessibilityService.GESTURE_SWIPE_DOWN_AND_LEFT) {
-            accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
-            return true
-        }
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return false
-
-// Android 12+ gestures
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && gestureId == AccessibilityService.GESTURE_2_FINGER_DOUBLE_TAP) {
-            accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_KEYCODE_HEADSETHOOK)
-            return true
+        when (gestureId) {
+            AccessibilityService.GESTURE_SWIPE_LEFT -> {
+                focusController.moveFocusToPrevious()
+                return true
+            }
+            AccessibilityService.GESTURE_SWIPE_RIGHT -> {
+                focusController.moveFocusToNext()
+                return true
+            }
+            AccessibilityService.GESTURE_SWIPE_DOWN_AND_LEFT -> {
+                accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+                return true
+            }
+            else -> {
+                // Handle multi-finger gestures on Android S and up
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    when (gestureId) {
+                        AccessibilityService.GESTURE_2_FINGER_DOUBLE_TAP -> {
+                            accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_KEYCODE_HEADSETHOOK)
+                            return true
+                        }
+                    }
+                }
+            }
         }
 
         return false
