@@ -37,8 +37,7 @@ class Reader(
         nodeInfo,
         Level.Text(
             mustReadSelection = true,
-            mustReadType = true,
-            mustReadCheckable = true
+            mustReadType = true
         )
     )
 
@@ -68,7 +67,6 @@ class Reader(
                 listOf(
                     content,
                     getType(node, level.mustReadType),
-                    getCheckable(node, level.mustReadCheckable),
                     getSelection(node, level.mustReadSelection)
                 ).filterNotNullOrEmpty()
             }
@@ -84,7 +82,6 @@ class Reader(
                             child,
                             Level.Text(
                                 mustReadSelection = false,
-                                mustReadCheckable = true,
                                 mustReadType = listOf(
                                     Type.SWITCH,
                                     Type.TOGGLE,
@@ -109,29 +106,47 @@ class Reader(
         return when (Type.get(node)) {
             Type.NONE -> null
             Type.IMAGE -> context.getString(R.string.text_image_type)
-            Type.SWITCH -> context.getString(R.string.text_switch_type)
-            Type.TOGGLE -> context.getString(R.string.text_toggle_type)
-            Type.RADIO -> context.getString(R.string.text_radio_type)
-            Type.CHECKBOX -> context.getString(R.string.text_checkbox_type)
+            Type.SWITCH -> {
+                val switchType = context.getString(R.string.text_switch_type)
+                val selectionStatus = if (node.isChecked) {
+                    node.stateDescription?.toString() ?: context.getString(R.string.text_enabled)
+                } else {
+                node.stateDescription?.toString() ?: context.getString(R.string.text_disabled)
+            }
+                "$switchType, $selectionStatus"
+            }
+            Type.TOGGLE -> {
+                val toggleType = context.getString(R.string.text_toggle_type)
+                val selectionStatus = if (node.isChecked) {
+                    node.stateDescription?.toString() ?: context.getString(R.string.text_pressed)
+                } else {
+                node.stateDescription?.toString() ?: context.getString(R.string.text_not_pressed)
+            }
+                "$toggleType, $selectionStatus"
+            }
+            Type.RADIO -> {
+                val radioButtonType = context.getString(R.string.text_radio_type)
+                val selectionStatus = if (node.isChecked) {
+                    node.stateDescription?.toString() ?: context.getString(R.string.text_selected)
+                } else {
+                    node.stateDescription?.toString() ?: context.getString(R.string.text_not_selected)
+                }
+                "$radioButtonType, $selectionStatus"
+            }
+            Type.CHECKBOX -> {
+                val checkboxType = context.getString(R.string.text_checkbox_type)
+                val selectionStatus = if (node.isChecked) {
+                    node.stateDescription?.toString() ?: context.getString(R.string.text_checked)
+                } else {
+                    node.stateDescription?.toString() ?: context.getString(R.string.text_not_checked)
+                }
+                "$checkboxType, $selectionStatus"
+            }
             Type.BUTTON -> context.getString(R.string.text_button_type)
             Type.EDITFIELD -> context.getString(R.string.text_editfield_type)
             Type.OPTIONS -> context.getString(R.string.text_options_type)
             Type.LIST -> context.getString(R.string.text_list_type)
             Type.TITLE -> context.getString(R.string.text_title_type)
-        }
-    }
-
-    private fun getCheckable(
-        nodeInfo: NodeInfo,
-        mustRead: Boolean
-    ): CharSequence? {
-        if (!mustRead) return null
-        if (!nodeInfo.isCheckable) return null
-
-        return if (nodeInfo.isCheckable) {
-            context.getString(R.string.text_enabled)
-        } else {
-            context.getString(R.string.text_disabled)
         }
     }
 
@@ -149,7 +164,6 @@ class Reader(
         data class Text(
             val mustReadSelection: Boolean,
             val mustReadType: Boolean,
-            val mustReadCheckable: Boolean
         ) : Level
 
         data object Children : Level

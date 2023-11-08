@@ -35,4 +35,9 @@
     <string name="text_enabled">enabled</string>
     <string name="text_disabled">disabled</string>
     <string name="text_selected">selected</string>
+    <string name="text_not_selected">not selected</string>
+    <string name="text_checked">checked</string>
+    <string name="text_not_checked">not checked</string>
+    <string name="text_pressed">pressed</string>
+    <string name="text_not_pressed">not pressed</string>
 </resources>

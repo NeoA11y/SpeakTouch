@@ -30,7 +30,12 @@
     <string name="text_title_type">tytuł</string>
 
     <!-- state -->
-    <string name="text_enabled">włączone</string>
-    <string name="text_disabled">wyłączone</string>
-    <string name="text_selected">wybrany</string>
+    <string name="text_enabled">włączono</string>
+    <string name="text_disabled">wyłączono</string>
+    <string name="text_selected">wybrano</string>
+    <string name="text_not_selected">nie wybrano</string>
+    <string name="text_checked">zaznaczono</string>
+    <string name="text_not_checked">nie zaznaczono</string>
+    <string name="text_pressed">wciśnięto</string>
+    <string name="text_not_pressed">nie wciśnięto</string>
 </resources>
