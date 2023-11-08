@@ -148,6 +148,14 @@ class Reader @Inject constructor(
             Type.OPTIONS -> context.getString(R.string.text_options_type)
             Type.LIST -> context.getString(R.string.text_list_type)
             Type.TITLE -> context.getString(R.string.text_title_type)
+            Type.CHECKEDTEXT -> {
+                val selectionStatus = if (node.isChecked) {
+                    node.stateDescription?.toString() ?: context.getString(R.string.text_selected)
+                } else {
+                    ""
+                }
+                "$selectionStatus"
+            }
         }
     }
 
