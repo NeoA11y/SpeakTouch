@@ -22,6 +22,7 @@ import android.widget.AbsListView
 import android.widget.AbsSpinner
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.CheckedTextView
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -42,7 +43,8 @@ enum class Type {
     EDITFIELD,
     OPTIONS,
     LIST,
-    TITLE;
+    TITLE,
+    CHECKEDTEXT;
 
     companion object {
         fun get(node: NodeInfo): Type {
@@ -62,6 +64,9 @@ enum class Type {
 
             // View->TextView->EditText
             if (className `is` EditText::class.java) return EDITFIELD
+
+            // View->TextView->CheckedTextView
+            if (className `is` CheckedTextView::class.java) return CHECKEDTEXT
 
             /* Button */
 
