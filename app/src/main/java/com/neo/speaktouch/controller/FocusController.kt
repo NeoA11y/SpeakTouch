@@ -36,33 +36,39 @@ class FocusController(
     fun moveFocusToPrevious(
         target: AccessibilityNodeInfo = getTarget(),
         nodeFilter: NodeFilter = NodeFilter.Focusable
-    ) = nodeScan {
+    ) {
+        nodeScan {
 
-        target.ancestors {
+            target.ancestors {
 
-            current.descendants(
-                Direction.Left(
-                    start = leftIndexOfChild()
-                )
-            ) {
+                current.descendants(
+                    Direction.Left(
+                        start = leftIndexOfChild()
+                    )
+                ) {
 
-                recursive()
+                    recursive()
+
+                    if (nodeFilter.filter(current)) {
+                        current.performFocus()
+                    }
+                }
 
                 if (nodeFilter.filter(current)) {
                     current.performFocus()
                 }
-            }
 
-            if (nodeFilter.filter(current)) {
-                current.performFocus()
-            }
+                if (current.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD)) {
 
-            if (current.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD)) {
+                    current.refresh()
+                    child.refresh()
 
-                current.refresh()
-                child.refresh()
+                    moveFocusToPrevious(
+                        nodeFilter = nodeFilter
+                    )
 
-                repeat()
+                    stop()
+                }
             }
         }
     }
@@ -70,24 +76,10 @@ class FocusController(
     fun moveFocusToNext(
         target: AccessibilityNodeInfo = getTarget(),
         nodeFilter: NodeFilter = NodeFilter.Focusable
-    ) = nodeScan {
+    ) {
+        nodeScan {
 
-        target.descendants(Direction.Right()) {
-
-            if (nodeFilter.filter(current)) {
-                current.performFocus()
-            }
-
-            recursive()
-        }
-
-        target.ancestors {
-
-            current.descendants(
-                Direction.Right(
-                    start = rightIndexOfChild()
-                )
-            ) {
+            target.descendants(Direction.Right()) {
 
                 if (nodeFilter.filter(current)) {
                     current.performFocus()
@@ -96,12 +88,32 @@ class FocusController(
                 recursive()
             }
 
-            if (current.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)) {
+            target.ancestors {
 
-                current.refresh()
-                child.refresh()
+                current.descendants(
+                    Direction.Right(
+                        start = rightIndexOfChild()
+                    )
+                ) {
 
-                repeat()
+                    if (nodeFilter.filter(current)) {
+                        current.performFocus()
+                    }
+
+                    recursive()
+                }
+
+                if (current.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)) {
+
+                    current.refresh()
+                    child.refresh()
+
+                    moveFocusToNext(
+                        nodeFilter = nodeFilter
+                    )
+
+                    stop()
+                }
             }
         }
     }
