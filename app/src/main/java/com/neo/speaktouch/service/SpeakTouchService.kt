@@ -24,6 +24,7 @@ import android.accessibilityservice.AccessibilityServiceInfo
 import android.os.Build
 import android.view.accessibility.AccessibilityEvent
 import com.neo.speaktouch.controller.FocusController
+import com.neo.speaktouch.intercepter.CallbackInterceptor
 import com.neo.speaktouch.intercepter.FocusInterceptor
 import com.neo.speaktouch.intercepter.GestureInterceptor
 import com.neo.speaktouch.intercepter.HapticInterceptor
@@ -46,6 +47,8 @@ class SpeakTouchService : AccessibilityService() {
             FocusController { rootInActiveWindow },
             accessibilityService = this
         )
+
+        interceptors.add(CallbackInterceptor)
 
         interceptors.add(FocusInterceptor())
 
