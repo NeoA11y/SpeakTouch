@@ -56,6 +56,14 @@ class FocusController(
             if (nodeFilter.filter(current)) {
                 current.performFocus()
             }
+
+            if (current.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD)) {
+
+                current.refresh()
+                child.refresh()
+
+                repeat()
+            }
         }
     }
 
