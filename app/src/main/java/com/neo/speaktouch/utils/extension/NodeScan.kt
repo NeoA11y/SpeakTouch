@@ -27,7 +27,7 @@ import android.view.accessibility.AccessibilityNodeInfo
 fun nodeScan(block: NodeScan.() -> Unit) {
     try {
         NodeScan().block()
-    } catch (_: NodeScanStopException) {
+    } catch (_: NodeScanStop) {
         // success finish
     }
 }
@@ -49,7 +49,11 @@ open class NodeScan {
 
         while (true) {
 
-            scope.block()
+            try {
+                scope.block()
+            } catch (_: NodeScanRepeat) {
+                continue
+            }
 
             val current = scope.current
             val parent = current.parent ?: return
@@ -117,6 +121,10 @@ sealed class NodeScanScope : NodeScan() {
         fun indexOfChild() = current.indexOfChild(child)
         fun leftIndexOfChild() = indexOfChild().dec()
         fun rightIndexOfChild() = indexOfChild().inc()
+
+        fun repeat() {
+            throw NodeScanRepeat()
+        }
     }
 
     /**
@@ -132,7 +140,7 @@ sealed class NodeScanScope : NodeScan() {
     ) : NodeScanScope()
 
     fun stop() {
-        throw NodeScanStopException()
+        throw NodeScanStop()
     }
 }
 
@@ -152,4 +160,5 @@ sealed class Direction {
     ) : Direction()
 }
 
-class NodeScanStopException : Exception()
+class NodeScanStop : Exception()
+class NodeScanRepeat : Exception()

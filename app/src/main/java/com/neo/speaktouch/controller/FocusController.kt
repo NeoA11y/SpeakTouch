@@ -87,6 +87,14 @@ class FocusController(
 
                 recursive()
             }
+
+            if (current.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)) {
+
+                current.refresh()
+                child.refresh()
+
+                repeat()
+            }
         }
     }
 }
