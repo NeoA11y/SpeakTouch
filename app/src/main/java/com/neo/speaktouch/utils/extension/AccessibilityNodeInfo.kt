@@ -137,7 +137,7 @@ fun AccessibilityNodeInfo.performFocus(mustStop: Boolean = true) {
 
     performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
 
-    if (mustStop) stop()
+    if (mustStop) stop(result = this)
 }
 
 fun AccessibilityNodeInfo.getFocusedOrNull(): AccessibilityNodeInfo? {

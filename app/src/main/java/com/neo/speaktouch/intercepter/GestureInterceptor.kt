@@ -21,7 +21,12 @@ package com.neo.speaktouch.intercepter
 
 import android.accessibilityservice.AccessibilityService
 import android.os.Build
+import androidx.annotation.RequiresApi
 import com.neo.speaktouch.controller.FocusController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class GestureInterceptor(
     private val focusController: FocusController,
@@ -33,27 +38,42 @@ class GestureInterceptor(
         when (gestureId) {
             AccessibilityService.GESTURE_SWIPE_LEFT -> {
                 focusController.moveFocusToPrevious()
+
                 return true
             }
+
             AccessibilityService.GESTURE_SWIPE_RIGHT -> {
                 focusController.moveFocusToNext()
+
                 return true
             }
+
             AccessibilityService.GESTURE_SWIPE_DOWN_AND_LEFT -> {
                 accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+
                 return true
             }
-            else -> {
-                // Handle multi-finger gestures on Android S and up
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    when (gestureId) {
-                        AccessibilityService.GESTURE_2_FINGER_DOUBLE_TAP -> {
-                            accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_KEYCODE_HEADSETHOOK)
-                            return true
-                        }
-                    }
-                }
+
+            else -> Unit
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && handleApi31(gestureId)) return true
+
+        return false
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun handleApi31(gestureId: Int): Boolean {
+
+        when (gestureId) {
+            AccessibilityService.GESTURE_2_FINGER_DOUBLE_TAP -> {
+
+                accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_KEYCODE_HEADSETHOOK)
+
+                return true
             }
+
+            else -> Unit
         }
 
         return false

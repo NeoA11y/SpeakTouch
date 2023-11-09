@@ -19,29 +19,34 @@
 package com.neo.speaktouch.intercepter
 
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityNodeInfo
 import com.neo.speaktouch.intercepter.interfece.Interceptor
-import java.util.Stack
 
 object CallbackInterceptor : Interceptor {
 
-    private val scroll = Stack<Scroll>()
+    private val scrolls = mutableListOf<Scroll>()
 
+    @Synchronized
     override fun handle(event: AccessibilityEvent) {
 
         if (event.eventType == AccessibilityEvent.TYPE_VIEW_SCROLLED) {
 
-            if (scroll.isNotEmpty()) {
-                scroll.pop().invoke()
+            scrolls.lastOrNull {
+                it.target == event.source
+            }?.let { scroll ->
+
+                scrolls.remove(scroll)
+                scroll.invoke()
             }
         }
     }
 
     fun addCallback(callback: Scroll) {
-        scroll.push(callback)
+        scrolls.add(callback)
     }
 
 }
 
-fun interface Scroll {
-    operator fun invoke()
+abstract class Scroll(val target: AccessibilityNodeInfo) {
+    abstract operator fun invoke()
 }

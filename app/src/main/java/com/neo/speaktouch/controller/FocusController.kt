@@ -20,6 +20,7 @@ package com.neo.speaktouch.controller
 
 import android.view.accessibility.AccessibilityNodeInfo
 import com.neo.speaktouch.intercepter.CallbackInterceptor
+import com.neo.speaktouch.intercepter.Scroll
 import com.neo.speaktouch.model.NodeFilter
 import com.neo.speaktouch.utils.extension.Direction
 import com.neo.speaktouch.utils.extension.getFocusedOrNull
@@ -61,9 +62,13 @@ class FocusController(
 
                 if (current.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD)) {
 
-                    CallbackInterceptor.addCallback {
-                        moveFocusToPrevious()
-                    }
+                    CallbackInterceptor.addCallback(
+                        object : Scroll(current) {
+                            override fun invoke() {
+                                moveFocusToPrevious()
+                            }
+                        }
+                    )
 
                     stop()
                 }
@@ -103,9 +108,13 @@ class FocusController(
 
                 if (current.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)) {
 
-                    CallbackInterceptor.addCallback {
-                        moveFocusToNext()
-                    }
+                    CallbackInterceptor.addCallback(
+                        object : Scroll(current) {
+                            override fun invoke() {
+                                moveFocusToNext()
+                            }
+                        }
+                    )
 
                     stop()
                 }
