@@ -9,7 +9,6 @@ kotlin = "1.9.20"
 material = "1.10.0"
 test-junit = "4.13.2"
 timber = "5.0.1"
-lifecycle-service = "2.6.2"
 
 [libraries]
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
@@ -29,4 +28,3 @@ androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref
 
 # Test
 junit = { group = "junit", name = "junit", version.ref = "test-junit" }
-androidx-lifecycle-service = { group = "androidx.lifecycle", name = "lifecycle-service", version.ref = "lifecycle-service" }
