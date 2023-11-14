@@ -18,6 +18,7 @@
 
 package com.neo.speaktouch.utils.extension
 
+import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.utils.`object`.NodeValidator
 import com.neo.speaktouch.utils.`typealias`.NodeAction
@@ -126,3 +127,37 @@ private val NodeAction.name: String
         AccessibilityNodeInfoCompat.ACTION_SET_TEXT -> "ACTION_SET_TEXT"
         else -> label.ifEmptyOrNull { "ACTION_UNKNOWN" }.toString()
     }
+
+fun AccessibilityNodeInfo.performFocus() {
+    performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
+}
+
+context(NodeScanScope)
+fun AccessibilityNodeInfo.performFocus(mustStop: Boolean = true) {
+
+    performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
+
+    if (mustStop) stop(result = this)
+}
+
+fun AccessibilityNodeInfo.getFocusedOrNull(): AccessibilityNodeInfo? {
+    return findFocus(AccessibilityNodeInfo.FOCUS_ACCESSIBILITY)
+}
+
+fun AccessibilityNodeInfo.indexOfChild(
+    target: AccessibilityNodeInfo
+): Int {
+
+    for (index in 0 until childCount) {
+
+        val child = getChild(index)
+
+        if (child == target) {
+            return index
+        }
+    }
+
+    error("Child not found")
+}
+
+val AccessibilityNodeInfo.lastIndex get() = childCount - 1

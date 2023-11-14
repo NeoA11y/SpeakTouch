@@ -5,7 +5,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragments"
-        android:name="com.neo.test.fragment.MustFocusFragment"
+         android:name="com.neo.test.fragment.ExplorationFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

@@ -131,7 +131,7 @@ class Reader(
         return if (nodeInfo.isCheckable) {
             context.getString(R.string.text_enabled)
         } else {
-            context.getString(R.string.text_enabled)
+            context.getString(R.string.text_disabled)
         }
     }
 
