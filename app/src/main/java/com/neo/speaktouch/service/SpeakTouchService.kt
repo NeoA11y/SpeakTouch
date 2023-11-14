@@ -33,12 +33,23 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class SpeakTouchService : AccessibilityService() {
 
+    enum class ServiceState {
+        NULL,
+        LOADING,
+        ENABLED,
+        SHUTTING_DOWN,
+        DISABLED
+    }
+
+    private var serviceState: ServiceState = ServiceState.NULL
+
     @Inject
     lateinit var interceptors: Interceptors
 
     override fun onCreate() {
         super.onCreate()
 
+        setServiceState(ServiceState.LOADING)
         Controllers.install()
     }
 
@@ -48,6 +59,7 @@ class SpeakTouchService : AccessibilityService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             addFlags(AccessibilityServiceInfo.FLAG_REQUEST_2_FINGER_PASSTHROUGH)
         }
+    setServiceState(ServiceState.ENABLED)
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -59,9 +71,11 @@ class SpeakTouchService : AccessibilityService() {
     override fun onDestroy() {
         super.onDestroy()
 
+        setServiceState(ServiceState.SHUTTING_DOWN)
         interceptors.event.forEach(EventInterceptor::finish)
 
         Controllers.uninstall()
+        setServiceState(ServiceState.DISABLED)
     }
 
     override fun onInterrupt() = Unit
@@ -69,5 +83,13 @@ class SpeakTouchService : AccessibilityService() {
     @Deprecated("Deprecated in Java")
     override fun onGesture(gestureId: Int): Boolean {
         return interceptors.gesture.handle(gestureId)
+    }
+
+    fun getServiceState(): ServiceState {
+        return serviceState
+    }
+
+    private fun setServiceState(newState: ServiceState) {
+        serviceState = newState
     }
 }
