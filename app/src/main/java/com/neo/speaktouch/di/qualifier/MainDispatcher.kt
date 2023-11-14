@@ -1,5 +1,5 @@
 /*
- * Legacy effects equivalent to android.os.VibrationEffect.
+ * Main Dispatcher Quantifier.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -16,18 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.utils
+package com.neo.speaktouch.di.qualifier
 
-sealed class LegacyVibrationEffect(val pattern: LongArray) {
-    object HeavyClick : LegacyVibrationEffect(
-        pattern = longArrayOf(
-            0, 50, 50
-        )
-    )
+import javax.inject.Qualifier
 
-    object Tick : LegacyVibrationEffect(
-        pattern = longArrayOf(
-            0, 30
-        )
-    )
-}
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class MainDispatcher

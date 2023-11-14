@@ -16,15 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.intercepter
+package com.neo.speaktouch.intercepter.event
 
 import android.view.accessibility.AccessibilityEvent
-import com.neo.speaktouch.intercepter.interfece.Interceptor
 import com.neo.speaktouch.utils.`object`.NodeValidator
 import com.neo.speaktouch.utils.`typealias`.NodeInfo
 import com.neo.speaktouch.utils.extension.getNearestAncestor
 
-class FocusInterceptor : Interceptor {
+class FocusInterceptor : EventInterceptor {
 
     override fun handle(event: AccessibilityEvent) {
 

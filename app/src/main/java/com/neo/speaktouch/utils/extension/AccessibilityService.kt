@@ -1,5 +1,5 @@
 /*
- * Interface of interceptors.
+ * Extensions for AccessibilityService.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -16,11 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.intercepter.interfece
+package com.neo.speaktouch.utils.extension
 
-import android.view.accessibility.AccessibilityEvent
+import android.accessibilityservice.AccessibilityService
 
-interface Interceptor {
-    fun handle(event: AccessibilityEvent)
-    fun finish() = Unit
+fun AccessibilityService.addFlags(vararg flags: Int) {
+    val info = serviceInfo
+
+    flags.forEach { flag ->
+        info.flags = info.flags or flag
+    }
+
+    serviceInfo = info
 }

@@ -29,6 +29,9 @@ java {
 }
 
 dependencies {
-    implementation(libs.kotlin.gradle.plugin)
-    implementation(libs.android.gradle.plugin)
+    implementation(libs.kotlin.gradlePlugin)
+    implementation(libs.android.gradlePlugin)
+    implementation(libs.android.gradlePluginApi)
+
+    implementation("com.squareup:javapoet:1.13.0")
 }

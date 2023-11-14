@@ -1,5 +1,5 @@
 /*
- * Application of Speak Touch.
+ * Service Wrapper.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -16,28 +16,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch
+package com.neo.speaktouch.controller
 
-import android.app.Application
-import android.content.Context
-import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
-import java.lang.ref.WeakReference
+import android.accessibilityservice.AccessibilityService
+import android.view.accessibility.AccessibilityNodeInfo
+import com.neo.speaktouch.utils.extension.getFocusedOrNull
 
-@HiltAndroidApp
-class SpeakTouchApplication : Application() {
+class ServiceController(
+    private val service: AccessibilityService
+) {
 
-    override fun onCreate() {
-        super.onCreate()
-
-        context = WeakReference(applicationContext)
-
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
+    fun getOrThrow(): AccessibilityService {
+        return service
     }
 
-    companion object {
-        lateinit var context : WeakReference<Context>
+    fun getFocused(): AccessibilityNodeInfo? {
+        return getRoot().getFocusedOrNull()
+    }
+
+    fun getRoot(): AccessibilityNodeInfo {
+        return getOrThrow().rootInActiveWindow
+    }
+
+    fun performGlobalAction(action: Int): Boolean {
+        return getOrThrow().performGlobalAction(action)
     }
 }

@@ -17,15 +17,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.utils
+package com.neo.speaktouch.controller
 
 import android.content.Context
 import android.os.Build
 import android.os.VibrationAttributes
 import android.os.VibrationEffect
 import android.os.Vibrator
+import com.neo.speaktouch.model.LegacyVibrationEffect
 
-class VibrationUtil(private val vibrator: Vibrator) {
+class VibratorController(
+    private val vibrator: Vibrator
+) {
 
     @Suppress("deprecation")
     constructor(context: Context) : this(

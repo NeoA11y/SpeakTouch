@@ -1,5 +1,5 @@
 /*
- * Application of Speak Touch.
+ * Legacy effects equivalent to android.os.VibrationEffect.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -16,28 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch
+package com.neo.speaktouch.model
 
-import android.app.Application
-import android.content.Context
-import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
-import java.lang.ref.WeakReference
+sealed class LegacyVibrationEffect(val pattern: LongArray) {
+    object HeavyClick : LegacyVibrationEffect(
+        pattern = longArrayOf(
+            0, 50, 50
+        )
+    )
 
-@HiltAndroidApp
-class SpeakTouchApplication : Application() {
-
-    override fun onCreate() {
-        super.onCreate()
-
-        context = WeakReference(applicationContext)
-
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
-    }
-
-    companion object {
-        lateinit var context : WeakReference<Context>
-    }
+    object Tick : LegacyVibrationEffect(
+        pattern = longArrayOf(
+            0, 30
+        )
+    )
 }

@@ -21,6 +21,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 java {
@@ -95,10 +97,20 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.appcompat)
+
+    // Android X
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+
+    // Material
     implementation(libs.material)
+
+    // Log
     implementation(libs.timber)
+
+    // Dagger Hilt
+    implementation("com.google.dagger:hilt-android:2.48")
+    ksp("com.google.dagger:hilt-android-compiler:2.48")
 
     // Unit test
     testImplementation(libs.junit)

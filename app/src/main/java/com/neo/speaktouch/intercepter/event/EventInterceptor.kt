@@ -1,5 +1,5 @@
 /*
- * Application of Speak Touch.
+ * Interface of event interceptors.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -16,28 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch
+package com.neo.speaktouch.intercepter.event
 
-import android.app.Application
-import android.content.Context
-import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
-import java.lang.ref.WeakReference
+import android.view.accessibility.AccessibilityEvent
 
-@HiltAndroidApp
-class SpeakTouchApplication : Application() {
-
-    override fun onCreate() {
-        super.onCreate()
-
-        context = WeakReference(applicationContext)
-
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
-    }
-
-    companion object {
-        lateinit var context : WeakReference<Context>
-    }
+interface EventInterceptor {
+    fun handle(event: AccessibilityEvent)
+    fun finish() = Unit
 }

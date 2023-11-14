@@ -19,21 +19,22 @@
 package com.neo.speaktouch.controller
 
 import android.view.accessibility.AccessibilityNodeInfo
-import com.neo.speaktouch.intercepter.CallbackInterceptor
-import com.neo.speaktouch.intercepter.Scroll
+import com.neo.speaktouch.intercepter.gesture.CallbackInterceptor
+import com.neo.speaktouch.intercepter.gesture.Scroll
 import com.neo.speaktouch.model.NodeFilter
 import com.neo.speaktouch.utils.extension.Direction
-import com.neo.speaktouch.utils.extension.getFocusedOrNull
 import com.neo.speaktouch.utils.extension.performFocus
 import com.neo.speaktouch.utils.extension.nodeScan
 
 class FocusController(
-    private val a11yNodeInfoRoot: () -> AccessibilityNodeInfo
+    private val callbackInterceptor: CallbackInterceptor,
+    private val serviceController: ServiceController
 ) {
 
-    private val focusedA11yNodeInfo get() = a11yNodeInfoRoot().getFocusedOrNull()
+    fun getTarget(): AccessibilityNodeInfo {
 
-    fun getTarget() = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
+        return serviceController.getFocused() ?: serviceController.getRoot()
+    }
 
     fun moveFocusToPrevious(
         target: AccessibilityNodeInfo = getTarget(),
@@ -62,7 +63,7 @@ class FocusController(
 
                 if (current.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD)) {
 
-                    CallbackInterceptor.addCallback(
+                    callbackInterceptor.addCallback(
                         object : Scroll(current) {
                             override fun invoke() {
                                 moveFocusToPrevious()
@@ -108,7 +109,7 @@ class FocusController(
 
                 if (current.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)) {
 
-                    CallbackInterceptor.addCallback(
+                    callbackInterceptor.addCallback(
                         object : Scroll(current) {
                             override fun invoke() {
                                 moveFocusToNext()

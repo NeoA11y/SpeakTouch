@@ -23,59 +23,68 @@ import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.os.Build
 import android.view.accessibility.AccessibilityEvent
-import com.neo.speaktouch.controller.FocusController
-import com.neo.speaktouch.intercepter.CallbackInterceptor
-import com.neo.speaktouch.intercepter.FocusInterceptor
-import com.neo.speaktouch.intercepter.GestureInterceptor
-import com.neo.speaktouch.intercepter.HapticInterceptor
-import com.neo.speaktouch.intercepter.SpeechInterceptor
-import com.neo.speaktouch.intercepter.interfece.Interceptor
-import com.neo.speaktouch.utils.extension.getLog
-import com.neo.speaktouch.utils.VibrationUtil
-import timber.log.Timber
+import com.neo.speaktouch.intercepter.event.EventInterceptor
+import com.neo.speaktouch.intercepter.event.FocusInterceptor
+import com.neo.speaktouch.intercepter.event.GestureInterceptor
+import com.neo.speaktouch.intercepter.event.HapticInterceptor
+import com.neo.speaktouch.intercepter.event.SpeechInterceptor
+import com.neo.speaktouch.intercepter.gesture.CallbackInterceptor
+import com.neo.speaktouch.utils.extension.addFlags
+import dagger.hilt.android.AndroidEntryPoint
+import java.lang.ref.WeakReference
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class SpeakTouchService : AccessibilityService() {
 
-    private val interceptors = mutableListOf<Interceptor>()
+    init {
+        context = WeakReference(this)
+    }
 
-    private lateinit var gestureInterceptor: GestureInterceptor
+    @Inject
+    lateinit var gestureInterceptor: GestureInterceptor
+
+    @Inject
+    lateinit var focusInterceptor: FocusInterceptor
+
+    @Inject
+    lateinit var callbackInterceptor: CallbackInterceptor
+
+    @Inject
+    lateinit var speechInterceptor: SpeechInterceptor
+
+    @Inject
+    lateinit var hapticInterceptor: HapticInterceptor
+
+    private val eventInterceptors = mutableListOf<EventInterceptor>()
 
     override fun onCreate() {
         super.onCreate()
 
-        gestureInterceptor = GestureInterceptor(
-            FocusController { rootInActiveWindow },
-            accessibilityService = this
-        )
+        setupInterceptors()
+    }
 
-        interceptors.add(CallbackInterceptor)
+    private fun setupInterceptors() {
 
-        interceptors.add(FocusInterceptor())
+        eventInterceptors.add(speechInterceptor)
 
-        interceptors.add(SpeechInterceptor.getInstance(this))
+        eventInterceptors.add(callbackInterceptor)
 
-        interceptors.add(
-            HapticInterceptor(
-                vibration = VibrationUtil(this),
-            )
-        )
+        eventInterceptors.add(focusInterceptor)
+
+        eventInterceptors.add(hapticInterceptor)
     }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val info = serviceInfo
-            info.flags = info.flags or AccessibilityServiceInfo.FLAG_REQUEST_2_FINGER_PASSTHROUGH
-            serviceInfo = info
+            addFlags(AccessibilityServiceInfo.FLAG_REQUEST_2_FINGER_PASSTHROUGH)
         }
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-
-        Timber.d(event.getLog())
-
-        interceptors.forEach {
+        eventInterceptors.forEach {
             it.handle(event)
         }
     }
@@ -83,8 +92,8 @@ class SpeakTouchService : AccessibilityService() {
     override fun onDestroy() {
         super.onDestroy()
 
-        interceptors.forEach(Interceptor::finish)
-        interceptors.clear()
+        eventInterceptors.forEach(EventInterceptor::finish)
+        eventInterceptors.clear()
     }
 
     override fun onInterrupt() = Unit
@@ -93,5 +102,8 @@ class SpeakTouchService : AccessibilityService() {
     override fun onGesture(gestureId: Int): Boolean {
         return gestureInterceptor.handle(gestureId)
     }
-}
 
+    companion object {
+        lateinit var context: WeakReference<SpeakTouchService>
+    }
+}

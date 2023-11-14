@@ -1,5 +1,5 @@
 /*
- * Application of Speak Touch.
+ * Global controller.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -16,28 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch
+package com.neo.speaktouch.controller
 
-import android.app.Application
-import android.content.Context
-import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
-import java.lang.ref.WeakReference
+import com.neo.speaktouch.di.entrypoint.SpeechControllerEntryPoint
+import com.neo.speaktouch.model.UiText
+import com.neo.speaktouch.service.SpeakTouchService
+import dagger.hilt.EntryPoints
 
-@HiltAndroidApp
-class SpeakTouchApplication : Application() {
+object Controller {
 
-    override fun onCreate() {
-        super.onCreate()
+    private val speakController
+        get() = EntryPoints.get(
+            checkNotNull(SpeakTouchService.context.get()),
+            SpeechControllerEntryPoint::class.java
+        ).getSpeechController()
 
-        context = WeakReference(applicationContext)
-
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
-    }
-
-    companion object {
-        lateinit var context : WeakReference<Context>
+    fun speak(text: UiText) {
+        speakController.speak(text)
     }
 }

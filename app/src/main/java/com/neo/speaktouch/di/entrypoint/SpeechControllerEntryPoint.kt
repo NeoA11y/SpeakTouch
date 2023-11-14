@@ -1,5 +1,5 @@
 /*
- * Application of Speak Touch.
+ * Entry point for SpeechController.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -16,28 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch
+package com.neo.speaktouch.di.entrypoint
 
-import android.app.Application
-import android.content.Context
-import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
-import java.lang.ref.WeakReference
+import com.neo.speaktouch.controller.SpeechController
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ServiceComponent
 
-@HiltAndroidApp
-class SpeakTouchApplication : Application() {
-
-    override fun onCreate() {
-        super.onCreate()
-
-        context = WeakReference(applicationContext)
-
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
-    }
-
-    companion object {
-        lateinit var context : WeakReference<Context>
-    }
+@EntryPoint
+@InstallIn(ServiceComponent::class)
+interface SpeechControllerEntryPoint {
+    fun getSpeechController(): SpeechController
 }

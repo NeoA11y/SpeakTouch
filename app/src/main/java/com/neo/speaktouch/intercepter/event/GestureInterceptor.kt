@@ -17,20 +17,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.intercepter
+package com.neo.speaktouch.intercepter.event
 
 import android.accessibilityservice.AccessibilityService
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.neo.speaktouch.controller.FocusController
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.neo.speaktouch.controller.ServiceController
 
 class GestureInterceptor(
     private val focusController: FocusController,
-    private val accessibilityService: AccessibilityService
+    private val serviceController: ServiceController
 ) {
 
     fun handle(gestureId: Int): Boolean {
@@ -49,7 +46,10 @@ class GestureInterceptor(
             }
 
             AccessibilityService.GESTURE_SWIPE_DOWN_AND_LEFT -> {
-                accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+
+                serviceController.performGlobalAction(
+                    AccessibilityService.GLOBAL_ACTION_BACK
+                )
 
                 return true
             }
@@ -68,7 +68,9 @@ class GestureInterceptor(
         when (gestureId) {
             AccessibilityService.GESTURE_2_FINGER_DOUBLE_TAP -> {
 
-                accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_KEYCODE_HEADSETHOOK)
+                serviceController.performGlobalAction(
+                    AccessibilityService.GLOBAL_ACTION_KEYCODE_HEADSETHOOK
+                )
 
                 return true
             }
