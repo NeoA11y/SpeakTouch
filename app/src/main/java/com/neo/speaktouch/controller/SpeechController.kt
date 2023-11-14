@@ -20,10 +20,10 @@ package com.neo.speaktouch.controller
 
 import android.content.Context
 import android.speech.tts.TextToSpeech
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.model.Reader
 import com.neo.speaktouch.model.UiText
 import com.neo.speaktouch.utils.extension.getLog
-import com.neo.speaktouch.utils.`typealias`.NodeInfo
 import timber.log.Timber
 
 class SpeechController(
@@ -51,7 +51,7 @@ class SpeechController(
         speak(text.resolved(context))
     }
 
-    fun speak(nodeInfo: NodeInfo) {
+    fun speak(nodeInfo: AccessibilityNodeInfoCompat) {
 
         Timber.i("speak: ${nodeInfo.getLog()}")
 

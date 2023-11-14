@@ -18,16 +18,16 @@
 
 package com.neo.speaktouch.utils.`object`
 
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.utils.extension.isNotNullOrEmpty
 import com.neo.speaktouch.utils.extension.iterator
-import com.neo.speaktouch.utils.`typealias`.NodeInfo
 
 object NodeValidator {
 
     /**
      * @return true if [node] has any click
      */
-    private fun isClickable(node: NodeInfo): Boolean {
+    private fun isClickable(node: AccessibilityNodeInfoCompat): Boolean {
 
         return node.isClickable || node.isLongClickable
     }
@@ -35,7 +35,7 @@ object NodeValidator {
     /**
      * @return true if [node] has any interaction
      */
-    private fun hasInteraction(node: NodeInfo): Boolean {
+    private fun hasInteraction(node: AccessibilityNodeInfoCompat): Boolean {
 
         return isClickable(node) || node.isFocusable
     }
@@ -43,7 +43,7 @@ object NodeValidator {
     /**
      * @return true if [node] has some text to read
      */
-    private fun hasTextToRead(node: NodeInfo): Boolean {
+    private fun hasTextToRead(node: AccessibilityNodeInfoCompat): Boolean {
 
         return listOf(
             node.text,
@@ -55,7 +55,7 @@ object NodeValidator {
     /**
      * @return true if [node] should be read directly
      */
-    private fun mustReadContent(node: NodeInfo): Boolean {
+    private fun mustReadContent(node: AccessibilityNodeInfoCompat): Boolean {
 
         return hasContentToRead(node) && hasInteraction(node)
     }
@@ -63,7 +63,7 @@ object NodeValidator {
     /**
      * @return true if [node] has a readable child
      */
-    private fun hasReadableChild(node: NodeInfo): Boolean {
+    private fun hasReadableChild(node: AccessibilityNodeInfoCompat): Boolean {
 
         for (child in node) {
             if (!isValidForAccessibility(child)) continue
@@ -76,7 +76,7 @@ object NodeValidator {
     /**
      * @return true if [node] must be ignored
      */
-    fun isValidForAccessibility(node: NodeInfo): Boolean {
+    fun isValidForAccessibility(node: AccessibilityNodeInfoCompat): Boolean {
 
         return node.isImportantForAccessibility && node.isVisibleToUser
     }
@@ -84,7 +84,7 @@ object NodeValidator {
     /**
      * @return true if is mandatory to focus on [node]
      */
-    fun mustFocus(node: NodeInfo): Boolean {
+    fun mustFocus(node: AccessibilityNodeInfoCompat): Boolean {
 
         return mustReadContent(node) || mustReadChildren(node)
     }
@@ -92,7 +92,7 @@ object NodeValidator {
     /**
      * @return true if is mandatory read [node]'s children
      */
-    fun mustReadChildren(node: NodeInfo) : Boolean {
+    fun mustReadChildren(node: AccessibilityNodeInfoCompat) : Boolean {
 
         if (mustReadContent(node)) return false
 
@@ -102,7 +102,7 @@ object NodeValidator {
     /**
      * @return true if [node] has content (text or state)
      */
-    fun hasContentToRead(node: NodeInfo): Boolean {
+    fun hasContentToRead(node: AccessibilityNodeInfoCompat): Boolean {
 
         return hasTextToRead(node) || node.isCheckable
     }
@@ -110,7 +110,7 @@ object NodeValidator {
     /**
      * @return true if [node] cannot be read directly
      */
-    fun isReadableAsChild(node: NodeInfo): Boolean {
+    fun isReadableAsChild(node: AccessibilityNodeInfoCompat): Boolean {
 
         if (mustFocus(node)) return false
 

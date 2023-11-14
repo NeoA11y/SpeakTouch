@@ -20,10 +20,10 @@
 package com.neo.speaktouch.intercepter.event
 
 import android.view.accessibility.AccessibilityEvent
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.controller.SpeechController
 import com.neo.speaktouch.utils.extension.isAccessibilityFocused
 import com.neo.speaktouch.utils.extension.isTouchInteractionStart
-import com.neo.speaktouch.utils.`typealias`.NodeInfo
 import timber.log.Timber
 
 class SpeechInterceptor(
@@ -40,7 +40,7 @@ class SpeechInterceptor(
         }
 
         if (event.isAccessibilityFocused) {
-            speech.speak(NodeInfo.wrap(event.source ?: return))
+            speech.speak(AccessibilityNodeInfoCompat.wrap(event.source ?: return))
         }
     }
 

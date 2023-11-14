@@ -19,15 +19,15 @@
 package com.neo.speaktouch.intercepter.event
 
 import android.view.accessibility.AccessibilityEvent
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.utils.`object`.NodeValidator
-import com.neo.speaktouch.utils.`typealias`.NodeInfo
 import com.neo.speaktouch.utils.extension.getNearestAncestor
 
 class FocusInterceptor : EventInterceptor {
 
     override fun handle(event: AccessibilityEvent) {
 
-        val nodeInfo = NodeInfo.wrap(event.source ?: return)
+        val nodeInfo = AccessibilityNodeInfoCompat.wrap(event.source ?: return)
 
         if (nodeInfo.isAccessibilityFocused) return
 
@@ -50,13 +50,13 @@ class FocusInterceptor : EventInterceptor {
         }
     }
 
-    private fun handlerAccessibilityNode(nodeInfo: NodeInfo) {
+    private fun handlerAccessibilityNode(nodeInfo: AccessibilityNodeInfoCompat) {
         getFocusableNode(nodeInfo)?.run {
-            performAction(NodeInfo.ACTION_ACCESSIBILITY_FOCUS)
+            performAction(AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS)
         }
     }
 
-    private fun getFocusableNode(nodeInfo: NodeInfo): NodeInfo? {
+    private fun getFocusableNode(nodeInfo: AccessibilityNodeInfoCompat): AccessibilityNodeInfoCompat? {
 
         if (NodeValidator.mustFocus(nodeInfo)) {
             return nodeInfo

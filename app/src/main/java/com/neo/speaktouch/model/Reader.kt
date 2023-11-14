@@ -19,20 +19,20 @@
 package com.neo.speaktouch.model
 
 import android.content.Context
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.R
 import com.neo.speaktouch.utils.extension.filterNotNullOrEmpty
 import com.neo.speaktouch.utils.extension.getLog
 import com.neo.speaktouch.utils.extension.ifEmptyOrNull
 import com.neo.speaktouch.utils.extension.iterator
 import com.neo.speaktouch.utils.`object`.NodeValidator
-import com.neo.speaktouch.utils.`typealias`.NodeInfo
 import timber.log.Timber
 
 class Reader(
     private val context: Context
 ) {
     fun getContent(
-        nodeInfo: NodeInfo
+        nodeInfo: AccessibilityNodeInfoCompat
     ) = getContent(
         nodeInfo,
         Level.Text(
@@ -43,7 +43,7 @@ class Reader(
     )
 
     private fun getContent(
-        node: NodeInfo,
+        node: AccessibilityNodeInfoCompat,
         level: Level
     ): String {
         Timber.d(
@@ -100,7 +100,7 @@ class Reader(
     }
 
     private fun getType(
-        node: NodeInfo,
+        node: AccessibilityNodeInfoCompat,
         mustRead: Boolean
     ): String? {
 
@@ -122,7 +122,7 @@ class Reader(
     }
 
     private fun getCheckable(
-        nodeInfo: NodeInfo,
+        nodeInfo: AccessibilityNodeInfoCompat,
         mustRead: Boolean
     ): CharSequence? {
         if (!mustRead) return null
@@ -136,7 +136,7 @@ class Reader(
     }
 
     private fun getSelection(
-        node: NodeInfo,
+        node: AccessibilityNodeInfoCompat,
         mustRead: Boolean
     ) = if (mustRead && node.isSelected) {
         context.getString(R.string.text_selected)

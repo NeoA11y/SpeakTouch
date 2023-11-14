@@ -19,15 +19,15 @@
 package com.neo.speaktouch.utils.extension
 
 import android.view.accessibility.AccessibilityNodeInfo
+import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat
 import com.neo.speaktouch.utils.`object`.NodeValidator
-import com.neo.speaktouch.utils.`typealias`.NodeAction
-import com.neo.speaktouch.utils.`typealias`.NodeInfo
 
-fun NodeInfo.getNearestAncestor(
-    predicate: (NodeInfo) -> Boolean
-): NodeInfo? {
-    var current: NodeInfo? = this.parent
+fun AccessibilityNodeInfoCompat.getNearestAncestor(
+    predicate: (AccessibilityNodeInfoCompat) -> Boolean
+): AccessibilityNodeInfoCompat? {
+    var current: AccessibilityNodeInfoCompat? = this.parent
 
     while (current != null && !predicate(current)) {
         current = current.parent
@@ -36,7 +36,7 @@ fun NodeInfo.getNearestAncestor(
     return current
 }
 
-operator fun NodeInfo.iterator() = object : Iterator<NodeInfo> {
+operator fun AccessibilityNodeInfoCompat.iterator() = object : Iterator<AccessibilityNodeInfoCompat> {
 
     var index = -1
 
@@ -44,13 +44,13 @@ operator fun NodeInfo.iterator() = object : Iterator<NodeInfo> {
         return childCount != index + 1
     }
 
-    override fun next(): NodeInfo {
+    override fun next(): AccessibilityNodeInfoCompat {
         return getChild(++index)
     }
 
 }
 
-fun NodeInfo.getLog(vararg extra: String) = buildList {
+fun AccessibilityNodeInfoCompat.getLog(vararg extra: String) = buildList {
 
     add("class: $className")
     add("packageName: $packageName")
@@ -102,7 +102,7 @@ fun NodeInfo.getLog(vararg extra: String) = buildList {
 
 }.joinToString("\n")
 
-private val NodeAction.name: String
+private val AccessibilityActionCompat.name: String
     get() = when (id) {
         AccessibilityNodeInfoCompat.ACTION_FOCUS -> "ACTION_FOCUS"
         AccessibilityNodeInfoCompat.ACTION_CLEAR_FOCUS -> "ACTION_CLEAR_FOCUS"
