@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.intercepter.event
+package com.neo.speaktouch.intercepter.gesture
 
 import android.accessibilityservice.AccessibilityService
 import android.os.Build

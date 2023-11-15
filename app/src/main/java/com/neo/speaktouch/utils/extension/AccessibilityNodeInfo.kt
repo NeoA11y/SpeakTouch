@@ -19,10 +19,9 @@
 package com.neo.speaktouch.utils.extension
 
 import android.view.accessibility.AccessibilityNodeInfo
-import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat
-import com.neo.speaktouch.utils.`object`.NodeValidator
+import com.neo.speaktouch.utils.NodeValidator
 
 fun AccessibilityNodeInfoCompat.getNearestAncestor(
     predicate: (AccessibilityNodeInfoCompat) -> Boolean

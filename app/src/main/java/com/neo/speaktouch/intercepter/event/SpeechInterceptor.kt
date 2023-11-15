@@ -22,6 +22,7 @@ package com.neo.speaktouch.intercepter.event
 import android.view.accessibility.AccessibilityEvent
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.controller.SpeechController
+import com.neo.speaktouch.intercepter.event.contract.EventInterceptor
 import com.neo.speaktouch.utils.extension.isAccessibilityFocused
 import com.neo.speaktouch.utils.extension.isTouchInteractionStart
 import dagger.hilt.android.scopes.ServiceScoped

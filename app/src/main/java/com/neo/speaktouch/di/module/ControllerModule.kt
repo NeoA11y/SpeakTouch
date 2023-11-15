@@ -26,7 +26,7 @@ import com.neo.speaktouch.R
 import com.neo.speaktouch.controller.Controllers
 import com.neo.speaktouch.controller.SpeechController
 import com.neo.speaktouch.controller.VibratorController
-import com.neo.speaktouch.model.Reader
+import com.neo.speaktouch.utils.Reader
 import com.neo.speaktouch.model.UiText
 import dagger.Module
 import dagger.Provides

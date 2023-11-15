@@ -1,7 +1,7 @@
 /*
- * Node focus and read validations.
+ * [FILE DESCRIPTION].
  *
- * Copyright (C) 2023 Irineu A. Silva.
+ * Copyright (C) 2023 [AUTHOR].
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.utils.`object`
+package com.neo.speaktouch.utils
 
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.utils.extension.isNotNullOrEmpty

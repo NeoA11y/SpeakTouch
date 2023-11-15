@@ -24,12 +24,8 @@ import android.accessibilityservice.AccessibilityServiceInfo
 import android.os.Build
 import android.view.accessibility.AccessibilityEvent
 import com.neo.speaktouch.controller.Controllers
-import com.neo.speaktouch.intercepter.event.EventInterceptor
-import com.neo.speaktouch.intercepter.event.FocusInterceptor
-import com.neo.speaktouch.intercepter.event.GestureInterceptor
-import com.neo.speaktouch.intercepter.event.HapticInterceptor
-import com.neo.speaktouch.intercepter.event.SpeechInterceptor
-import com.neo.speaktouch.intercepter.gesture.CallbackInterceptor
+import com.neo.speaktouch.intercepter.Interceptors
+import com.neo.speaktouch.intercepter.event.contract.EventInterceptor
 import com.neo.speaktouch.utils.extension.addFlags
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -38,39 +34,12 @@ import javax.inject.Inject
 class SpeakTouchService : AccessibilityService() {
 
     @Inject
-    lateinit var gestureInterceptor: GestureInterceptor
-
-    @Inject
-    lateinit var focusInterceptor: FocusInterceptor
-
-    @Inject
-    lateinit var callbackInterceptor: CallbackInterceptor
-
-    @Inject
-    lateinit var speechInterceptor: SpeechInterceptor
-
-    @Inject
-    lateinit var hapticInterceptor: HapticInterceptor
-
-    private val eventInterceptors = mutableListOf<EventInterceptor>()
+    lateinit var interceptors: Interceptors
 
     override fun onCreate() {
         super.onCreate()
 
         Controllers.install()
-
-        setupInterceptors()
-    }
-
-    private fun setupInterceptors() {
-
-        eventInterceptors.add(speechInterceptor)
-
-        eventInterceptors.add(callbackInterceptor)
-
-        eventInterceptors.add(focusInterceptor)
-
-        eventInterceptors.add(hapticInterceptor)
     }
 
     override fun onServiceConnected() {
@@ -82,7 +51,7 @@ class SpeakTouchService : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        eventInterceptors.forEach {
+        interceptors.event.forEach {
             it.handle(event)
         }
     }
@@ -90,8 +59,7 @@ class SpeakTouchService : AccessibilityService() {
     override fun onDestroy() {
         super.onDestroy()
 
-        eventInterceptors.forEach(EventInterceptor::finish)
-        eventInterceptors.clear()
+        interceptors.event.forEach(EventInterceptor::finish)
 
         Controllers.uninstall()
     }
@@ -100,6 +68,6 @@ class SpeakTouchService : AccessibilityService() {
 
     @Deprecated("Deprecated in Java")
     override fun onGesture(gestureId: Int): Boolean {
-        return gestureInterceptor.handle(gestureId)
+        return interceptors.gesture.handle(gestureId)
     }
 }

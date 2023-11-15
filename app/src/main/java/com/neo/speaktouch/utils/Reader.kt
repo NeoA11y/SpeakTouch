@@ -16,16 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.model
+package com.neo.speaktouch.utils
 
 import android.content.Context
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.R
+import com.neo.speaktouch.model.Type
 import com.neo.speaktouch.utils.extension.filterNotNullOrEmpty
 import com.neo.speaktouch.utils.extension.getLog
 import com.neo.speaktouch.utils.extension.ifEmptyOrNull
 import com.neo.speaktouch.utils.extension.iterator
-import com.neo.speaktouch.utils.`object`.NodeValidator
 import timber.log.Timber
 import javax.inject.Inject
 

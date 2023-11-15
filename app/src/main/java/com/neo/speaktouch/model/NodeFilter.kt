@@ -21,7 +21,7 @@ package com.neo.speaktouch.model
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.utils.extension.getNearestAncestor
-import com.neo.speaktouch.utils.`object`.NodeValidator
+import com.neo.speaktouch.utils.NodeValidator
 
 sealed interface NodeFilter {
     fun filter(node: AccessibilityNodeInfo): Boolean

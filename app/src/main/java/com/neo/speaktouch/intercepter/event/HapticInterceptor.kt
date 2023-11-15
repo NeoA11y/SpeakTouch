@@ -21,6 +21,7 @@ package com.neo.speaktouch.intercepter.event
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.neo.speaktouch.controller.VibratorController
+import com.neo.speaktouch.intercepter.event.contract.EventInterceptor
 import dagger.hilt.android.scopes.ServiceScoped
 import javax.inject.Inject
 

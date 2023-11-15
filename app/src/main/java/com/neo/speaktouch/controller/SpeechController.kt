@@ -21,7 +21,7 @@ package com.neo.speaktouch.controller
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
-import com.neo.speaktouch.model.Reader
+import com.neo.speaktouch.utils.Reader
 import com.neo.speaktouch.model.UiText
 import com.neo.speaktouch.utils.extension.getLog
 import timber.log.Timber
