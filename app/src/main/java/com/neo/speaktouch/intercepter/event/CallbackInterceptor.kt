@@ -21,8 +21,10 @@ package com.neo.speaktouch.intercepter.gesture
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.neo.speaktouch.intercepter.event.EventInterceptor
+import javax.inject.Inject
 
-class CallbackInterceptor : EventInterceptor {
+@ServiceScoped
+class CallbackInterceptor @Inject constructor() : EventInterceptor {
 
     private val scrolls = mutableListOf<Scroll>()
 

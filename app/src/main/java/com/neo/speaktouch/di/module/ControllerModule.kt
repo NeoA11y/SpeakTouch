@@ -1,5 +1,5 @@
 /*
- * Controller DI.
+ * Controllers DI module.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -18,16 +18,14 @@
 
 package com.neo.speaktouch.di.module
 
-import android.accessibilityservice.AccessibilityService
 import android.content.Context
 import android.media.AudioAttributes
+import android.os.Vibrator
 import android.speech.tts.TextToSpeech
 import com.neo.speaktouch.R
 import com.neo.speaktouch.controller.Controllers
-import com.neo.speaktouch.controller.FocusController
-import com.neo.speaktouch.controller.ServiceController
 import com.neo.speaktouch.controller.SpeechController
-import com.neo.speaktouch.intercepter.gesture.CallbackInterceptor
+import com.neo.speaktouch.controller.VibratorController
 import com.neo.speaktouch.model.Reader
 import com.neo.speaktouch.model.UiText
 import dagger.Module
@@ -42,26 +40,19 @@ object ControllerModule {
 
     @Provides
     @ServiceScoped
-    fun providesServiceController(
-        service: AccessibilityService
-    ): ServiceController {
-        return ServiceController(service)
-    }
+    fun providesVibratorController(
+        context: Context
+    ) : VibratorController {
 
-    @Provides
-    @ServiceScoped
-    fun providesFocusController(
-        callbackInterceptor: CallbackInterceptor,
-        serviceController: ServiceController
-    ): FocusController {
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
-        return FocusController(callbackInterceptor, serviceController)
+        return VibratorController(vibrator)
     }
 
     @Provides
     @ServiceScoped
     fun providesSpeechController(
-        context: Context
+        context: Context,
     ): SpeechController {
 
         val audioAttributes = AudioAttributes.Builder()

@@ -24,9 +24,12 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.controller.SpeechController
 import com.neo.speaktouch.utils.extension.isAccessibilityFocused
 import com.neo.speaktouch.utils.extension.isTouchInteractionStart
+import dagger.hilt.android.scopes.ServiceScoped
 import timber.log.Timber
+import javax.inject.Inject
 
-class SpeechInterceptor(
+@ServiceScoped
+class SpeechInterceptor @Inject constructor(
     private val speech: SpeechController
 ) : EventInterceptor {
 

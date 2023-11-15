@@ -1,5 +1,5 @@
 /*
- * Service DI.
+ * Services DI module.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -21,6 +21,7 @@ package com.neo.speaktouch.di.module
 import android.accessibilityservice.AccessibilityService
 import android.app.Service
 import android.content.Context
+import android.os.Vibrator
 import com.neo.speaktouch.service.SpeakTouchService
 import dagger.Binds
 import dagger.Module

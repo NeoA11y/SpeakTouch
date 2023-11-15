@@ -19,21 +19,17 @@
 
 package com.neo.speaktouch.controller
 
-import android.content.Context
 import android.os.Build
 import android.os.VibrationAttributes
 import android.os.VibrationEffect
 import android.os.Vibrator
 import com.neo.speaktouch.model.LegacyVibrationEffect
+import dagger.hilt.android.scopes.ServiceScoped
+import javax.inject.Inject
 
 class VibratorController(
     private val vibrator: Vibrator
 ) {
-
-    @Suppress("deprecation")
-    constructor(context: Context) : this(
-        context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-    )
 
     fun vibrateEffectHeavyClick() {
 

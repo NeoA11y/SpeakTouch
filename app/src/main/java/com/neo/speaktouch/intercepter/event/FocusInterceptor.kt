@@ -22,8 +22,11 @@ import android.view.accessibility.AccessibilityEvent
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.utils.`object`.NodeValidator
 import com.neo.speaktouch.utils.extension.getNearestAncestor
+import dagger.hilt.android.scopes.ServiceScoped
+import javax.inject.Inject
 
-class FocusInterceptor : EventInterceptor {
+@ServiceScoped
+class FocusInterceptor @Inject constructor() : EventInterceptor {
 
     override fun handle(event: AccessibilityEvent) {
 

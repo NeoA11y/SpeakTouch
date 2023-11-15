@@ -24,8 +24,11 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.neo.speaktouch.controller.FocusController
 import com.neo.speaktouch.controller.ServiceController
+import dagger.hilt.android.scopes.ServiceScoped
+import javax.inject.Inject
 
-class GestureInterceptor(
+@ServiceScoped
+class GestureInterceptor @Inject constructor(
     private val focusController: FocusController,
     private val serviceController: ServiceController
 ) {

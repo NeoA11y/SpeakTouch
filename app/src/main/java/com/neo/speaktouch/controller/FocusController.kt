@@ -25,8 +25,11 @@ import com.neo.speaktouch.model.NodeFilter
 import com.neo.speaktouch.utils.extension.Direction
 import com.neo.speaktouch.utils.extension.performFocus
 import com.neo.speaktouch.utils.extension.nodeScan
+import dagger.hilt.android.scopes.ServiceScoped
+import javax.inject.Inject
 
-class FocusController(
+@ServiceScoped
+class FocusController @Inject constructor(
     private val callbackInterceptor: CallbackInterceptor,
     private val serviceController: ServiceController
 ) {

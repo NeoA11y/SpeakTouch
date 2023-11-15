@@ -27,8 +27,9 @@ import com.neo.speaktouch.utils.extension.ifEmptyOrNull
 import com.neo.speaktouch.utils.extension.iterator
 import com.neo.speaktouch.utils.`object`.NodeValidator
 import timber.log.Timber
+import javax.inject.Inject
 
-class Reader(
+class Reader @Inject constructor(
     private val context: Context
 ) {
     fun getContent(

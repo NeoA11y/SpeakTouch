@@ -21,8 +21,11 @@ package com.neo.speaktouch.intercepter.event
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.neo.speaktouch.controller.VibratorController
+import dagger.hilt.android.scopes.ServiceScoped
+import javax.inject.Inject
 
-class HapticInterceptor(
+@ServiceScoped
+class HapticInterceptor @Inject constructor(
     private val vibration: VibratorController
 ) : EventInterceptor {
 

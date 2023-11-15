@@ -21,8 +21,11 @@ package com.neo.speaktouch.controller
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityNodeInfo
 import com.neo.speaktouch.utils.extension.getFocusedOrNull
+import dagger.hilt.android.scopes.ServiceScoped
+import javax.inject.Inject
 
-class ServiceController(
+@ServiceScoped
+class ServiceController @Inject constructor(
     private val service: AccessibilityService
 ) {
 
