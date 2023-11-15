@@ -33,5 +33,5 @@
     <string name="text_enabled">włączone</string>
     <string name="text_disabled">wyłączone</string>
     <string name="text_selected">wybrany</string>
-    <string name="speak_touch_activated">Aktywowano funkcję mówienia dotykowego</string>
+    <string name="speak_touch_activated">Speak Touch aktywowany</string>
 </resources>
