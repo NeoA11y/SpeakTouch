@@ -18,23 +18,22 @@
 
 package com.neo.speaktouch.di.module
 
+import android.accessibilityservice.AccessibilityService
 import android.content.Context
 import android.media.AudioAttributes
 import android.speech.tts.TextToSpeech
 import com.neo.speaktouch.R
-import com.neo.speaktouch.controller.Controller
+import com.neo.speaktouch.controller.Controllers
 import com.neo.speaktouch.controller.FocusController
 import com.neo.speaktouch.controller.ServiceController
 import com.neo.speaktouch.controller.SpeechController
 import com.neo.speaktouch.intercepter.gesture.CallbackInterceptor
 import com.neo.speaktouch.model.Reader
 import com.neo.speaktouch.model.UiText
-import com.neo.speaktouch.service.SpeakTouchService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ServiceComponent
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ServiceScoped
 
 @Module
@@ -43,10 +42,9 @@ object ControllerModule {
 
     @Provides
     @ServiceScoped
-    fun providesServiceWrapper(): ServiceController {
-
-        val service = checkNotNull(SpeakTouchService.context.get())
-
+    fun providesServiceController(
+        service: AccessibilityService
+    ): ServiceController {
         return ServiceController(service)
     }
 
@@ -63,7 +61,7 @@ object ControllerModule {
     @Provides
     @ServiceScoped
     fun providesSpeechController(
-        @ApplicationContext context: Context
+        context: Context
     ): SpeechController {
 
         val audioAttributes = AudioAttributes.Builder()
@@ -73,7 +71,7 @@ object ControllerModule {
 
         val textToSpeech = TextToSpeech(context) { status ->
             if (status == TextToSpeech.SUCCESS) {
-                Controller.speak(
+                Controllers.speech.speak(
                     UiText(R.string.speak_touch_activated)
                 )
             }

@@ -18,20 +18,17 @@
 
 package com.neo.speaktouch.controller
 
+import android.accessibilityservice.AccessibilityService
 import com.neo.speaktouch.di.entrypoint.SpeechControllerEntryPoint
-import com.neo.speaktouch.model.UiText
-import com.neo.speaktouch.service.SpeakTouchService
+import com.neo.speaktouch.utils.Installable
 import dagger.hilt.EntryPoints
+import java.lang.ref.WeakReference
 
-object Controller {
+object Controllers : Installable<AccessibilityService>() {
 
-    private val speakController
+    val speech
         get() = EntryPoints.get(
-            checkNotNull(SpeakTouchService.context.get()),
+            checkNotNull(instance.get()),
             SpeechControllerEntryPoint::class.java
         ).getSpeechController()
-
-    fun speak(text: UiText) {
-        speakController.speak(text)
-    }
 }

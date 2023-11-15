@@ -23,6 +23,7 @@ import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.os.Build
 import android.view.accessibility.AccessibilityEvent
+import com.neo.speaktouch.controller.Controllers
 import com.neo.speaktouch.intercepter.event.EventInterceptor
 import com.neo.speaktouch.intercepter.event.FocusInterceptor
 import com.neo.speaktouch.intercepter.event.GestureInterceptor
@@ -31,15 +32,10 @@ import com.neo.speaktouch.intercepter.event.SpeechInterceptor
 import com.neo.speaktouch.intercepter.gesture.CallbackInterceptor
 import com.neo.speaktouch.utils.extension.addFlags
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class SpeakTouchService : AccessibilityService() {
-
-    init {
-        context = WeakReference(this)
-    }
 
     @Inject
     lateinit var gestureInterceptor: GestureInterceptor
@@ -60,6 +56,8 @@ class SpeakTouchService : AccessibilityService() {
 
     override fun onCreate() {
         super.onCreate()
+
+        Controllers.install()
 
         setupInterceptors()
     }
@@ -94,6 +92,8 @@ class SpeakTouchService : AccessibilityService() {
 
         eventInterceptors.forEach(EventInterceptor::finish)
         eventInterceptors.clear()
+
+        Controllers.uninstall()
     }
 
     override fun onInterrupt() = Unit
@@ -101,9 +101,5 @@ class SpeakTouchService : AccessibilityService() {
     @Deprecated("Deprecated in Java")
     override fun onGesture(gestureId: Int): Boolean {
         return gestureInterceptor.handle(gestureId)
-    }
-
-    companion object {
-        lateinit var context: WeakReference<SpeakTouchService>
     }
 }
