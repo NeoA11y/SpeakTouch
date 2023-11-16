@@ -33,5 +33,6 @@
     <string name="text_enabled">ativado</string>
     <string name="text_disabled">desativado</string>
     <string name="text_selected">selecionado</string>
+
     <string name="speak_touch_activated">Speak Touch Ativado</string>
 </resources>
