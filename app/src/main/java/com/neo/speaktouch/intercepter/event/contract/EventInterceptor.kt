@@ -1,8 +1,7 @@
 /*
- * BuildSrc module Gradle configurations
+ * Interface of event interceptors.
  *
  * Copyright (C) 2023 Irineu A. Silva.
- * Copyright (C) 2023 Patryk Miś.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,21 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    `kotlin-dsl`
-}
+package com.neo.speaktouch.intercepter.event.contract
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-        vendor.set(JvmVendorSpec.ADOPTIUM)
-    }
-}
+import android.view.accessibility.AccessibilityEvent
 
-dependencies {
-    implementation(libs.kotlin.gradlePlugin)
-    implementation(libs.android.gradlePlugin)
-    implementation(libs.android.gradlePluginApi)
-
-    implementation(libs.squareup.javapoet)
+interface EventInterceptor {
+    fun handle(event: AccessibilityEvent)
+    fun finish() = Unit
 }

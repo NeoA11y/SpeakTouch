@@ -16,16 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.intercepter
+package com.neo.speaktouch.intercepter.event
 
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
-import com.neo.speaktouch.intercepter.interfece.Interceptor
-import com.neo.speaktouch.utils.VibrationUtil
+import com.neo.speaktouch.controller.VibratorController
+import com.neo.speaktouch.intercepter.event.contract.EventInterceptor
+import dagger.hilt.android.scopes.ServiceScoped
+import javax.inject.Inject
 
-class HapticInterceptor(
-    private val vibration: VibrationUtil
-) : Interceptor {
+@ServiceScoped
+class HapticInterceptor @Inject constructor(
+    private val vibration: VibratorController
+) : EventInterceptor {
 
     override fun handle(event: AccessibilityEvent) {
 

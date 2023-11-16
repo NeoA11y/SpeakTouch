@@ -19,21 +19,24 @@
 package com.neo.speaktouch.controller
 
 import android.view.accessibility.AccessibilityNodeInfo
-import com.neo.speaktouch.intercepter.CallbackInterceptor
-import com.neo.speaktouch.intercepter.Scroll
+import com.neo.speaktouch.intercepter.event.CallbackInterceptor
 import com.neo.speaktouch.model.NodeFilter
 import com.neo.speaktouch.utils.extension.Direction
-import com.neo.speaktouch.utils.extension.getFocusedOrNull
 import com.neo.speaktouch.utils.extension.performFocus
 import com.neo.speaktouch.utils.extension.nodeScan
+import dagger.hilt.android.scopes.ServiceScoped
+import javax.inject.Inject
 
-class FocusController(
-    private val a11yNodeInfoRoot: () -> AccessibilityNodeInfo
+@ServiceScoped
+class FocusController @Inject constructor(
+    private val callbackInterceptor: CallbackInterceptor,
+    private val serviceController: ServiceController
 ) {
 
-    private val focusedA11yNodeInfo get() = a11yNodeInfoRoot().getFocusedOrNull()
+    fun getTarget(): AccessibilityNodeInfo {
 
-    fun getTarget() = focusedA11yNodeInfo ?: a11yNodeInfoRoot()
+        return serviceController.getFocused() ?: serviceController.getRoot()
+    }
 
     fun moveFocusToPrevious(
         target: AccessibilityNodeInfo = getTarget(),
@@ -62,8 +65,8 @@ class FocusController(
 
                 if (current.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD)) {
 
-                    CallbackInterceptor.addCallback(
-                        object : Scroll(current) {
+                    callbackInterceptor.addCallback(
+                        object : CallbackInterceptor.Scroll(current) {
                             override fun invoke() {
                                 moveFocusToPrevious()
                             }
@@ -108,8 +111,8 @@ class FocusController(
 
                 if (current.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)) {
 
-                    CallbackInterceptor.addCallback(
-                        object : Scroll(current) {
+                    callbackInterceptor.addCallback(
+                        object : CallbackInterceptor.Scroll(current) {
                             override fun invoke() {
                                 moveFocusToNext()
                             }

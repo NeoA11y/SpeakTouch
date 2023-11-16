@@ -1,5 +1,5 @@
 /*
- * Legacy effects equivalent to android.os.VibrationEffect.
+ * Entry point for SpeechController.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -16,18 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.utils
+package com.neo.speaktouch.di.entrypoint
 
-sealed class LegacyVibrationEffect(val pattern: LongArray) {
-    object HeavyClick : LegacyVibrationEffect(
-        pattern = longArrayOf(
-            0, 50, 50
-        )
-    )
+import com.neo.speaktouch.controller.SpeechController
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ServiceComponent
 
-    object Tick : LegacyVibrationEffect(
-        pattern = longArrayOf(
-            0, 30
-        )
-    )
+@EntryPoint
+@InstallIn(ServiceComponent::class)
+interface SpeechControllerEntryPoint {
+    fun getSpeechController(): SpeechController
 }

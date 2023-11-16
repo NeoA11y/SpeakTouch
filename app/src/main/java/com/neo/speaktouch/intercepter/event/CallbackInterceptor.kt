@@ -1,5 +1,5 @@
 /*
- * Global callbacks interceptor.
+ * Callbacks interceptor.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -16,13 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.intercepter
+package com.neo.speaktouch.intercepter.event
 
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
-import com.neo.speaktouch.intercepter.interfece.Interceptor
+import com.neo.speaktouch.intercepter.event.contract.EventInterceptor
+import dagger.hilt.android.scopes.ServiceScoped
+import javax.inject.Inject
 
-object CallbackInterceptor : Interceptor {
+@ServiceScoped
+class CallbackInterceptor @Inject constructor() : EventInterceptor {
 
     private val scrolls = mutableListOf<Scroll>()
 
@@ -45,8 +48,7 @@ object CallbackInterceptor : Interceptor {
         scrolls.add(callback)
     }
 
-}
-
-abstract class Scroll(val target: AccessibilityNodeInfo) {
-    abstract operator fun invoke()
+    abstract class Scroll(val target: AccessibilityNodeInfo) {
+        abstract operator fun invoke()
+    }
 }

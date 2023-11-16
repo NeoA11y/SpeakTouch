@@ -1,8 +1,7 @@
 /*
- * BuildSrc module Gradle configurations
+ * Legacy effects equivalent to android.os.VibrationEffect.
  *
  * Copyright (C) 2023 Irineu A. Silva.
- * Copyright (C) 2023 Patryk Miś.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,21 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    `kotlin-dsl`
-}
+package com.neo.speaktouch.model
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-        vendor.set(JvmVendorSpec.ADOPTIUM)
-    }
-}
+sealed class LegacyVibrationEffect(val pattern: LongArray) {
+    object HeavyClick : LegacyVibrationEffect(
+        pattern = longArrayOf(
+            0, 50, 50
+        )
+    )
 
-dependencies {
-    implementation(libs.kotlin.gradlePlugin)
-    implementation(libs.android.gradlePlugin)
-    implementation(libs.android.gradlePluginApi)
-
-    implementation(libs.squareup.javapoet)
+    object Tick : LegacyVibrationEffect(
+        pattern = longArrayOf(
+            0, 30
+        )
+    )
 }
