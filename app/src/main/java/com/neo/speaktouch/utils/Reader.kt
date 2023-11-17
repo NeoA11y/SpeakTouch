@@ -16,23 +16,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.model
+package com.neo.speaktouch.utils
 
 import android.content.Context
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.R
+import com.neo.speaktouch.model.Type
 import com.neo.speaktouch.utils.extension.filterNotNullOrEmpty
 import com.neo.speaktouch.utils.extension.getLog
 import com.neo.speaktouch.utils.extension.ifEmptyOrNull
 import com.neo.speaktouch.utils.extension.iterator
-import com.neo.speaktouch.utils.`object`.NodeValidator
-import com.neo.speaktouch.utils.`typealias`.NodeInfo
 import timber.log.Timber
+import javax.inject.Inject
 
-class Reader(
+class Reader @Inject constructor(
     private val context: Context
 ) {
     fun getContent(
-        nodeInfo: NodeInfo
+        nodeInfo: AccessibilityNodeInfoCompat
     ) = getContent(
         nodeInfo,
         Level.Text(
@@ -42,7 +43,7 @@ class Reader(
     )
 
     private fun getContent(
-        node: NodeInfo,
+        node: AccessibilityNodeInfoCompat,
         level: Level
     ): String {
         Timber.d(
@@ -97,7 +98,7 @@ class Reader(
     }
 
     private fun getType(
-        node: NodeInfo,
+        node: AccessibilityNodeInfoCompat,
         mustRead: Boolean
     ): String? {
 
@@ -159,7 +160,7 @@ class Reader(
     }
 
     private fun getSelection(
-        node: NodeInfo,
+        node: AccessibilityNodeInfoCompat,
         mustRead: Boolean
     ) = if (mustRead && node.isSelected) {
         context.getString(R.string.text_selected)

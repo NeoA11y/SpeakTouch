@@ -1,23 +1,32 @@
 [versions]
-agp = "8.1.2"
+agp = "8.1.3"
 androidx-appcompat = "1.6.1"
 androidx-constraintlayout = "2.1.4"
 androidx-core = "1.12.0"
 androidx-test-espresso = "3.5.1"
 androidx-test-junit = "1.1.5"
+dagger = "2.48.1"
+javapoet = "1.13.0"
 kotlin = "1.9.20"
+ksp = "1.9.20-1.0.14"
 material = "1.10.0"
 test-junit = "4.13.2"
 timber = "5.0.1"
 
 [libraries]
-android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx-constraintlayout" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core" }
-kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+dagger = { group = "com.google.dagger", name = "hilt-android", version.ref = "dagger" }
+dagger-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "dagger" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+
+# Plugins
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+android-gradlePluginApi = { group = "com.android.tools.build", name = "gradle-api", version.ref = "agp" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+squareup-javapoet = { group = "com.squareup", name = "javapoet", version.ref = "javapoet" }
 
 # Android test
 androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-test-espresso" }
@@ -25,3 +34,9 @@ androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref
 
 # Test
 junit = { group = "junit", name = "junit", version.ref = "test-junit" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+dagger = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

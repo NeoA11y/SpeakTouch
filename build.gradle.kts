@@ -1,7 +1,8 @@
 /*
- * NodeInfo typealias.
+ * Top-level build file where you can add configuration options common to all sub-projects/modules.
  *
  * Copyright (C) 2023 Irineu A. Silva.
+ * Copyright (C) 2023 Patryk Miś.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +17,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.utils.`typealias`
-
-import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
-
-typealias NodeInfo = AccessibilityNodeInfoCompat
-typealias NodeAction = AccessibilityNodeInfoCompat.AccessibilityActionCompat
+plugins {
+    id(libs.plugins.android.application.get().pluginId) apply false
+    alias(libs.plugins.dagger) apply false
+    id(libs.plugins.kotlin.android.get().pluginId) apply false
+    alias(libs.plugins.ksp) apply false
+}

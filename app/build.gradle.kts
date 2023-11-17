@@ -19,8 +19,10 @@
 @file:Suppress("UnstableApiUsage")
 
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    id(libs.plugins.android.application.get().pluginId)
+    id(libs.plugins.kotlin.android.get().pluginId)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.dagger)
 }
 
 java {
@@ -95,10 +97,20 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.appcompat)
+
+    // Android X
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+
+    // Material
     implementation(libs.material)
+
+    // Log
     implementation(libs.timber)
+
+    // Dagger Hilt
+    implementation(libs.dagger)
+    ksp(libs.dagger.compiler)
 
     // Unit test
     testImplementation(libs.junit)

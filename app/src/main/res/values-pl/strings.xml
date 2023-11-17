@@ -38,4 +38,6 @@
     <string name="text_not_checked">nie zaznaczono</string>
     <string name="text_pressed">wciśnięto</string>
     <string name="text_not_pressed">nie wciśnięto</string>
+
+    <string name="speak_touch_activated">Speak Touch aktywowany</string>
 </resources>

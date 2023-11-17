@@ -40,4 +40,6 @@
     <string name="text_not_checked">not checked</string>
     <string name="text_pressed">pressed</string>
     <string name="text_not_pressed">not pressed</string>
+
+    <string name="speak_touch_activated">Speak Touch Activated</string>
 </resources>

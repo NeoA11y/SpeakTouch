@@ -1,5 +1,5 @@
 /*
- * Interface of interceptors.
+ * Global controller.
  *
  * Copyright (C) 2023 Irineu A. Silva.
  *
@@ -16,11 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.neo.speaktouch.intercepter.interfece
+package com.neo.speaktouch.controller
 
-import android.view.accessibility.AccessibilityEvent
+import android.accessibilityservice.AccessibilityService
+import com.neo.speaktouch.di.entrypoint.SpeechControllerEntryPoint
+import com.neo.speaktouch.utils.Installable
+import dagger.hilt.EntryPoints
+import java.lang.ref.WeakReference
 
-interface Interceptor {
-    fun handle(event: AccessibilityEvent)
-    fun finish() = Unit
+object Controllers : Installable<AccessibilityService>() {
+
+    val speech
+        get() = EntryPoints.get(
+            checkNotNull(instance.get()),
+            SpeechControllerEntryPoint::class.java
+        ).getSpeechController()
 }

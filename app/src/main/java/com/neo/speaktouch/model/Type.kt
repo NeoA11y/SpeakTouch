@@ -29,7 +29,7 @@ import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.Switch
 import android.widget.ToggleButton
-import com.neo.speaktouch.utils.`typealias`.NodeInfo
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.utils.extension.`is`
 
 enum class Type {
@@ -47,7 +47,7 @@ enum class Type {
     CHECKEDTEXT;
 
     companion object {
-        fun get(node: NodeInfo): Type {
+        fun get(node: AccessibilityNodeInfoCompat): Type {
             val className = node.className ?: return NONE
 
             /* ImageView */
