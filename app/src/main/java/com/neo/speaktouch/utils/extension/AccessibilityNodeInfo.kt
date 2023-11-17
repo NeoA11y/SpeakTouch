@@ -21,6 +21,10 @@ package com.neo.speaktouch.utils.extension
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat
+import com.neo.speaktouch.R
+import com.neo.speaktouch.model.Type
+import com.neo.speaktouch.model.Text
+import com.neo.speaktouch.model.toTypeText
 import com.neo.speaktouch.utils.NodeValidator
 
 fun AccessibilityNodeInfoCompat.getNearestAncestor(
@@ -160,3 +164,83 @@ fun AccessibilityNodeInfo.indexOfChild(
 }
 
 val AccessibilityNodeInfo.lastIndex get() = childCount - 1
+
+fun AccessibilityNodeInfoCompat.toText(): Text? {
+
+    val type = Type.get(this) ?: return null
+
+    val typeText = type.toTypeText()
+
+    if (type !is Type.Checkable) return typeText
+
+    val stateText = toStateText(type) ?: return typeText
+
+    if (typeText == null) return stateText
+
+    return Text("%s, %s", stateText, typeText)
+}
+
+fun AccessibilityNodeInfoCompat.toStateText(
+    type: Type.Checkable
+): Text? {
+    when (type) {
+        Type.Checkable.Checkbox -> {
+            if (stateDescription.isNullOrEmpty()) {
+                return if (isChecked) {
+                    Text(R.string.text_checked)
+                } else {
+                    Text(R.string.text_not_checked)
+                }
+            }
+
+            return Text(stateDescription.toString())
+        }
+
+        Type.Checkable.Radio -> {
+            if (stateDescription.isNullOrEmpty()) {
+                return if (isChecked) {
+                    Text(R.string.text_selected)
+                } else {
+                    Text(R.string.text_not_selected)
+                }
+            }
+
+            return Text(stateDescription.toString())
+        }
+
+        Type.Checkable.Switch -> {
+            if (stateDescription.isNullOrEmpty()) {
+                return if (isChecked) {
+                    Text(R.string.text_enabled)
+                } else {
+                    Text(R.string.text_disabled)
+                }
+            }
+
+            return Text(stateDescription.toString())
+        }
+
+        Type.Checkable.Toggle -> {
+            if (stateDescription.isNullOrEmpty()) {
+                return if (isChecked) {
+                    Text(R.string.text_pressed)
+                } else {
+                    Text(R.string.text_not_pressed)
+                }
+            }
+
+            return Text(stateDescription.toString())
+        }
+
+        Type.Checkable.TextView -> {
+
+            if (!isChecked) return null /* don't speak */
+
+            if (stateDescription.isNullOrEmpty()) {
+                return Text(R.string.text_selected)
+            }
+
+            return Text(stateDescription.toString())
+        }
+    }
+}

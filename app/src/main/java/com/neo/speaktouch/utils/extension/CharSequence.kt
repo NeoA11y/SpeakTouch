@@ -20,7 +20,7 @@ package com.neo.speaktouch.utils.extension
 
 import timber.log.Timber
 
-fun <T : CharSequence> T?.ifEmptyOrNull(
+inline fun <T : CharSequence> T?.ifEmptyOrNull(
     fallback: () -> T
 ): T {
     return if (this.isNullOrEmpty()) {

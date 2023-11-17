@@ -21,19 +21,19 @@ package com.neo.speaktouch.model
 import android.content.Context
 import androidx.annotation.StringRes
 
-sealed interface UiText {
+sealed interface Text {
 
     val args: List<Any>
 
     data class Raw(
         val text: String,
         override val args: List<Any>
-    ) : UiText
+    ) : Text
 
     data class Res(
         @StringRes val res: Int,
         override val args: List<Any>
-    ) : UiText
+    ) : Text
 
     fun resolved(context: Context): String {
         val text = when (this) {
@@ -45,8 +45,7 @@ sealed interface UiText {
             return text
         }
 
-        val args = resolvedArgs(context)
-            .toTypedArray()
+        val args = resolvedArgs(context).toTypedArray()
 
         return String.format(text, *args)
     }
@@ -54,7 +53,7 @@ sealed interface UiText {
     fun resolvedArgs(context: Context): List<Any> {
         return args.map { arg ->
             when (arg) {
-                is UiText -> {
+                is Text -> {
                     arg.resolved(context)
                 }
 
