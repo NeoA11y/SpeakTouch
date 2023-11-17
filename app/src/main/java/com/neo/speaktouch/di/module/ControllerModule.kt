@@ -27,7 +27,7 @@ import com.neo.speaktouch.controller.Controllers
 import com.neo.speaktouch.controller.SpeechController
 import com.neo.speaktouch.controller.VibratorController
 import com.neo.speaktouch.utils.Reader
-import com.neo.speaktouch.model.UiText
+import com.neo.speaktouch.model.Text
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -63,7 +63,7 @@ object ControllerModule {
         val textToSpeech = TextToSpeech(context) { status ->
             if (status == TextToSpeech.SUCCESS) {
                 Controllers.speech.speak(
-                    UiText(R.string.speak_touch_activated)
+                    Text(R.string.speak_touch_activated)
                 )
             }
         }
