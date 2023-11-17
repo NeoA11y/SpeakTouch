@@ -26,6 +26,7 @@ import com.neo.speaktouch.utils.extension.filterNotNullOrEmpty
 import com.neo.speaktouch.utils.extension.getLog
 import com.neo.speaktouch.utils.extension.ifEmptyOrNull
 import com.neo.speaktouch.utils.extension.iterator
+import com.neo.speaktouch.utils.extension.toText
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -84,10 +85,10 @@ class Reader @Inject constructor(
                             Level.Text(
                                 mustReadSelection = false,
                                 mustReadType = listOf(
-                                    Type.SWITCH,
-                                    Type.TOGGLE,
-                                    Type.RADIO,
-                                    Type.CHECKBOX
+                                    Type.Checkable.Switch,
+                                    Type.Checkable.Toggle,
+                                    Type.Checkable.Radio,
+                                    Type.Checkable.Checkbox
                                 ).any { it == Type.get(child) }
                             )
                         )
@@ -104,59 +105,7 @@ class Reader @Inject constructor(
 
         if (!mustRead) return null
 
-        return when (Type.get(node)) {
-            Type.NONE -> null
-            Type.IMAGE -> context.getString(R.string.text_image_type)
-            Type.SWITCH -> {
-                val switchType = context.getString(R.string.text_switch_type)
-                val selectionStatus = if (node.isChecked) {
-                    node.stateDescription?.toString() ?: context.getString(R.string.text_enabled)
-                } else {
-                node.stateDescription?.toString() ?: context.getString(R.string.text_disabled)
-            }
-                "$switchType, $selectionStatus"
-            }
-            Type.TOGGLE -> {
-                val toggleType = context.getString(R.string.text_toggle_type)
-                val selectionStatus = if (node.isChecked) {
-                    node.stateDescription?.toString() ?: context.getString(R.string.text_pressed)
-                } else {
-                node.stateDescription?.toString() ?: context.getString(R.string.text_not_pressed)
-            }
-                "$toggleType, $selectionStatus"
-            }
-            Type.RADIO -> {
-                val radioButtonType = context.getString(R.string.text_radio_type)
-                val selectionStatus = if (node.isChecked) {
-                    node.stateDescription?.toString() ?: context.getString(R.string.text_selected)
-                } else {
-                    node.stateDescription?.toString() ?: context.getString(R.string.text_not_selected)
-                }
-                "$radioButtonType, $selectionStatus"
-            }
-            Type.CHECKBOX -> {
-                val checkboxType = context.getString(R.string.text_checkbox_type)
-                val selectionStatus = if (node.isChecked) {
-                    node.stateDescription?.toString() ?: context.getString(R.string.text_checked)
-                } else {
-                    node.stateDescription?.toString() ?: context.getString(R.string.text_not_checked)
-                }
-                "$checkboxType, $selectionStatus"
-            }
-            Type.BUTTON -> context.getString(R.string.text_button_type)
-            Type.EDITFIELD -> context.getString(R.string.text_editfield_type)
-            Type.OPTIONS -> context.getString(R.string.text_options_type)
-            Type.LIST -> context.getString(R.string.text_list_type)
-            Type.TITLE -> context.getString(R.string.text_title_type)
-            Type.CHECKEDTEXT -> {
-                val selectionStatus = if (node.isChecked) {
-                    node.stateDescription?.toString() ?: context.getString(R.string.text_selected)
-                } else {
-                    ""
-                }
-                "$selectionStatus"
-            }
-        }
+        return node.toText()?.resolved(context)
     }
 
     private fun getSelection(
