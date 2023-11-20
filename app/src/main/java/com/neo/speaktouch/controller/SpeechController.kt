@@ -46,16 +46,11 @@ class SpeechController(
     }
 
     fun speak(text: Text) {
-        Timber.i("speak: $text")
-
         speak(text.resolved(context))
     }
 
     fun speak(nodeInfo: AccessibilityNodeInfoCompat) {
-
-        Timber.i("speak: ${nodeInfo.getLog()}")
-
-        speak(reader.getContent(nodeInfo))
+        speak(reader.readContent(nodeInfo))
     }
 
     fun stop() {
