@@ -22,108 +22,74 @@ import android.content.Context
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.R
 import com.neo.speaktouch.model.Type
-import com.neo.speaktouch.utils.extension.filterNotNullOrEmpty
-import com.neo.speaktouch.utils.extension.getLog
 import com.neo.speaktouch.utils.extension.ifEmptyOrNull
 import com.neo.speaktouch.utils.extension.iterator
 import com.neo.speaktouch.utils.extension.toText
-import timber.log.Timber
 import javax.inject.Inject
 
 class Reader @Inject constructor(
     private val context: Context
 ) {
-    fun getContent(
-        nodeInfo: AccessibilityNodeInfoCompat
-    ) = getContent(
-        nodeInfo,
-        Level.Text(
-            mustReadSelection = true,
-            mustReadType = true
-        )
-    )
 
-    private fun getContent(
+    fun readContent(
         node: AccessibilityNodeInfoCompat,
-        level: Level
-    ): String {
-        Timber.d(
-            node.getLog(
-                "level: $level"
-            )
-        )
+        options: Options = Options()
+    ) = with(node) {
 
-        return when (level) {
-            is Level.Text -> with(node) {
-                val content = contentDescription.ifEmptyOrNull {
-                    text.ifEmptyOrNull {
-                        hintText.ifEmptyOrNull {
-                            getContent(
-                                node,
-                                Level.Children
-                            )
-                        }
-                    }
+        val content = contentDescription.ifEmptyOrNull {
+            text.ifEmptyOrNull {
+                hintText.ifEmptyOrNull {
+                    readChildren(node)
                 }
+            }
+        }
 
-                listOf(
-                    content,
-                    getType(node, level.mustReadType),
-                    getSelection(node, level.mustReadSelection)
-                ).filterNotNullOrEmpty()
+        buildList {
+            add(content)
+
+            if (options.mustReadType) {
+                node.toText()?.let {
+                    add(it.resolved(context))
+                }
             }
 
-            is Level.Children -> buildList {
-                for (child in node) {
+            if (options.mustReadSelection && node.isSelected) {
+                add(context.getString(R.string.text_selected))
+            }
 
-                    if (!NodeValidator.isValidForAccessibility(child)) continue
-                    if (!NodeValidator.isReadableAsChild(child)) continue
+        }.joinToString(
+            separator = ", ",
+            postfix = "."
+        )
+    }
 
-                    add(
-                        getContent(
-                            child,
-                            Level.Text(
-                                mustReadSelection = false,
-                                mustReadType = listOf(
-                                    Type.Checkable.Switch,
-                                    Type.Checkable.Toggle,
-                                    Type.Checkable.Radio,
-                                    Type.Checkable.Checkbox
-                                ).any { it == Type.get(child) }
-                            )
+    fun readChildren(
+        node: AccessibilityNodeInfoCompat
+    ): CharSequence {
+        return buildList {
+            for (child in node) {
+
+                if (!NodeValidator.isValidForAccessibility(child)) continue
+                if (!NodeValidator.isReadableAsChild(child)) continue
+
+                add(
+                    readContent(
+                        node = child,
+                        options = Options(
+                            mustReadSelection = false,
+                            mustReadType = Type.get(child) is Type.Checkable
                         )
                     )
-                }
+                )
             }
-        }.joinToString(", ")
+        }.joinToString(
+            separator = ", ",
+            postfix = "."
+        )
     }
 
-    private fun getType(
-        node: AccessibilityNodeInfoCompat,
-        mustRead: Boolean
-    ): String? {
-
-        if (!mustRead) return null
-
-        return node.toText()?.resolved(context)
-    }
-
-    private fun getSelection(
-        node: AccessibilityNodeInfoCompat,
-        mustRead: Boolean
-    ) = if (mustRead && node.isSelected) {
-        context.getString(R.string.text_selected)
-    } else {
-        null
-    }
-
-    sealed interface Level {
-
-        data class Text(
-            val mustReadSelection: Boolean,
-            val mustReadType: Boolean,
-        ) : Level
-
-        data object Children : Level
-    }
+    data class Options(
+        val mustReadSelection: Boolean = true,
+        val mustReadType: Boolean = true,
+    )
 }
