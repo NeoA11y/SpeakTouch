@@ -30,8 +30,6 @@ inline fun <T : CharSequence> T?.ifEmptyOrNull(
     }
 }
 
-fun <T : List<CharSequence?>> T.filterNotNullOrEmpty() = filterNot { it.isNullOrEmpty() }
-
 infix fun CharSequence.`is`(childClass: Class<*>): Boolean {
     if (equals(childClass.name)) return true
     if (isEmpty()) return false

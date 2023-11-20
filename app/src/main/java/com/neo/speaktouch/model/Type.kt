@@ -18,7 +18,6 @@
 
 package com.neo.speaktouch.model
 
-import android.os.Build
 import android.widget.AbsListView
 import android.widget.AbsSpinner
 import android.widget.CheckBox
@@ -111,7 +110,7 @@ sealed class Type {
 
             if (node.collectionInfo != null) return List
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && node.isHeading) return Title
+            if (node.isHeading) return Title
 
             return null
         }
