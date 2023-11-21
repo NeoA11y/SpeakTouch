@@ -80,6 +80,8 @@
                 android:id="@+id/custom_switcher"
                 layout="@layout/include_custom_switcher" />
 
+            <include layout="@layout/include_invalid_custom_switcher" />
+
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <com.google.android.material.divider.MaterialDivider
@@ -97,9 +99,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="False Container" />
+                android:text="CheckedTextView" />
 
-            <include layout="@layout/include_invalid_custom_switcher" />
+            <CheckedTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+                android:checked="true"
+                android:gravity="center_vertical"
+                android:text="CheckedTextView" />
+
+            <CheckedTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+                android:checked="false"
+                android:gravity="center_vertical"
+                android:text="CheckedTextView" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
