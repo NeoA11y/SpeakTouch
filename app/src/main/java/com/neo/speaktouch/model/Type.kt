@@ -46,6 +46,8 @@ sealed class Type {
         object Checkbox : Checkable()
 
         object TextView : Checkable()
+
+        object Custom : Checkable()
     }
 
     object Button : Type()
@@ -95,6 +97,8 @@ sealed class Type {
             // View -> TextView -> Button -> CompoundButton -> CheckBox
             if (className `is` CheckBox::class.java) return Checkable.Checkbox
 
+            if (node.isCheckable) return Checkable.Custom
+
             // View -> TextView -> Button
             if (className `is` android.widget.Button::class.java) return Button
 
@@ -129,4 +133,5 @@ fun Type.toTypeText() = when (this) {
     Type.Checkable.Switch -> Text(R.string.text_switch_type)
     Type.Checkable.Toggle -> Text(R.string.text_toggle_type)
     Type.Checkable.TextView -> null /* don't speak type */
+    Type.Checkable.Custom -> null /* don't speak type */
 }
