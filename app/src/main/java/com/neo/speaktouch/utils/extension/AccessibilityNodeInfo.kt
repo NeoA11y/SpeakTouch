@@ -242,5 +242,17 @@ fun AccessibilityNodeInfoCompat.toStateText(
 
             return Text(stateDescription.toString())
         }
+
+        Type.Checkable.Custom -> {
+            if (stateDescription.isNullOrEmpty()) {
+                return if (isChecked) {
+                    Text(R.string.text_selected)
+                } else {
+                    Text(R.string.text_not_selected)
+                }
+            }
+
+            return Text(stateDescription.toString())
+        }
     }
 }
