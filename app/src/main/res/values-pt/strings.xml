@@ -34,5 +34,10 @@
     <string name="text_disabled">desativado</string>
     <string name="text_selected">selecionado</string>
 
+    <string name="text_not_selected">não selecionado</string>
+    <string name="text_checked">marcado</string>
+    <string name="text_not_checked">não marcado</string>
+    <string name="text_pressed">pressionado</string>
+    <string name="text_not_pressed">não pressionado</string>
     <string name="speak_touch_activated">Speak Touch Ativado</string>
 </resources>
