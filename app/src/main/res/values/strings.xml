@@ -1,15 +1,32 @@
+<!--
+    ~ App English strings.
+    ~
+    ~ Copyright (C) 2023 Irineu A. Silva.
+    ~
+    ~ This program is free software: you can redistribute it and/or modify
+    ~ it under the terms of the GNU General Public License as published by
+    ~ the Free Software Foundation, either version 3 of the License.
+    ~
+    ~ This program is distributed in the hope that it will be useful,
+    ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+    ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    ~ GNU General Public License for more details.
+    ~
+    ~ You should have received a copy of the GNU General Public License
+    ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    -->
+
 <resources>
     <string name="app_name" translatable="false">Speak Touch</string>
 
     <!-- type -->
     <string name="text_image_type">image</string>
-    <string name="text_switch_type">switch: %s</string>
-    <string name="text_toggle_type">toggle button: %s</string>
-    <string name="text_radio_type">option button: %s</string>
-    <string name="text_checkbox_type">checkbox: %s</string>
-    <string name="text_checkable_type">check: %s</string>
+    <string name="text_switch_type">switch</string>
+    <string name="text_toggle_type">toggle button</string>
+    <string name="text_radio_type">option button</string>
+    <string name="text_checkbox_type">checkbox</string>
     <string name="text_button_type">button</string>
-    <string name="text_editable_type">edit field</string>
+    <string name="text_editfield_type">edit field</string>
     <string name="text_options_type">options</string>
     <string name="text_list_type">list</string>
     <string name="text_title_type">title</string>
@@ -17,4 +34,7 @@
     <!-- state -->
     <string name="text_enabled">enabled</string>
     <string name="text_disabled">disabled</string>
+    <string name="text_selected">selected</string>
+
+    <string name="speak_touch_activated">Speak Touch Activated</string>
 </resources>

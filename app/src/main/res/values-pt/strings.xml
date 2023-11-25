@@ -1,17 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!--
+    ~ App Portuguese strings .
+    ~
+    ~ Copyright (C) 2023 Irineu A. Silva.
+    ~
+    ~ This program is free software: you can redistribute it and/or modify
+    ~ it under the terms of the GNU General Public License as published by
+    ~ the Free Software Foundation, either version 3 of the License.
+    ~
+    ~ This program is distributed in the hope that it will be useful,
+    ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+    ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    ~ GNU General Public License for more details.
+    ~
+    ~ You should have received a copy of the GNU General Public License
+    ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    -->
+
 <resources>
-    <string name="app_name">Speak Touch</string>
+    <!-- type -->
     <string name="text_image_type">imagem</string>
-    <string name="text_switch_type">interruptor: %s</string>
-    <string name="text_toggle_type">botão alternar: %s</string>
-    <string name="text_radio_type">botão de opção: %s</string>
-    <string name="text_checkbox_type">caixa de seleção: %s</string>
-    <string name="text_checkable_type">botão de seleção: %s</string>
+    <string name="text_switch_type">interruptor</string>
+    <string name="text_toggle_type">botão alternar</string>
+    <string name="text_radio_type">botão de opção</string>
+    <string name="text_checkbox_type">caixa de seleção</string>
     <string name="text_button_type">botão</string>
-    <string name="text_editable_type">campo de edição</string>
+    <string name="text_editfield_type">campo de edição</string>
     <string name="text_options_type">opções</string>
     <string name="text_list_type">lista</string>
     <string name="text_title_type">título</string>
+
+    <!-- state -->
     <string name="text_enabled">ativado</string>
     <string name="text_disabled">desativado</string>
+    <string name="text_selected">selecionado</string>
+
+    <string name="speak_touch_activated">Speak Touch Ativado</string>
 </resources>

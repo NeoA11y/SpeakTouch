@@ -1,0 +1,26 @@
+<!--
+    ~ Accessibility Service config for SpeakTouch (API 31).
+    ~
+    ~ Copyright (C) 2023 Irineu A. Silva.
+    ~
+    ~ This program is free software: you can redistribute it and/or modify
+    ~ it under the terms of the GNU General Public License as published by
+    ~ the Free Software Foundation, either version 3 of the License.
+    ~
+    ~ This program is distributed in the hope that it will be useful,
+    ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+    ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    ~ GNU General Public License for more details.
+    ~
+    ~ You should have received a copy of the GNU General Public License
+    ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    -->
+
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeAllMask"
+    android:accessibilityFeedbackType="feedbackSpoken|feedbackHaptic"
+    android:accessibilityFlags="flagDefault|flagRequestTouchExplorationMode|flagRetrieveInteractiveWindows|flagEnableAccessibilityVolume|flagRequestMultiFingerGestures"
+    android:canRequestTouchExplorationMode="true"
+    android:canRetrieveWindowContent="true"
+    android:isAccessibilityTool="true"
+    android:notificationTimeout="0" />
