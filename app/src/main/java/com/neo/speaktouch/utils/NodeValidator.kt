@@ -1,7 +1,7 @@
 /*
- * [FILE DESCRIPTION].
+ * Node focus and read validations.
  *
- * Copyright (C) 2023 [AUTHOR].
+ * Copyright (C) 2023 Irineu A. Silva.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,7 +92,7 @@ object NodeValidator {
     /**
      * @return true if is mandatory read [node]'s children
      */
-    fun mustReadChildren(node: AccessibilityNodeInfoCompat) : Boolean {
+    fun mustReadChildren(node: AccessibilityNodeInfoCompat): Boolean {
 
         if (mustReadContent(node)) return false
 
@@ -104,7 +104,11 @@ object NodeValidator {
      */
     fun hasContentToRead(node: AccessibilityNodeInfoCompat): Boolean {
 
-        return hasTextToRead(node) || node.isCheckable
+        if (node.isCheckable) return true
+
+        if (node.isEditable) return true // TODO: Consider removing after issue #88
+
+        return hasTextToRead(node)
     }
 
     /**
