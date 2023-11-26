@@ -1,7 +1,7 @@
 /*
- * [FILE DESCRIPTION].
+ * Node focus and read validations.
  *
- * Copyright (C) 2023 [AUTHOR].
+ * Copyright (C) 2023 Irineu A. Silva.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
