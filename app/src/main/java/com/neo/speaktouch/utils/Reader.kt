@@ -56,7 +56,9 @@ class Reader @Inject constructor(
             }
 
             if (options.mustReadState) {
-                add(node.toStateText(type))
+                node.toStateText(type)?.let {
+                    add(it.resolved(context))
+                }
             }
         }.joinToString(
             separator = ", ",
@@ -73,12 +75,14 @@ class Reader @Inject constructor(
                 if (!NodeValidator.isValidForAccessibility(child)) continue
                 if (!NodeValidator.isReadableAsChild(child)) continue
 
+                val isCheckable = Type.get(child) is Type.Checkable
+
                 add(
                     readContent(
                         node = child,
                         options = Options(
-                            mustReadState = false,
-                            mustReadType = Type.get(child) is Type.Checkable
+                            mustReadState = isCheckable,
+                            mustReadType = isCheckable
                         )
                     )
                 )
