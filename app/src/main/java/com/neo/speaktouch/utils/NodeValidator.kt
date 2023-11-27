@@ -92,7 +92,7 @@ object NodeValidator {
     /**
      * @return true if is mandatory read [node]'s children
      */
-    fun mustReadChildren(node: AccessibilityNodeInfoCompat) : Boolean {
+    fun mustReadChildren(node: AccessibilityNodeInfoCompat): Boolean {
 
         if (mustReadContent(node)) return false
 
@@ -104,7 +104,11 @@ object NodeValidator {
      */
     fun hasContentToRead(node: AccessibilityNodeInfoCompat): Boolean {
 
-        return hasTextToRead(node) || node.isCheckable
+        if (node.isCheckable) return true
+
+        if (node.isEditable) return true // TODO: Consider removing after issue #88
+
+        return hasTextToRead(node)
     }
 
     /**
