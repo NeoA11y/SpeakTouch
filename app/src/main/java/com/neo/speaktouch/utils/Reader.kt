@@ -20,11 +20,11 @@ package com.neo.speaktouch.utils
 
 import android.content.Context
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
-import com.neo.speaktouch.R
 import com.neo.speaktouch.model.Type
+import com.neo.speaktouch.model.toTypeText
 import com.neo.speaktouch.utils.extension.ifEmptyOrNull
 import com.neo.speaktouch.utils.extension.iterator
-import com.neo.speaktouch.utils.extension.toText
+import com.neo.speaktouch.utils.extension.toStateText
 import javax.inject.Inject
 
 class Reader @Inject constructor(
@@ -47,16 +47,17 @@ class Reader @Inject constructor(
         buildList {
             add(content)
 
-            if (options.mustReadType) {
-                node.toText()?.let {
+            val type = Type.get(node)
+
+            if (options.mustReadType && type != null) {
+                type.toTypeText()?.let {
                     add(it.resolved(context))
                 }
             }
 
-            if (options.mustReadSelection && node.isSelected) {
-                add(context.getString(R.string.text_selected))
+            if (options.mustReadState) {
+                add(node.toStateText(type))
             }
-
         }.joinToString(
             separator = ", ",
             postfix = "."
@@ -76,7 +77,7 @@ class Reader @Inject constructor(
                     readContent(
                         node = child,
                         options = Options(
-                            mustReadSelection = false,
+                            mustReadState = false,
                             mustReadType = Type.get(child) is Type.Checkable
                         )
                     )
@@ -89,7 +90,7 @@ class Reader @Inject constructor(
     }
 
     data class Options(
-        val mustReadSelection: Boolean = true,
+        val mustReadState: Boolean = true,
         val mustReadType: Boolean = true,
     )
 }
