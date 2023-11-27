@@ -58,7 +58,7 @@ sealed class Type {
 
     object List : Type()
 
-    object Title : Type()
+    object Heading : Type()
 
     companion object {
         fun get(node: AccessibilityNodeInfoCompat): Type? {
@@ -114,7 +114,9 @@ sealed class Type {
 
             if (node.collectionInfo != null) return List
 
-            if (node.isHeading) return Title
+            // Different behavior from that of TalkBack,
+            // which allows the combination of other types with heading
+            if (node.isHeading) return Heading
 
             return null
         }
@@ -127,7 +129,7 @@ fun Type.toTypeText() = when (this) {
     Type.EditField -> Text(R.string.text_editfield_type)
     Type.Image -> Text(R.string.text_image_type)
     Type.List -> Text(R.string.text_list_type)
-    Type.Title -> Text(R.string.text_title_type)
+    Type.Heading -> Text(R.string.text_title_type)
     Type.Checkable.Checkbox -> Text(R.string.text_checkbox_type)
     Type.Checkable.Radio -> Text(R.string.text_radio_type)
     Type.Checkable.Switch -> Text(R.string.text_switch_type)
