@@ -18,8 +18,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.SpeakTouch"
-        tools:targetApi="31"
-        android:icon="@null">
+        tools:targetApi="34"
+        android:icon="@null"
+        android:memtagMode="async">
 
         <service
             android:name=".service.SpeakTouchService"
