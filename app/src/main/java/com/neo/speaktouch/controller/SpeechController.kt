@@ -22,6 +22,7 @@ import android.content.Context
 import android.speech.tts.TextToSpeech
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.model.UiText
+import com.neo.speaktouch.utils.NodeValidator
 import com.neo.speaktouch.utils.Reader
 import com.neo.speaktouch.utils.extension.getLog
 import com.neo.speaktouch.utils.extension.ifEmptyOrNull
@@ -83,6 +84,7 @@ data class Node(
 
         json.put("content", content)
         json.put("className", nodeInfo.className)
+        json.put("isReadableAsChild", NodeValidator.isReadableAsChild(nodeInfo))
 
         val childrenJson = JSONArray()
 
