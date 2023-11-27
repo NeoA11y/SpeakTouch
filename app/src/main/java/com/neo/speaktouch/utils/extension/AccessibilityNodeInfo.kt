@@ -39,19 +39,20 @@ fun AccessibilityNodeInfoCompat.getNearestAncestor(
     return current
 }
 
-operator fun AccessibilityNodeInfoCompat.iterator() = object : Iterator<AccessibilityNodeInfoCompat> {
+operator fun AccessibilityNodeInfoCompat.iterator() =
+    object : Iterator<AccessibilityNodeInfoCompat> {
 
-    var index = -1
+        var index = -1
 
-    override fun hasNext(): Boolean {
-        return childCount != index + 1
+        override fun hasNext(): Boolean {
+            return childCount != index + 1
+        }
+
+        override fun next(): AccessibilityNodeInfoCompat {
+            return getChild(++index)
+        }
+
     }
-
-    override fun next(): AccessibilityNodeInfoCompat {
-        return getChild(++index)
-    }
-
-}
 
 fun AccessibilityNodeInfoCompat.getLog(vararg extra: String) = buildList {
 
@@ -165,22 +166,29 @@ fun AccessibilityNodeInfo.indexOfChild(
 
 val AccessibilityNodeInfo.lastIndex get() = childCount - 1
 
-fun AccessibilityNodeInfoCompat.toText(): Text? {
+fun AccessibilityNodeInfoCompat.toStateText(
+    type: Type? = Type.get(this)
+): Text? {
 
-    val type = Type.get(this) ?: return null
+    if (type is Type.Checkable) {
+        return toCheckableStateText(type)
+    }
 
-    val typeText = type.toTypeText()
+    // The selection state has a deliberately different behavior from talkback.
+    // Discussion at: https://github.com/NeoA11y/SpeakTouch/discussions/115
 
-    if (type !is Type.Checkable) return typeText
+    if (isSelected && stateDescription.isNotNullOrEmpty()) {
+        return Text(stateDescription.toString())
+    }
 
-    val stateText = toStateText(type) ?: return typeText
+    if (isSelected) {
+        return Text(R.string.text_selected)
+    }
 
-    if (typeText == null) return stateText
-
-    return Text("%s, %s", stateText, typeText)
+    return null
 }
 
-fun AccessibilityNodeInfoCompat.toStateText(
+fun AccessibilityNodeInfoCompat.toCheckableStateText(
     type: Type.Checkable
 ): Text? {
     when (type) {
