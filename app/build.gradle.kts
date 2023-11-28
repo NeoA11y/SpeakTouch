@@ -48,7 +48,7 @@ android {
     if (keystorePropertiesFile.canRead()) {
         signingConfigs {
             create("release") {
-                properties(name = "keystore.properties") { properties ->
+                properties(keystorePropertiesFile) { properties ->
                     storeFile = rootProject.file(properties.getProperty("storeFile"))
                     storePassword = properties.getProperty("storePassword")
                     keyAlias = properties.getProperty("keyAlias")
