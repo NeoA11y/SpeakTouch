@@ -25,6 +25,8 @@ plugins {
     alias(libs.plugins.dagger)
 }
 
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
@@ -43,13 +45,15 @@ android {
     compileSdk = 34
     buildToolsVersion = "34.0.0"
 
-    signingConfigs {
-        create("release") {
-            properties(name = "keystore.properties") { properties ->
-                storeFile = rootProject.file(properties.getProperty("storeFile"))
-                storePassword = properties.getProperty("storePassword")
-                keyAlias = properties.getProperty("keyAlias")
-                keyPassword = properties.getProperty("keyPassword")
+    if (keystorePropertiesFile.canRead()) {
+        signingConfigs {
+            create("release") {
+                properties(keystorePropertiesFile) { properties ->
+                    storeFile = rootProject.file(properties.getProperty("storeFile"))
+                    storePassword = properties.getProperty("storePassword")
+                    keyAlias = properties.getProperty("keyAlias")
+                    keyPassword = properties.getProperty("keyPassword")
+                }
             }
         }
     }
@@ -75,7 +79,9 @@ android {
         release {
             isMinifyEnabled = false
 
-            signingConfig = signingConfigs.getByName("release")
+            if (keystorePropertiesFile.canRead()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
 
         debug {
@@ -84,6 +90,18 @@ android {
             applicationIdSuffix = ".debug"
 
             signingConfig = signingConfigs.getByName("debug")
+        }
+    }
+
+    applicationVariants.all {
+        val variant = this
+        variant.outputs
+            .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+            .forEach { output ->
+                output.outputFileName = "${rootProject.name}-${buildType.name}.apk"
+                if (buildType.name == "release" && variant.signingConfig == null) {
+                    output.outputFileName = "${rootProject.name}-${buildType.name}-unsigned.apk"
+                }
         }
     }
 

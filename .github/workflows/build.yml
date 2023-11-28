@@ -1,0 +1,30 @@
+name: Build application
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+          cache: gradle
+      - name: Build with Gradle
+        run: ./gradlew build --no-daemon
+
+      - name: Upload results
+        uses: actions/upload-artifact@v3
+        with:
+          name: SpeakTouch-APKs
+          path: |
+            app/build/outputs/apk/debug/SpeakTouch-debug.apk
+            app/build/outputs/apk/release/SpeakTouch-release-unsigned.apk
