@@ -94,6 +94,18 @@ android {
         }
     }
 
+    applicationVariants.all {
+        val variant = this
+        variant.outputs
+            .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+            .forEach { output ->
+                output.outputFileName = "${rootProject.name}-${buildType.name}.apk"
+                if (buildType.name == "release" && !useKeystoreProperties) {
+                    output.outputFileName = output.outputFileName.replace(".apk", "-unsigned.apk")
+                }
+        }
+    }
+
     buildFeatures {
         buildConfig = true
     }
