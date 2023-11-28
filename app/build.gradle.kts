@@ -26,7 +26,6 @@ plugins {
 }
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
-val useKeystoreProperties = keystorePropertiesFile.canRead()
 
 java {
     toolchain {
@@ -46,7 +45,7 @@ android {
     compileSdk = 34
     buildToolsVersion = "34.0.0"
 
-    if (useKeystoreProperties) {
+    if (keystorePropertiesFile.canRead()) {
         signingConfigs {
             create("release") {
                 properties(name = "keystore.properties") { properties ->
@@ -80,7 +79,7 @@ android {
         release {
             isMinifyEnabled = false
 
-            if (useKeystoreProperties) {
+            if (keystorePropertiesFile.canRead()) {
                 signingConfig = signingConfigs.getByName("release")
             }
         }
