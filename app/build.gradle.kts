@@ -25,6 +25,9 @@ plugins {
     alias(libs.plugins.dagger)
 }
 
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val useKeystoreProperties = keystorePropertiesFile.canRead()
+
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
@@ -43,13 +46,15 @@ android {
     compileSdk = 34
     buildToolsVersion = "34.0.0"
 
-    signingConfigs {
-        create("release") {
-            properties(name = "keystore.properties") { properties ->
-                storeFile = rootProject.file(properties.getProperty("storeFile"))
-                storePassword = properties.getProperty("storePassword")
-                keyAlias = properties.getProperty("keyAlias")
-                keyPassword = properties.getProperty("keyPassword")
+    if (useKeystoreProperties) {
+        signingConfigs {
+            create("release") {
+                properties(name = "keystore.properties") { properties ->
+                    storeFile = rootProject.file(properties.getProperty("storeFile"))
+                    storePassword = properties.getProperty("storePassword")
+                    keyAlias = properties.getProperty("keyAlias")
+                    keyPassword = properties.getProperty("keyPassword")
+                }
             }
         }
     }
@@ -75,7 +80,9 @@ android {
         release {
             isMinifyEnabled = false
 
-            signingConfig = signingConfigs.getByName("release")
+            if (useKeystoreProperties) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
 
         debug {
