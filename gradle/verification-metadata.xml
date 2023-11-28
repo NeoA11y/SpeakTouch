@@ -6,6 +6,9 @@
       <trusted-artifacts>
          <trust file=".*-javadoc[.]jar" regex="true"/>
          <trust file=".*-sources[.]jar" regex="true"/>
+         <!-- work-around for https://youtrack.jetbrains.com/issue/IDEA-258328 -->
+         <trust file="gradle-[0-9.]+-src.zip" regex="true"/>
+         <trust file="groovy-[a-z]*-?[0-9.]+.pom" regex="true"/>
       </trusted-artifacts>
    </configuration>
    <components>
