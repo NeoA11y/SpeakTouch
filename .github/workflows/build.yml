@@ -1,6 +1,10 @@
 name: Build application
 
-on: [pull_request, push]
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main, develop ]
 
 jobs:
   build:
