@@ -24,7 +24,6 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.Accessibilit
 import com.neo.speaktouch.R
 import com.neo.speaktouch.model.Type
 import com.neo.speaktouch.model.Text
-import com.neo.speaktouch.model.toTypeText
 import com.neo.speaktouch.utils.NodeValidator
 
 fun AccessibilityNodeInfoCompat.getNearestAncestor(
@@ -263,4 +262,32 @@ fun AccessibilityNodeInfoCompat.toCheckableStateText(
             return Text(stateDescription.toString())
         }
     }
+}
+
+
+fun AccessibilityNodeInfoCompat.getContent(
+    type: Type? = null
+): CharSequence? {
+
+    // Deliberately different behavior from talkback
+    // https://github.com/NeoA11y/SpeakTouch/discussions/119
+    // https://github.com/NeoA11y/SpeakTouch/discussions/121
+
+    if (type is Type.EditField) {
+
+        return when {
+            text.isNotNullOrEmpty() -> text
+            hintText.isNotNullOrEmpty() -> hintText
+            else -> null
+        }
+    }
+
+    if (contentDescription.isNotNullOrEmpty()) {
+        return contentDescription
+    }
+
+    if (text.isNotNullOrEmpty()) {
+        return text
+    }
+    return null
 }
