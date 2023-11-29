@@ -266,7 +266,7 @@ fun AccessibilityNodeInfoCompat.toCheckableStateText(
 
 
 fun AccessibilityNodeInfoCompat.getContent(
-    type: Type? = null
+    type: Type? = Type.get(this)
 ): CharSequence? {
 
     // Deliberately different behavior from talkback
