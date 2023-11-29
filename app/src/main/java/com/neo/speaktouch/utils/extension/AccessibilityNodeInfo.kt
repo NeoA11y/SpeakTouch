@@ -289,5 +289,6 @@ fun AccessibilityNodeInfoCompat.getContent(
     if (text.isNotNullOrEmpty()) {
         return text
     }
+
     return null
 }

@@ -30,9 +30,9 @@ inline fun <T : CharSequence> T?.ifEmptyOrNull(
     }
 }
 
-
-
+// TODO: Consider use a cache to avoid multiple calls to Class.forName
 infix fun CharSequence.`is`(childClass: Class<*>): Boolean {
+
     if (equals(childClass.name)) return true
     if (isEmpty()) return false
 

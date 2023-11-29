@@ -80,6 +80,8 @@ sealed class Type {
             // View -> TextView -> EditText
             if (className `is` EditText::class.java) return EditField
 
+            // TODO: consider checking node.isEditable
+
             // View -> TextView -> CheckedTextView
             if (className `is` CheckedTextView::class.java) return Checkable.TextView
 
