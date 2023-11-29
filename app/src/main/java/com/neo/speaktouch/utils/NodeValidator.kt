@@ -47,8 +47,8 @@ object NodeValidator {
 
         return listOf(
             node.text,
-            node.hintText,
-            node.contentDescription
+            node.hintText?.takeIf { node.isEditable },
+            node.contentDescription?.takeIf { !node.isEditable }
         ).any { it.isNotNullOrEmpty() }
     }
 
