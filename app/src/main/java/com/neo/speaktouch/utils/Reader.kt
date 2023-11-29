@@ -22,7 +22,8 @@ import android.content.Context
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.model.Type
 import com.neo.speaktouch.model.toTypeText
-import com.neo.speaktouch.utils.extension.ifEmptyOrNull
+import com.neo.speaktouch.utils.extension.getContent
+import com.neo.speaktouch.utils.extension.isNotNullOrEmpty
 import com.neo.speaktouch.utils.extension.iterator
 import com.neo.speaktouch.utils.extension.toStateText
 import javax.inject.Inject
@@ -31,23 +32,20 @@ class Reader @Inject constructor(
     private val context: Context
 ) {
 
-    fun readContent(
+    fun read(
         node: AccessibilityNodeInfoCompat,
         options: Options = Options()
     ) = with(node) {
 
-        val content = contentDescription.ifEmptyOrNull {
-            text.ifEmptyOrNull {
-                hintText.ifEmptyOrNull {
-                    readChildren(node)
-                }
-            }
-        }
+        val type = Type.get(node)
+
+        val content = getContent(type) ?: readChildren(node)
 
         buildList {
-            add(content)
 
-            val type = Type.get(node)
+            if (content.isNotNullOrEmpty()) {
+                add(content)
+            }
 
             if (options.mustReadType && type != null) {
                 type.toTypeText()?.let {
@@ -61,8 +59,7 @@ class Reader @Inject constructor(
                 }
             }
         }.joinToString(
-            separator = ", ",
-            postfix = "."
+            separator = ", "
         )
     }
 
@@ -78,7 +75,7 @@ class Reader @Inject constructor(
                 val isCheckable = Type.get(child) is Type.Checkable
 
                 add(
-                    readContent(
+                    read(
                         node = child,
                         options = Options(
                             mustReadState = isCheckable,
@@ -88,8 +85,7 @@ class Reader @Inject constructor(
                 )
             }
         }.joinToString(
-            separator = ", ",
-            postfix = "."
+            separator = ", "
         )
     }
 
