@@ -88,6 +88,7 @@ android {
             isMinifyEnabled = false
 
             applicationIdSuffix = ".debug"
+            resValue("string", "app_name", "Speak Touch - debug")
 
             signingConfig = signingConfigs.getByName("debug")
         }
