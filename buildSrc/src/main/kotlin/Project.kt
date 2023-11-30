@@ -22,16 +22,17 @@ import java.io.File
 import java.io.FileInputStream
 import java.util.Properties
 
-fun Project.properties(
-    file: File,
+fun File.loadProperties(
     onSuccess: (Properties) -> Unit
 ) {
-    if (file.exists()) {
+    if (exists() && canRead()) {
         onSuccess(
             Properties().apply {
-                load(FileInputStream(file))
+                load(FileInputStream(this@loadProperties))
             }
         )
+    } else {
+        println("File ${this.absolutePath} not found or can't be read")
     }
 }
 

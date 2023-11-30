@@ -18,6 +18,8 @@
 
 @file:Suppress("UnstableApiUsage")
 
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
+
 plugins {
     id(libs.plugins.android.application.get().pluginId)
     id(libs.plugins.kotlin.android.get().pluginId)
@@ -45,10 +47,10 @@ android {
     compileSdk = 34
     buildToolsVersion = "34.0.0"
 
-    if (keystorePropertiesFile.canRead()) {
+    if (keystorePropertiesFile.exists()) {
         signingConfigs {
             create("release") {
-                properties(keystorePropertiesFile) { properties ->
+                keystorePropertiesFile.loadProperties { properties ->
                     storeFile = rootProject.file(properties.getProperty("storeFile"))
                     storePassword = properties.getProperty("storePassword")
                     keyAlias = properties.getProperty("keyAlias")
@@ -95,15 +97,21 @@ android {
     }
 
     applicationVariants.all {
-        val variant = this
-        variant.outputs
-            .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+        outputs
+            .map { it as BaseVariantOutputImpl }
             .forEach { output ->
-                output.outputFileName = "${rootProject.name}-${buildType.name}.apk"
-                if (buildType.name == "release" && variant.signingConfig == null) {
-                    output.outputFileName = "${rootProject.name}-${buildType.name}-unsigned.apk"
+
+                val appName = "%s-%s".format(
+                    rootProject.name,
+                    buildType.name
+                )
+
+                output.outputFileName = if (signingConfig == null) {
+                    "$appName-unsigned.apk"
+                } else {
+                    "$appName.apk"
                 }
-        }
+            }
     }
 
     buildFeatures {

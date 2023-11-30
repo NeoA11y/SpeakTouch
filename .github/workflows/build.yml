@@ -1,4 +1,4 @@
-name: Build application
+name: "Build"
 
 on:
   pull_request:
@@ -18,7 +18,8 @@ jobs:
           distribution: 'temurin'
           java-version: 17
           cache: gradle
-      - name: Build with Gradle
+
+      - name: Build
         run: ./gradlew build --no-daemon
 
       - name: Upload results
