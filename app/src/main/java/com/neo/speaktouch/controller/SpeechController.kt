@@ -22,8 +22,7 @@ import android.content.Context
 import android.speech.tts.TextToSpeech
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.utils.Reader
-import com.neo.speaktouch.model.UiText
-import com.neo.speaktouch.utils.extension.getLog
+import com.neo.speaktouch.model.Text
 import timber.log.Timber
 
 class SpeechController(
@@ -45,17 +44,12 @@ class SpeechController(
         )
     }
 
-    fun speak(text: UiText) {
-        Timber.i("speak: $text")
-
+    fun speak(text: Text) {
         speak(text.resolved(context))
     }
 
     fun speak(nodeInfo: AccessibilityNodeInfoCompat) {
-
-        Timber.i("speak: ${nodeInfo.getLog()}")
-
-        speak(reader.getContent(nodeInfo))
+        speak(reader.read(nodeInfo))
     }
 
     fun stop() {

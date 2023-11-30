@@ -20,139 +20,77 @@ package com.neo.speaktouch.utils
 
 import android.content.Context
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
-import com.neo.speaktouch.R
 import com.neo.speaktouch.model.Type
-import com.neo.speaktouch.utils.extension.filterNotNullOrEmpty
-import com.neo.speaktouch.utils.extension.getLog
-import com.neo.speaktouch.utils.extension.ifEmptyOrNull
+import com.neo.speaktouch.model.toTypeText
+import com.neo.speaktouch.utils.extension.getContent
+import com.neo.speaktouch.utils.extension.isNotNullOrEmpty
 import com.neo.speaktouch.utils.extension.iterator
-import timber.log.Timber
+import com.neo.speaktouch.utils.extension.toStateText
 import javax.inject.Inject
 
 class Reader @Inject constructor(
     private val context: Context
 ) {
-    fun getContent(
-        nodeInfo: AccessibilityNodeInfoCompat
-    ) = getContent(
-        nodeInfo,
-        Level.Text(
-            mustReadSelection = true,
-            mustReadType = true,
-            mustReadCheckable = true
-        )
-    )
 
-    private fun getContent(
+    fun read(
         node: AccessibilityNodeInfoCompat,
-        level: Level
-    ): String {
-        Timber.d(
-            node.getLog(
-                "level: $level"
-            )
-        )
+        options: Options = Options()
+    ) = with(node) {
 
-        return when (level) {
-            is Level.Text -> with(node) {
-                val content = contentDescription.ifEmptyOrNull {
-                    text.ifEmptyOrNull {
-                        hintText.ifEmptyOrNull {
-                            getContent(
-                                node,
-                                Level.Children
-                            )
-                        }
-                    }
-                }
+        val type = Type.get(node)
 
-                listOf(
-                    content,
-                    getType(node, level.mustReadType),
-                    getCheckable(node, level.mustReadCheckable),
-                    getSelection(node, level.mustReadSelection)
-                ).filterNotNullOrEmpty()
+        val content = getContent(type) ?: readChildren(node)
+
+        buildList {
+
+            if (content.isNotNullOrEmpty()) {
+                add(content)
             }
 
-            is Level.Children -> buildList {
-                for (child in node) {
+            if (options.mustReadType && type != null) {
+                type.toTypeText()?.let {
+                    add(it.resolved(context))
+                }
+            }
 
-                    if (!NodeValidator.isValidForAccessibility(child)) continue
-                    if (!NodeValidator.isReadableAsChild(child)) continue
+            if (options.mustReadState) {
+                node.toStateText(type)?.let {
+                    add(it.resolved(context))
+                }
+            }
+        }.joinToString(
+            separator = ", "
+        )
+    }
 
-                    add(
-                        getContent(
-                            child,
-                            Level.Text(
-                                mustReadSelection = false,
-                                mustReadCheckable = true,
-                                mustReadType = listOf(
-                                    Type.SWITCH,
-                                    Type.TOGGLE,
-                                    Type.RADIO,
-                                    Type.CHECKBOX
-                                ).any { it == Type.get(child) }
-                            )
+    fun readChildren(
+        node: AccessibilityNodeInfoCompat
+    ): CharSequence {
+        return buildList {
+            for (child in node) {
+
+                if (!NodeValidator.isValidForAccessibility(child)) continue
+                if (!NodeValidator.isReadableAsChild(child)) continue
+
+                val isCheckable = Type.get(child) is Type.Checkable
+
+                add(
+                    read(
+                        node = child,
+                        options = Options(
+                            mustReadState = isCheckable,
+                            mustReadType = isCheckable
                         )
                     )
-                }
+                )
             }
-        }.joinToString(", ")
+        }.joinToString(
+            separator = ", "
+        )
     }
 
-    private fun getType(
-        node: AccessibilityNodeInfoCompat,
-        mustRead: Boolean
-    ): String? {
-
-        if (!mustRead) return null
-
-        return when (Type.get(node)) {
-            Type.NONE -> null
-            Type.IMAGE -> context.getString(R.string.text_image_type)
-            Type.SWITCH -> context.getString(R.string.text_switch_type)
-            Type.TOGGLE -> context.getString(R.string.text_toggle_type)
-            Type.RADIO -> context.getString(R.string.text_radio_type)
-            Type.CHECKBOX -> context.getString(R.string.text_checkbox_type)
-            Type.BUTTON -> context.getString(R.string.text_button_type)
-            Type.EDITFIELD -> context.getString(R.string.text_editfield_type)
-            Type.OPTIONS -> context.getString(R.string.text_options_type)
-            Type.LIST -> context.getString(R.string.text_list_type)
-            Type.TITLE -> context.getString(R.string.text_title_type)
-        }
-    }
-
-    private fun getCheckable(
-        nodeInfo: AccessibilityNodeInfoCompat,
-        mustRead: Boolean
-    ): CharSequence? {
-        if (!mustRead) return null
-        if (!nodeInfo.isCheckable) return null
-
-        return if (nodeInfo.isCheckable) {
-            context.getString(R.string.text_enabled)
-        } else {
-            context.getString(R.string.text_disabled)
-        }
-    }
-
-    private fun getSelection(
-        node: AccessibilityNodeInfoCompat,
-        mustRead: Boolean
-    ) = if (mustRead && node.isSelected) {
-        context.getString(R.string.text_selected)
-    } else {
-        null
-    }
-
-    sealed interface Level {
-
-        data class Text(
-            val mustReadSelection: Boolean,
-            val mustReadType: Boolean,
-            val mustReadCheckable: Boolean
-        ) : Level
-
-        data object Children : Level
-    }
+    data class Options(
+        val mustReadState: Boolean = true,
+        val mustReadType: Boolean = true,
+    )
 }

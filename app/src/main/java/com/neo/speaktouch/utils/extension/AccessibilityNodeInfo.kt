@@ -21,6 +21,9 @@ package com.neo.speaktouch.utils.extension
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat
+import com.neo.speaktouch.R
+import com.neo.speaktouch.model.Type
+import com.neo.speaktouch.model.Text
 import com.neo.speaktouch.utils.NodeValidator
 
 fun AccessibilityNodeInfoCompat.getNearestAncestor(
@@ -35,19 +38,20 @@ fun AccessibilityNodeInfoCompat.getNearestAncestor(
     return current
 }
 
-operator fun AccessibilityNodeInfoCompat.iterator() = object : Iterator<AccessibilityNodeInfoCompat> {
+operator fun AccessibilityNodeInfoCompat.iterator() =
+    object : Iterator<AccessibilityNodeInfoCompat> {
 
-    var index = -1
+        var index = -1
 
-    override fun hasNext(): Boolean {
-        return childCount != index + 1
+        override fun hasNext(): Boolean {
+            return childCount != index + 1
+        }
+
+        override fun next(): AccessibilityNodeInfoCompat {
+            return getChild(++index)
+        }
+
     }
-
-    override fun next(): AccessibilityNodeInfoCompat {
-        return getChild(++index)
-    }
-
-}
 
 fun AccessibilityNodeInfoCompat.getLog(vararg extra: String) = buildList {
 
@@ -160,3 +164,131 @@ fun AccessibilityNodeInfo.indexOfChild(
 }
 
 val AccessibilityNodeInfo.lastIndex get() = childCount - 1
+
+fun AccessibilityNodeInfoCompat.toStateText(
+    type: Type? = Type.get(this)
+): Text? {
+
+    if (type is Type.Checkable) {
+        return toCheckableStateText(type)
+    }
+
+    // The selection state has a deliberately different behavior from talkback.
+    // Discussion at: https://github.com/NeoA11y/SpeakTouch/discussions/115
+
+    if (isSelected && stateDescription.isNotNullOrEmpty()) {
+        return Text(stateDescription.toString())
+    }
+
+    if (isSelected) {
+        return Text(R.string.text_selected)
+    }
+
+    return null
+}
+
+fun AccessibilityNodeInfoCompat.toCheckableStateText(
+    type: Type.Checkable
+): Text? {
+    when (type) {
+        Type.Checkable.Checkbox -> {
+            if (stateDescription.isNullOrEmpty()) {
+                return if (isChecked) {
+                    Text(R.string.text_checked)
+                } else {
+                    Text(R.string.text_not_checked)
+                }
+            }
+
+            return Text(stateDescription.toString())
+        }
+
+        Type.Checkable.Radio -> {
+            if (stateDescription.isNullOrEmpty()) {
+                return if (isChecked) {
+                    Text(R.string.text_selected)
+                } else {
+                    Text(R.string.text_not_selected)
+                }
+            }
+
+            return Text(stateDescription.toString())
+        }
+
+        Type.Checkable.Switch -> {
+            if (stateDescription.isNullOrEmpty()) {
+                return if (isChecked) {
+                    Text(R.string.text_enabled)
+                } else {
+                    Text(R.string.text_disabled)
+                }
+            }
+
+            return Text(stateDescription.toString())
+        }
+
+        Type.Checkable.Toggle -> {
+            if (stateDescription.isNullOrEmpty()) {
+                return if (isChecked) {
+                    Text(R.string.text_pressed)
+                } else {
+                    Text(R.string.text_not_pressed)
+                }
+            }
+
+            return Text(stateDescription.toString())
+        }
+
+        Type.Checkable.TextView -> {
+
+            if (!isChecked) return null /* don't speak */
+
+            if (stateDescription.isNullOrEmpty()) {
+                return Text(R.string.text_selected)
+            }
+
+            return Text(stateDescription.toString())
+        }
+
+        Type.Checkable.Custom -> {
+            if (stateDescription.isNullOrEmpty()) {
+                return if (isChecked) {
+                    Text(R.string.text_selected)
+                } else {
+                    Text(R.string.text_not_selected)
+                }
+            }
+
+            return Text(stateDescription.toString())
+        }
+    }
+}
+
+
+fun AccessibilityNodeInfoCompat.getContent(
+    type: Type? = Type.get(this)
+): CharSequence? {
+
+    // Deliberately different behavior from talkback
+    // https://github.com/NeoA11y/SpeakTouch/discussions/119
+    // https://github.com/NeoA11y/SpeakTouch/discussions/121
+
+    if (type is Type.EditField) {
+
+        return when {
+            text.isNotNullOrEmpty() -> text
+            hintText.isNotNullOrEmpty() -> hintText
+            else -> null
+        }
+    }
+
+    if (contentDescription.isNotNullOrEmpty()) {
+        return contentDescription
+    }
+
+    if (text.isNotNullOrEmpty()) {
+        return text
+    }
+
+    return null
+}

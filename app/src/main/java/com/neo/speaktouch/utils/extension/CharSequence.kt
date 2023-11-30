@@ -20,7 +20,7 @@ package com.neo.speaktouch.utils.extension
 
 import timber.log.Timber
 
-fun <T : CharSequence> T?.ifEmptyOrNull(
+inline fun <T : CharSequence> T?.ifEmptyOrNull(
     fallback: () -> T
 ): T {
     return if (this.isNullOrEmpty()) {
@@ -30,9 +30,9 @@ fun <T : CharSequence> T?.ifEmptyOrNull(
     }
 }
 
-fun <T : List<CharSequence?>> T.filterNotNullOrEmpty() = filterNot { it.isNullOrEmpty() }
-
+// TODO: Consider use a cache to avoid multiple calls to Class.forName
 infix fun CharSequence.`is`(childClass: Class<*>): Boolean {
+
     if (equals(childClass.name)) return true
     if (isEmpty()) return false
 

@@ -45,10 +45,11 @@ object NodeValidator {
      */
     private fun hasTextToRead(node: AccessibilityNodeInfoCompat): Boolean {
 
+        // TODO: Replace with node.getContent().isNotNullOrEmpty()
         return listOf(
             node.text,
-            node.hintText,
-            node.contentDescription
+            node.hintText?.takeIf { node.isEditable },
+            node.contentDescription?.takeIf { !node.isEditable }
         ).any { it.isNotNullOrEmpty() }
     }
 
@@ -106,7 +107,8 @@ object NodeValidator {
 
         if (node.isCheckable) return true
 
-        if (node.isEditable) return true // TODO: Consider removing after issue #88
+        // TODO: Consider removing after issue #88
+        if (node.isEditable) return true
 
         return hasTextToRead(node)
     }
