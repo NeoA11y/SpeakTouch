@@ -74,15 +74,14 @@ class Reader @Inject constructor(
 
                 val type = Type.get(child)
 
-                val isCheckable = type is Type.Checkable
-                val isButton = type is Type.Button
-
                 add(
                     read(
                         node = child,
                         options = Options(
-                            mustReadState = isCheckable,
-                            mustReadType = isCheckable || isButton
+                            // Announce state only checkable children
+                            mustReadState = type is Type.Checkable,
+                            // Should not announce the type image of children
+                            mustReadType = type !is Type.Image
                         )
                     )
                 )

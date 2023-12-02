@@ -123,6 +123,6 @@ object NodeValidator {
 
         return hasContentToRead(node) ||
                 hasReadableChild(node) ||
-                Type.get(node) is Type.Button
+                Type.get(node) == Type.Button
     }
 }
