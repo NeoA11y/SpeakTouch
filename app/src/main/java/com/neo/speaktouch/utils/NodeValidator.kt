@@ -98,7 +98,7 @@ object NodeValidator {
 
         if (mustReadContent(node)) return false
 
-        return isClickable(node) && hasReadableChild(node)
+        return hasInteraction(node) && hasReadableChild(node)
     }
 
     /**
