@@ -72,14 +72,17 @@ class Reader @Inject constructor(
                 if (!NodeValidator.isValidForAccessibility(child)) continue
                 if (!NodeValidator.isReadableAsChild(child)) continue
 
-                val isCheckable = Type.get(child) is Type.Checkable
+                val type = Type.get(child)
+
+                val isCheckable = type is Type.Checkable
+                val isButton = type is Type.Button
 
                 add(
                     read(
                         node = child,
                         options = Options(
                             mustReadState = isCheckable,
-                            mustReadType = isCheckable
+                            mustReadType = isCheckable || isButton
                         )
                     )
                 )

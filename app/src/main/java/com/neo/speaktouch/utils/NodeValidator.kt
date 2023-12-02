@@ -19,6 +19,7 @@
 package com.neo.speaktouch.utils
 
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
+import com.neo.speaktouch.model.Type
 import com.neo.speaktouch.utils.extension.isNotNullOrEmpty
 import com.neo.speaktouch.utils.extension.iterator
 
@@ -120,6 +121,8 @@ object NodeValidator {
 
         if (mustFocus(node)) return false
 
-        return hasContentToRead(node) || hasReadableChild(node)
+        return hasContentToRead(node) ||
+                hasReadableChild(node) ||
+                Type.get(node) is Type.Button
     }
 }
