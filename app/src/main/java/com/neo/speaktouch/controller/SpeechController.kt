@@ -21,11 +21,10 @@ package com.neo.speaktouch.controller
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
-import com.neo.speaktouch.model.UiText
+import com.neo.speaktouch.model.Text
 import com.neo.speaktouch.utils.NodeValidator
 import com.neo.speaktouch.utils.Reader
-import com.neo.speaktouch.utils.extension.getLog
-import com.neo.speaktouch.utils.extension.ifEmptyOrNull
+import com.neo.speaktouch.utils.extension.getContent
 import com.neo.speaktouch.utils.extension.iterator
 import org.json.JSONArray
 import org.json.JSONObject
@@ -50,18 +49,15 @@ class SpeechController(
         )
     }
 
-    fun speak(text: UiText) {
-        Timber.i("speak: $text")
-
+    fun speak(text: Text) {
         speak(text.resolved(context))
     }
 
     fun speak(nodeInfo: AccessibilityNodeInfoCompat) {
 
-        Timber.i("speak: ${nodeInfo.getLog()}")
         Timber.d("node: ${Node(nodeInfo).geJson().toString(4)}")
 
-        speak(reader.getContent(nodeInfo))
+        speak(reader.read(nodeInfo))
     }
 
     fun stop() {
@@ -75,7 +71,7 @@ class SpeechController(
 
 data class Node(
     val nodeInfo: AccessibilityNodeInfoCompat,
-    val content: CharSequence = nodeInfo.getContent(),
+    val content: CharSequence? = nodeInfo.getContent(),
     val children: List<Node> = nodeInfo.iterator().map { Node(it) }.toList()
 ) {
     fun geJson(): JSONObject {
@@ -95,15 +91,6 @@ data class Node(
         json.put("children", childrenJson)
 
         return json
-    }
-}
-
-private fun AccessibilityNodeInfoCompat.getContent(): CharSequence {
-
-    return contentDescription.ifEmptyOrNull {
-        text.ifEmptyOrNull {
-            hintText.toString()
-        }
     }
 }
 

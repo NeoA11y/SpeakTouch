@@ -18,15 +18,14 @@
 
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.Project
+import java.io.File
 import java.io.FileInputStream
 import java.util.Properties
 
 fun Project.properties(
-    name: String,
+    file: File,
     onSuccess: (Properties) -> Unit
 ) {
-    val file = rootProject.file(name)
-
     if (file.exists()) {
         onSuccess(
             Properties().apply {

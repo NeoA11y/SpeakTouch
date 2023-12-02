@@ -26,6 +26,11 @@ class SwitchesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupCustomSwitch()
+        setupStrangeCheckable()
+    }
+
+    private fun setupStrangeCheckable() {
+        binding.checkableAndSelection.isSelected = true
     }
 
     private fun setupCustomSwitch() = with(binding.customSwitcher) {

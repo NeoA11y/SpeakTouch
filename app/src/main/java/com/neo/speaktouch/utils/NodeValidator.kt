@@ -45,10 +45,11 @@ object NodeValidator {
      */
     private fun hasTextToRead(node: AccessibilityNodeInfoCompat): Boolean {
 
+        // TODO: Replace with node.getContent().isNotNullOrEmpty()
         return listOf(
             node.text,
-            node.hintText,
-            node.contentDescription
+            node.hintText?.takeIf { node.isEditable },
+            node.contentDescription?.takeIf { !node.isEditable }
         ).any { it.isNotNullOrEmpty() }
     }
 
@@ -92,7 +93,7 @@ object NodeValidator {
     /**
      * @return true if is mandatory read [node]'s children
      */
-    fun mustReadChildren(node: AccessibilityNodeInfoCompat) : Boolean {
+    fun mustReadChildren(node: AccessibilityNodeInfoCompat): Boolean {
 
         if (mustReadContent(node)) return false
 
@@ -104,7 +105,12 @@ object NodeValidator {
      */
     fun hasContentToRead(node: AccessibilityNodeInfoCompat): Boolean {
 
-        return hasTextToRead(node) || node.isCheckable
+        if (node.isCheckable) return true
+
+        // TODO: Consider removing after issue #88
+        if (node.isEditable) return true
+
+        return hasTextToRead(node)
     }
 
     /**
