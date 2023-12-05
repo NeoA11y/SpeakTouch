@@ -18,6 +18,11 @@
 
 package com.neo.speaktouch.utils.extension
 
-inline fun <reified T> Iterable<Any>.getInstance(): T {
-    return first { it is T } as T
+fun <T, R> Iterator<T>.map(function: (T) -> R): List<R> {
+
+    return buildList {
+        while (hasNext()) {
+            add(function(next()))
+        }
+    }
 }

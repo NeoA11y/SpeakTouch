@@ -72,14 +72,16 @@ class Reader @Inject constructor(
                 if (!NodeValidator.isValidForAccessibility(child)) continue
                 if (!NodeValidator.isReadableAsChild(child)) continue
 
-                val isCheckable = Type.get(child) is Type.Checkable
+                val type = Type.get(child)
 
                 add(
                     read(
                         node = child,
                         options = Options(
-                            mustReadState = isCheckable,
-                            mustReadType = isCheckable
+                            // Announce state only checkable children
+                            mustReadState = type is Type.Checkable,
+                            // Should not announce the type image of children
+                            mustReadType = type !is Type.Image
                         )
                     )
                 )
