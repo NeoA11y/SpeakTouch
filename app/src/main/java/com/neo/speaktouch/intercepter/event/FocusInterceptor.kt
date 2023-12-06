@@ -33,19 +33,9 @@ class FocusInterceptor @Inject constructor() : EventInterceptor {
 
         val nodeInfo = AccessibilityNodeInfoCompat.wrap(event.source ?: return)
 
-        if (nodeInfo.isAccessibilityFocused) return
-
-        if (!NodeValidator.isValidForAccessibility(nodeInfo)) return
-
         when (event.eventType) {
-            AccessibilityEvent.TYPE_VIEW_HOVER_ENTER -> {
-                handlerAccessibilityNode(nodeInfo)
-            }
-
-            AccessibilityEvent.TYPE_VIEW_FOCUSED -> {
-                handlerAccessibilityNode(nodeInfo)
-            }
-
+            AccessibilityEvent.TYPE_VIEW_HOVER_ENTER,
+            AccessibilityEvent.TYPE_VIEW_FOCUSED,
             AccessibilityEvent.TYPE_VIEW_CLICKED -> {
                 handlerAccessibilityNode(nodeInfo)
             }
@@ -54,13 +44,22 @@ class FocusInterceptor @Inject constructor() : EventInterceptor {
         }
     }
 
-    private fun handlerAccessibilityNode(nodeInfo: AccessibilityNodeInfoCompat) {
-        getFocusableNode(nodeInfo)?.run {
-            performAction(AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS)
-        }
+    private fun handlerAccessibilityNode(
+        nodeInfo: AccessibilityNodeInfoCompat
+    ) {
+
+        val focusableNode = getFocusableNode(nodeInfo) ?: return
+
+        if (focusableNode.isAccessibilityFocused) return
+
+        if (!NodeValidator.isValidForAccessibility(focusableNode)) return
+
+        focusableNode.performAction(AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS)
     }
 
-    private fun getFocusableNode(nodeInfo: AccessibilityNodeInfoCompat): AccessibilityNodeInfoCompat? {
+    private fun getFocusableNode(
+        nodeInfo: AccessibilityNodeInfoCompat
+    ): AccessibilityNodeInfoCompat? {
 
         if (NodeValidator.mustFocus(nodeInfo)) {
             return nodeInfo
