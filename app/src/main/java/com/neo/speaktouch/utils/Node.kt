@@ -36,7 +36,7 @@ data class Node(
 
         json.put("content", content)
         json.put("className", nodeInfo.className)
-        json.put("isReadableAsChild", NodeValidator.isReadableAsChild(nodeInfo))
+        json.put("isImportantForAccessibility", nodeInfo.isImportantForAccessibility)
 
         val childrenJson = JSONArray()
 

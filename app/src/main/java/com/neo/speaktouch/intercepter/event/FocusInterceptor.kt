@@ -21,9 +21,11 @@ package com.neo.speaktouch.intercepter.event
 import android.view.accessibility.AccessibilityEvent
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.intercepter.event.contract.EventInterceptor
+import com.neo.speaktouch.utils.Node
 import com.neo.speaktouch.utils.NodeValidator
 import com.neo.speaktouch.utils.extension.getNearestAncestor
 import dagger.hilt.android.scopes.ServiceScoped
+import timber.log.Timber
 import javax.inject.Inject
 
 @ServiceScoped
@@ -32,6 +34,8 @@ class FocusInterceptor @Inject constructor() : EventInterceptor {
     override fun handle(event: AccessibilityEvent) {
 
         val nodeInfo = AccessibilityNodeInfoCompat.wrap(event.source ?: return)
+
+        Timber.d("event: ${AccessibilityEvent.eventTypeToString(event.eventType)}")
 
         when (event.eventType) {
             AccessibilityEvent.TYPE_VIEW_HOVER_ENTER,
@@ -48,11 +52,11 @@ class FocusInterceptor @Inject constructor() : EventInterceptor {
         nodeInfo: AccessibilityNodeInfoCompat
     ) {
 
-        val focusableNode = getFocusableNode(nodeInfo) ?: return
+        Timber.d("node: ${Node(nodeInfo).geJson().toString(4)}")
 
-        if (focusableNode.isAccessibilityFocused) return
-
-        focusableNode.performAction(AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS)
+        getFocusableNode(nodeInfo)?.performAction(
+            AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS
+        )
     }
 
     private fun getFocusableNode(
