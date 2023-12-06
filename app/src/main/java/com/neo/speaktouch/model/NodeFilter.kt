@@ -34,7 +34,7 @@ sealed interface NodeFilter {
 
             if (NodeValidator.mustFocus(compat)) return true
 
-            return NodeValidator.hasContentToRead(compat) && !mustFocusOnAncestor(compat)
+            return NodeValidator.hasReadableContent(compat) && !mustFocusOnAncestor(compat)
         }
 
         private fun mustFocusOnAncestor(

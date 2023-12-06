@@ -52,8 +52,6 @@ class FocusInterceptor @Inject constructor() : EventInterceptor {
 
         if (focusableNode.isAccessibilityFocused) return
 
-        if (!NodeValidator.isValidForAccessibility(focusableNode)) return
-
         focusableNode.performAction(AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS)
     }
 
@@ -70,7 +68,7 @@ class FocusInterceptor @Inject constructor() : EventInterceptor {
         )
 
         return ancestor ?: when {
-            NodeValidator.hasContentToRead(nodeInfo) -> nodeInfo
+            NodeValidator.hasReadableContent(nodeInfo) -> nodeInfo
             else -> null
         }
     }

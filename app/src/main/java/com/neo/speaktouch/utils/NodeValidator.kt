@@ -67,6 +67,8 @@ object NodeValidator {
      */
     fun mustFocus(node: AccessibilityNodeInfoCompat): Boolean {
 
+        if (!isValidForAccessibility(node)) return false
+
         return mustReadContent(node) || mustReadChildren(node)
     }
 
@@ -75,7 +77,7 @@ object NodeValidator {
      */
     fun mustReadContent(node: AccessibilityNodeInfoCompat): Boolean {
 
-        return hasContentToRead(node) && hasInteraction(node)
+        return hasReadableContent(node) && hasInteraction(node)
     }
 
     /**
@@ -93,8 +95,9 @@ object NodeValidator {
      */
     fun hasReadableChild(node: AccessibilityNodeInfoCompat): Boolean {
 
+        if (!isValidForAccessibility(node)) return false
+
         for (child in node) {
-            if (!isValidForAccessibility(child)) continue
             if (isReadableAsChild(child)) return true
         }
 
@@ -104,7 +107,9 @@ object NodeValidator {
     /**
      * @return true if [node] has content (text or state)
      */
-    fun hasContentToRead(node: AccessibilityNodeInfoCompat): Boolean {
+    fun hasReadableContent(node: AccessibilityNodeInfoCompat): Boolean {
+
+        if (!isValidForAccessibility(node)) return false
 
         if (node.isCheckable) return true
 
@@ -119,9 +124,11 @@ object NodeValidator {
      */
     fun isReadableAsChild(node: AccessibilityNodeInfoCompat): Boolean {
 
+        if (!isValidForAccessibility(node)) return false
+
         if (mustFocus(node)) return false
 
-        return hasContentToRead(node) ||
+        return hasReadableContent(node) ||
                 hasReadableChild(node) ||
                 Type.get(node) == Type.Button
     }

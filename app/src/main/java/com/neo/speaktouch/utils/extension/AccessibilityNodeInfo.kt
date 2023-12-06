@@ -83,7 +83,7 @@ fun AccessibilityNodeInfoCompat.getLog(vararg extra: String) = buildList {
 
     add("\nVALIDATOR")
     add("isValidForAccessible: ${NodeValidator.isValidForAccessibility(this@getLog)}")
-    add("isReadable: ${NodeValidator.hasContentToRead(this@getLog)}")
+    add("isReadable: ${NodeValidator.hasReadableContent(this@getLog)}")
     add("isRequestFocus: ${NodeValidator.mustFocus(this@getLog)}")
     add("isReadableAsChild: ${NodeValidator.isReadableAsChild(this@getLog)}")
 
