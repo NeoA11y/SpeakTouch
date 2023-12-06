@@ -24,6 +24,7 @@ import com.neo.speaktouch.utils.extension.iterator
 import com.neo.speaktouch.utils.extension.map
 import org.json.JSONArray
 import org.json.JSONObject
+import java.lang.reflect.Method
 
 data class Node(
     val nodeInfo: AccessibilityNodeInfoCompat,
@@ -36,7 +37,8 @@ data class Node(
 
         json.put("content", content)
         json.put("className", nodeInfo.className)
-        json.put("isReadableAsChild", NodeValidator.isReadableAsChild(nodeInfo))
+        json.put("isImportantForAccessibility", nodeInfo.isImportantForAccessibility)
+        json.put("actions", nodeInfo.actionList.map { it.getName() })
 
         val childrenJson = JSONArray()
 
@@ -48,4 +50,17 @@ data class Node(
 
         return json
     }
+}
+
+fun AccessibilityNodeInfoCompat.AccessibilityActionCompat.getName(): String {
+    val clazz = AccessibilityNodeInfoCompat::class.java
+
+    val method: Method = clazz.getDeclaredMethod(
+        "getActionSymbolicName",
+        Int::class.javaPrimitiveType
+    )
+
+    method.isAccessible = true
+
+    return method.invoke(null, id) as String
 }
