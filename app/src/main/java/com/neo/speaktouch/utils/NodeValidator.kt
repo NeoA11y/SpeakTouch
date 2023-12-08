@@ -55,19 +55,11 @@ object NodeValidator {
     }
 
     /**
-     * @return true if [node] must be ignored
-     */
-    fun isValidForAccessibility(node: AccessibilityNodeInfoCompat): Boolean {
-
-        return node.isImportantForAccessibility && node.isVisibleToUser
-    }
-
-    /**
      * @return true if is mandatory to focus on [node]
      */
     fun mustFocus(node: AccessibilityNodeInfoCompat): Boolean {
 
-        if (!isValidForAccessibility(node)) return false
+        if (!node.isVisibleToUser) return false
 
         return mustReadContent(node) || mustReadChildren(node)
     }
@@ -95,7 +87,7 @@ object NodeValidator {
      */
     fun hasReadableChild(node: AccessibilityNodeInfoCompat): Boolean {
 
-        if (!isValidForAccessibility(node)) return false
+        if (!node.isVisibleToUser) return false
 
         for (child in node) {
             if (isReadableAsChild(child)) return true
@@ -109,7 +101,7 @@ object NodeValidator {
      */
     fun hasReadableContent(node: AccessibilityNodeInfoCompat): Boolean {
 
-        if (!isValidForAccessibility(node)) return false
+        if (!node.isVisibleToUser) return false
 
         if (node.isCheckable) return true
 
@@ -123,8 +115,6 @@ object NodeValidator {
      * @return true if [node] cannot be read directly
      */
     fun isReadableAsChild(node: AccessibilityNodeInfoCompat): Boolean {
-
-        if (!isValidForAccessibility(node)) return false
 
         if (mustFocus(node)) return false
 

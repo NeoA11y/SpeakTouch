@@ -25,6 +25,7 @@ import com.neo.speaktouch.R
 import com.neo.speaktouch.model.Type
 import com.neo.speaktouch.model.Text
 import com.neo.speaktouch.utils.NodeValidator
+import java.lang.reflect.Method
 
 fun AccessibilityNodeInfoCompat.getNearestAncestor(
     predicate: (AccessibilityNodeInfoCompat) -> Boolean
@@ -52,88 +53,6 @@ operator fun AccessibilityNodeInfoCompat.iterator() =
         }
 
     }
-
-fun AccessibilityNodeInfoCompat.getLog(vararg extra: String) = buildList {
-
-    add("class: $className")
-    add("packageName: $packageName")
-    add("isImportantForAccessibility: $isImportantForAccessibility")
-
-    add("\nCONTENT")
-    add("id: $viewIdResourceName") // TODO: enable flagReportViewIds
-    add("contentDescription: $contentDescription")
-    add("text: $text")
-    add("hintText: $hintText")
-    add("isHeading: $isHeading")
-    add("isPassword: $isPassword")
-    add("error: $error")
-
-    add("\nSTATE")
-    add("isScrollable: $isScrollable")
-    add("isEnabled: $isEnabled")
-    add("isChecked: $isChecked")
-    add("isSelected: $isSelected")
-    add("stateDescription: $stateDescription")
-
-    add("\nFOCUS")
-    add("isFocusable: $isFocusable")
-    add("isFocused: $isFocused")
-    add("isAccessibilityFocused: $isAccessibilityFocused")
-    add("isScreenReaderFocusable: $isScreenReaderFocusable")
-
-    add("\nVALIDATOR")
-    add("isValidForAccessible: ${NodeValidator.isValidForAccessibility(this@getLog)}")
-    add("isReadable: ${NodeValidator.hasReadableContent(this@getLog)}")
-    add("isRequestFocus: ${NodeValidator.mustFocus(this@getLog)}")
-    add("isReadableAsChild: ${NodeValidator.isReadableAsChild(this@getLog)}")
-
-    add("\nHIERARCHY")
-    add("parent: ${parent?.className.ifEmptyOrNull { "unknown" }}")
-    add("childCount: $childCount")
-
-    add("\nACTION")
-    add("isCheckable: $isCheckable")
-    add("isEditable: $isEditable")
-    add("isClickable: $isClickable")
-    add("isLongClickable: $isLongClickable")
-    add("actions: ${actionList.joinToString(", ") { it.name }}")
-
-    if (extra.isNotEmpty()) {
-        add("\nEXTRA")
-        addAll(extra)
-    }
-
-}.joinToString("\n")
-
-private val AccessibilityActionCompat.name: String
-    get() = when (id) {
-        AccessibilityNodeInfoCompat.ACTION_FOCUS -> "ACTION_FOCUS"
-        AccessibilityNodeInfoCompat.ACTION_CLEAR_FOCUS -> "ACTION_CLEAR_FOCUS"
-        AccessibilityNodeInfoCompat.ACTION_SELECT -> "ACTION_SELECT"
-        AccessibilityNodeInfoCompat.ACTION_CLEAR_SELECTION -> "ACTION_CLEAR_SELECTION"
-        AccessibilityNodeInfoCompat.ACTION_CLICK -> "ACTION_CLICK"
-        AccessibilityNodeInfoCompat.ACTION_LONG_CLICK -> "ACTION_LONG_CLICK"
-        AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS -> "ACTION_ACCESSIBILITY_FOCUS"
-        AccessibilityNodeInfoCompat.ACTION_CLEAR_ACCESSIBILITY_FOCUS -> "ACTION_CLEAR_ACCESSIBILITY_FOCUS"
-        AccessibilityNodeInfoCompat.ACTION_NEXT_AT_MOVEMENT_GRANULARITY -> "ACTION_NEXT_AT_MOVEMENT_GRANULARITY"
-        AccessibilityNodeInfoCompat.ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY -> "ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY"
-        AccessibilityNodeInfoCompat.ACTION_NEXT_HTML_ELEMENT -> "ACTION_NEXT_HTML_ELEMENT"
-        AccessibilityNodeInfoCompat.ACTION_PREVIOUS_HTML_ELEMENT -> "ACTION_PREVIOUS_HTML_ELEMENT"
-        AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD -> "ACTION_SCROLL_FORWARD"
-        AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD -> "ACTION_SCROLL_BACKWARD"
-        AccessibilityNodeInfoCompat.ACTION_CUT -> "ACTION_CUT"
-        AccessibilityNodeInfoCompat.ACTION_COPY -> "ACTION_COPY"
-        AccessibilityNodeInfoCompat.ACTION_PASTE -> "ACTION_PASTE"
-        AccessibilityNodeInfoCompat.ACTION_SET_SELECTION -> "ACTION_SET_SELECTION"
-        AccessibilityNodeInfoCompat.ACTION_EXPAND -> "ACTION_EXPAND"
-        AccessibilityNodeInfoCompat.ACTION_COLLAPSE -> "ACTION_COLLAPSE"
-        AccessibilityNodeInfoCompat.ACTION_SET_TEXT -> "ACTION_SET_TEXT"
-        else -> label.ifEmptyOrNull { "ACTION_UNKNOWN" }.toString()
-    }
-
-fun AccessibilityNodeInfo.performFocus() {
-    performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS)
-}
 
 context(NodeScanScope)
 fun AccessibilityNodeInfo.performFocus(mustStop: Boolean = true) {
@@ -264,7 +183,6 @@ fun AccessibilityNodeInfoCompat.toCheckableStateText(
     }
 }
 
-
 fun AccessibilityNodeInfoCompat.getContent(
     type: Type? = Type.get(this)
 ): CharSequence? {
@@ -291,4 +209,17 @@ fun AccessibilityNodeInfoCompat.getContent(
     }
 
     return null
+}
+
+fun AccessibilityNodeInfoCompat.AccessibilityActionCompat.getName(): String {
+    val clazz = AccessibilityNodeInfoCompat::class.java
+
+    val method: Method = clazz.getDeclaredMethod(
+        "getActionSymbolicName",
+        Int::class.javaPrimitiveType
+    )
+
+    method.isAccessible = true
+
+    return method.invoke(null, id) as String
 }
