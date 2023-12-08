@@ -52,7 +52,7 @@ class FocusInterceptor @Inject constructor() : EventInterceptor {
         nodeInfo: AccessibilityNodeInfoCompat
     ) {
 
-        Timber.d("node: ${Node(nodeInfo).geJson().toString(4)}")
+        Node.log(nodeInfo)
 
         getFocusableNode(nodeInfo)?.performAction(
             AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS
