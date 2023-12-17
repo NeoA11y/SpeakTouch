@@ -1,3 +1,22 @@
+/*
+ * Local tests of the Type.
+ *
+ * Copyright (C) 2023 Irineu A. Silva.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+
 package com.neo.speaktouch.model
 
 import android.app.Activity
@@ -20,6 +39,8 @@ import android.widget.ToggleButton
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.neo.speaktouch.view.CustomCheckable
+import com.neo.speaktouch.view.CustomList
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -52,13 +73,15 @@ class TypeTest {
 
         val activity = controller.get()
 
-        val imageButton = ImageButton(activity)
-
-        activity.setContentView(imageButton)
+        val imageButton = ImageButton(activity).also {
+            activity.setContentView(it)
+        }
 
         val node = imageButton.createAccessibilityNodeInfo()
 
         val type = Type.get(AccessibilityNodeInfoCompat.wrap(node))
+
+        // then
 
         assertEquals(Type.Button, type)
     }
@@ -66,15 +89,19 @@ class TypeTest {
     @Test
     fun `should return Image from non-clickable ImageView`() {
 
+        // given
+
         val activity = controller.get()
 
-        val imageView = ImageView(activity)
-
-        activity.setContentView(imageView)
+        val imageView = ImageView(activity).also {
+            activity.setContentView(it)
+        }
 
         val node = imageView.createAccessibilityNodeInfo()
 
         val type = Type.get(AccessibilityNodeInfoCompat.wrap(node))
+
+        // then
 
         assertEquals(Type.Image, type)
     }
@@ -82,17 +109,21 @@ class TypeTest {
     @Test
     fun `should return Button from clickable ImageView`() {
 
+        // given
+
         val activity = controller.get()
 
-        val imageView = ImageView(activity)
-
-        imageView.isClickable = true
-
-        activity.setContentView(imageView)
+        val imageView = ImageView(activity).apply {
+            isClickable = true
+        }.also {
+            activity.setContentView(it)
+        }
 
         val node = imageView.createAccessibilityNodeInfo()
 
         val type = Type.get(AccessibilityNodeInfoCompat.wrap(node))
+
+        // then
 
         assertEquals(Type.Button, type)
     }
@@ -100,15 +131,19 @@ class TypeTest {
     @Test
     fun `should return EditField from EditText`() {
 
+        // given
+
         val activity = controller.get()
 
-        val editText = EditText(activity)
-
-        activity.setContentView(editText)
+        val editText = EditText(activity).also {
+            activity.setContentView(it)
+        }
 
         val node = editText.createAccessibilityNodeInfo()
 
         val type = Type.get(AccessibilityNodeInfoCompat.wrap(node))
+
+        // then
 
         assertEquals(Type.EditField, type)
     }
@@ -116,15 +151,19 @@ class TypeTest {
     @Test
     fun `should return Checkable_TextView from CheckedTextView`() {
 
+        // given
+
         val activity = controller.get()
 
-        val checkedTextView = CheckedTextView(activity)
-
-        activity.setContentView(checkedTextView)
+        val checkedTextView = CheckedTextView(activity).also {
+            activity.setContentView(it)
+        }
 
         val node = checkedTextView.createAccessibilityNodeInfo()
 
         val type = Type.get(AccessibilityNodeInfoCompat.wrap(node))
+
+        // then
 
         assertEquals(Type.Checkable.TextView, type)
     }
@@ -132,15 +171,19 @@ class TypeTest {
     @Test
     fun `should return Checkable_Switch from Switch`() {
 
+        // given
+
         val activity = controller.get()
 
-        val switch = Switch(activity)
-
-        activity.setContentView(switch)
+        val switch = Switch(activity).also {
+            activity.setContentView(it)
+        }
 
         val node = switch.createAccessibilityNodeInfo()
 
         val type = Type.get(AccessibilityNodeInfoCompat.wrap(node))
+
+        // then
 
         assertEquals(Type.Checkable.Switch, type)
     }
@@ -148,15 +191,19 @@ class TypeTest {
     @Test
     fun `should return Checkable_Toggle from ToggleButton`() {
 
+        // given
+
         val activity = controller.get()
 
-        val toggleButton = ToggleButton(activity)
-
-        activity.setContentView(toggleButton)
+        val toggleButton = ToggleButton(activity).also {
+            activity.setContentView(it)
+        }
 
         val node = toggleButton.createAccessibilityNodeInfo()
 
         val type = Type.get(AccessibilityNodeInfoCompat.wrap(node))
+
+        // then
 
         assertEquals(Type.Checkable.Toggle, type)
     }
@@ -164,15 +211,19 @@ class TypeTest {
     @Test
     fun `should return Checkable_Radio from RadioButton`() {
 
+        // given
+
         val activity = controller.get()
 
-        val radioButton = RadioButton(activity)
-
-        activity.setContentView(radioButton)
+        val radioButton = RadioButton(activity).also {
+            activity.setContentView(it)
+        }
 
         val node = radioButton.createAccessibilityNodeInfo()
 
         val type = Type.get(AccessibilityNodeInfoCompat.wrap(node))
+
+        // then
 
         assertEquals(Type.Checkable.Radio, type)
     }
@@ -180,15 +231,19 @@ class TypeTest {
     @Test
     fun `should return Checkable_Checkbox from CheckBox`() {
 
+        // given
+
         val activity = controller.get()
 
-        val checkBox = CheckBox(activity)
-
-        activity.setContentView(checkBox)
+        val checkBox = CheckBox(activity).also {
+            activity.setContentView(it)
+        }
 
         val node = checkBox.createAccessibilityNodeInfo()
 
         val type = Type.get(AccessibilityNodeInfoCompat.wrap(node))
+
+        // then
 
         assertEquals(Type.Checkable.Checkbox, type)
     }
@@ -196,15 +251,19 @@ class TypeTest {
     @Test
     fun `should return Checkable_Custom from custom checkable`() {
 
+        // given
+
         val activity = controller.get()
 
-        val customCheckable = CustomCheckable(activity)
-
-        activity.setContentView(customCheckable)
+        val customCheckable = CustomCheckable(activity).also {
+            activity.setContentView(it)
+        }
 
         val node = customCheckable.createAccessibilityNodeInfo()
 
         val type = Type.get(AccessibilityNodeInfoCompat.wrap(node))
+
+        // then
 
         assertEquals(Type.Checkable.Custom, type)
     }
@@ -212,21 +271,27 @@ class TypeTest {
     @Test
     fun `should return Type_Button from Button`() {
 
+        // given
+
         val activity = controller.get()
 
-        val button = Button(activity)
-
-        activity.setContentView(button)
+        val button = Button(activity).also {
+            activity.setContentView(it)
+        }
 
         val node = button.createAccessibilityNodeInfo()
 
         val type = Type.get(AccessibilityNodeInfoCompat.wrap(node))
+
+        // then
 
         assertEquals(Type.Button, type)
     }
 
     @Test
     fun `should return Type_List from RecyclerView`() {
+
+        // given
 
         val activity = controller.get()
 
@@ -244,21 +309,27 @@ class TypeTest {
 
         val type = Type.get(AccessibilityNodeInfoCompat.wrap(node))
 
+        // then
+
         assertEquals(Type.List, type)
     }
 
     @Test
     fun `should return Type_List from ListView`() {
 
+        // given
+
         val activity = controller.get()
 
-        val listView = ListView(activity)
-
-        activity.setContentView(listView)
+        val listView = ListView(activity).also {
+            activity.setContentView(it)
+        }
 
         val node = listView.createAccessibilityNodeInfo()
 
         val type = Type.get(AccessibilityNodeInfoCompat.wrap(node))
+
+        // then
 
         assertEquals(Type.List, type)
     }
@@ -266,15 +337,19 @@ class TypeTest {
     @Test
     fun `should return Type_List from custom list`() {
 
+        // given
+
         val activity = controller.get()
 
-        val customList = CustomList(activity)
-
-        activity.setContentView(customList)
+        val customList = CustomList(activity).also {
+            activity.setContentView(it)
+        }
 
         val node = customList.createAccessibilityNodeInfo()
 
         val type = Type.get(AccessibilityNodeInfoCompat.wrap(node))
+
+        // then
 
         assertEquals(Type.List, type)
     }
@@ -282,15 +357,19 @@ class TypeTest {
     @Test
     fun `should return Type_DropdownList from Spinner`() {
 
+        // given
+
         val activity = controller.get()
 
-        val spinner = Spinner(activity)
-
-        activity.setContentView(spinner)
+        val spinner = Spinner(activity).also {
+            activity.setContentView(it)
+        }
 
         val node = spinner.createAccessibilityNodeInfo()
 
         val type = Type.get(AccessibilityNodeInfoCompat.wrap(node))
+
+        // then
 
         assertEquals(Type.DropdownList, type)
     }
@@ -298,48 +377,22 @@ class TypeTest {
     @Test
     fun `should return Type_Heading from heading`() {
 
+        // given
+
         val activity = controller.get()
 
         val heading = TextView(activity).apply {
             isAccessibilityHeading = true
+        }.also {
+            activity.setContentView(it)
         }
-
-        activity.setContentView(heading)
 
         val node = heading.createAccessibilityNodeInfo()
 
         val type = Type.get(AccessibilityNodeInfoCompat.wrap(node))
 
+        // then
+
         assertEquals(Type.Heading, type)
-    }
-
-    class CustomList(
-        context: Context
-    ) : View(context) {
-
-        override fun onInitializeAccessibilityNodeInfo(
-            info: AccessibilityNodeInfo
-        ) {
-            super.onInitializeAccessibilityNodeInfo(info)
-
-            info.collectionInfo = AccessibilityNodeInfo.CollectionInfo(
-                1,
-                1,
-                false
-            )
-        }
-    }
-
-    class CustomCheckable(
-        context: Context
-    ) : View(context) {
-
-        override fun onInitializeAccessibilityNodeInfo(
-            info: AccessibilityNodeInfo
-        ) {
-            super.onInitializeAccessibilityNodeInfo(info)
-
-            info.isCheckable = true
-        }
     }
 }
