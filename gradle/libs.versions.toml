@@ -10,6 +10,7 @@ javapoet = "1.13.0"
 kotlin = "1.9.21"
 ksp = "1.9.21-1.0.15"
 material = "1.10.0"
+robolectric = "4.11.1"
 test-junit = "4.13.2"
 timber = "5.0.1"
 
@@ -20,6 +21,7 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 dagger = { group = "com.google.dagger", name = "hilt-android", version.ref = "dagger" }
 dagger-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "dagger" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 # Plugins

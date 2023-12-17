@@ -139,5 +139,5 @@ dependencies {
 
     // Unit test
     testImplementation(libs.junit)
-    testImplementation("org.robolectric:robolectric:4.11.1")
+    testImplementation(libs.robolectric)
 }
