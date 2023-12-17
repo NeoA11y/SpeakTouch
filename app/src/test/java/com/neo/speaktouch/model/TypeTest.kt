@@ -3,6 +3,7 @@ package com.neo.speaktouch.model
 import android.app.Activity
 import android.content.Context
 import android.view.View
+import android.view.ViewGroup
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Button
 import android.widget.CheckBox
@@ -17,6 +18,7 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -25,6 +27,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.android.controller.ActivityController
 
 @RunWith(RobolectricTestRunner::class)
@@ -227,9 +230,15 @@ class TypeTest {
 
         val activity = controller.get()
 
-        val recyclerView = RecyclerView(activity)
+        val recyclerView = RecyclerView(activity).also {
+            activity.setContentView(it)
+        }.apply {
+            // needed to trigger LayoutManager.onInitializeAccessibilityNodeInfo
+            layoutManager = LinearLayoutManager(activity)
+        }
 
-        activity.setContentView(recyclerView)
+        // needed to trigger RecyclerView.onLayout
+        controller.visible()
 
         val node = recyclerView.createAccessibilityNodeInfo()
 
