@@ -71,8 +71,6 @@ android {
                 "pt"
             )
         )
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
