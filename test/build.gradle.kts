@@ -44,8 +44,6 @@ android {
 
         versionCode = 1
         versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
@@ -65,11 +63,4 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core.ktx)
     implementation(libs.material)
-
-    // Unit test
-    testImplementation(libs.junit)
-
-    // Instrumented test
-    androidTestImplementation(libs.androidx.test.junit)
-    androidTestImplementation(libs.androidx.test.espresso)
 }
