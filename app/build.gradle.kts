@@ -71,8 +71,6 @@ android {
                 "pt"
             )
         )
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -103,7 +101,7 @@ android {
                 if (buildType.name == "release" && variant.signingConfig == null) {
                     output.outputFileName = "${rootProject.name}-${buildType.name}-unsigned.apk"
                 }
-        }
+            }
     }
 
     buildFeatures {
@@ -112,6 +110,12 @@ android {
 
     compileOptions {
         kotlinOptions.freeCompilerArgs += "-Xcontext-receivers"
+    }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
     }
 }
 
@@ -133,8 +137,5 @@ dependencies {
 
     // Unit test
     testImplementation(libs.junit)
-
-    // Instrumented test
-    androidTestImplementation(libs.androidx.test.junit)
-    androidTestImplementation(libs.androidx.test.espresso)
+    testImplementation(libs.robolectric)
 }
