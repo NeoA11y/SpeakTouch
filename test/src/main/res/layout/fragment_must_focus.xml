@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
     android:contentDescription="Parent"
     android:focusable="true"
-    android:clickable="true"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".MainActivity"
@@ -76,6 +76,26 @@
         android:clickable="false"
         android:contentDescription="Withou action"
         android:focusable="false" />
+
+    <!-- should not announce not important elements-->
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:importantForAccessibility="no"
+        android:text="I'm not important" />
+
+    <!-- should not announce invisible elements-->
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:importantForAccessibility="no"
+        android:text="I'm invisible" />
 
     <Space
         android:layout_width="wrap_content"

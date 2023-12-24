@@ -30,11 +30,11 @@ sealed interface NodeFilter {
         override fun filter(node: AccessibilityNodeInfo): Boolean {
             val compat = AccessibilityNodeInfoCompat.wrap(node)
 
-            if (!NodeValidator.isValidForAccessibility(compat)) return false
+            if (!compat.isVisibleToUser) return false
 
             if (NodeValidator.mustFocus(compat)) return true
 
-            return NodeValidator.hasContentToRead(compat) && !mustFocusOnAncestor(compat)
+            return NodeValidator.hasReadableContent(compat) && !mustFocusOnAncestor(compat)
         }
 
         private fun mustFocusOnAncestor(
