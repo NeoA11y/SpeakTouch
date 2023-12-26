@@ -22,8 +22,8 @@ import android.content.Context
 import android.speech.tts.TextToSpeech
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.model.Text
-import com.neo.speaktouch.utils.Reader
 import com.neo.speaktouch.utils.Node
+import com.neo.speaktouch.utils.Reader
 import timber.log.Timber
 
 class SpeechController(
@@ -51,7 +51,7 @@ class SpeechController(
 
     fun speak(nodeInfo: AccessibilityNodeInfoCompat) {
 
-        Timber.d("node: ${Node(nodeInfo).geJson().toString(4)}")
+        Node.log(nodeInfo)
 
         speak(reader.read(nodeInfo))
     }

@@ -69,7 +69,6 @@ class Reader @Inject constructor(
         return buildList {
             for (child in node) {
 
-                if (!NodeValidator.isValidForAccessibility(child)) continue
                 if (!NodeValidator.isReadableAsChild(child)) continue
 
                 val type = Type.get(child)

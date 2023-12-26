@@ -21,9 +21,11 @@ package com.neo.speaktouch.intercepter.event
 import android.view.accessibility.AccessibilityEvent
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.neo.speaktouch.intercepter.event.contract.EventInterceptor
+import com.neo.speaktouch.utils.Node
 import com.neo.speaktouch.utils.NodeValidator
 import com.neo.speaktouch.utils.extension.getNearestAncestor
 import dagger.hilt.android.scopes.ServiceScoped
+import timber.log.Timber
 import javax.inject.Inject
 
 @ServiceScoped
@@ -33,19 +35,11 @@ class FocusInterceptor @Inject constructor() : EventInterceptor {
 
         val nodeInfo = AccessibilityNodeInfoCompat.wrap(event.source ?: return)
 
-        if (nodeInfo.isAccessibilityFocused) return
-
-        if (!NodeValidator.isValidForAccessibility(nodeInfo)) return
+        Timber.d("event: ${AccessibilityEvent.eventTypeToString(event.eventType)}")
 
         when (event.eventType) {
-            AccessibilityEvent.TYPE_VIEW_HOVER_ENTER -> {
-                handlerAccessibilityNode(nodeInfo)
-            }
-
-            AccessibilityEvent.TYPE_VIEW_FOCUSED -> {
-                handlerAccessibilityNode(nodeInfo)
-            }
-
+            AccessibilityEvent.TYPE_VIEW_HOVER_ENTER,
+            AccessibilityEvent.TYPE_VIEW_FOCUSED,
             AccessibilityEvent.TYPE_VIEW_CLICKED -> {
                 handlerAccessibilityNode(nodeInfo)
             }
@@ -54,13 +48,20 @@ class FocusInterceptor @Inject constructor() : EventInterceptor {
         }
     }
 
-    private fun handlerAccessibilityNode(nodeInfo: AccessibilityNodeInfoCompat) {
-        getFocusableNode(nodeInfo)?.run {
-            performAction(AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS)
-        }
+    private fun handlerAccessibilityNode(
+        nodeInfo: AccessibilityNodeInfoCompat
+    ) {
+
+        Node.log(nodeInfo)
+
+        getFocusableNode(nodeInfo)?.performAction(
+            AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS
+        )
     }
 
-    private fun getFocusableNode(nodeInfo: AccessibilityNodeInfoCompat): AccessibilityNodeInfoCompat? {
+    private fun getFocusableNode(
+        nodeInfo: AccessibilityNodeInfoCompat
+    ): AccessibilityNodeInfoCompat? {
 
         if (NodeValidator.mustFocus(nodeInfo)) {
             return nodeInfo
@@ -71,7 +72,7 @@ class FocusInterceptor @Inject constructor() : EventInterceptor {
         )
 
         return ancestor ?: when {
-            NodeValidator.hasContentToRead(nodeInfo) -> nodeInfo
+            NodeValidator.hasReadableContent(nodeInfo) -> nodeInfo
             else -> null
         }
     }

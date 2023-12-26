@@ -19,11 +19,14 @@
 package com.neo.speaktouch.utils
 
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
+import com.neo.speaktouch.BuildConfig
 import com.neo.speaktouch.utils.extension.getContent
+import com.neo.speaktouch.utils.extension.getName
 import com.neo.speaktouch.utils.extension.iterator
 import com.neo.speaktouch.utils.extension.map
 import org.json.JSONArray
 import org.json.JSONObject
+import timber.log.Timber
 
 data class Node(
     val nodeInfo: AccessibilityNodeInfoCompat,
@@ -36,7 +39,9 @@ data class Node(
 
         json.put("content", content)
         json.put("className", nodeInfo.className)
-        json.put("isReadableAsChild", NodeValidator.isReadableAsChild(nodeInfo))
+        json.put("isVisibleToUser", nodeInfo.isVisibleToUser)
+        json.put("isImportantForAccessibility", nodeInfo.isImportantForAccessibility)
+        json.put("actions", nodeInfo.actionList.map { it.getName() })
 
         val childrenJson = JSONArray()
 
@@ -47,5 +52,15 @@ data class Node(
         json.put("children", childrenJson)
 
         return json
+    }
+
+    companion object {
+
+        fun log(node: AccessibilityNodeInfoCompat) {
+
+            if (!BuildConfig.DEBUG) return
+
+            Timber.d("node: ${Node(node).geJson().toString(4)}")
+        }
     }
 }

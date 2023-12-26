@@ -43,13 +43,22 @@
                 android:layout_height="wrap_content"
                 android:text="Read me" />
 
-            <!-- should not announce elements not important for accessibility-->
+            <!-- should not announce not important elements-->
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:importantForAccessibility="no"
-                android:text="Don't read me" />
+                android:text="I'm not important" />
+
+
+            <!-- should not announce invisible elements-->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:importantForAccessibility="no"
+                android:text="I'm invisible" />
 
         </LinearLayout>
 
