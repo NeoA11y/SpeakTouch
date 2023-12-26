@@ -79,13 +79,16 @@ object NodeValidator {
 
         if (mustReadContent(node)) return false
 
-        return isClickable(node) && hasReadableChild(node)
+        return hasInteraction(node) && hasReadableChild(node)
     }
 
     /**
      * @return true if [node] has a readable child
      */
     fun hasReadableChild(node: AccessibilityNodeInfoCompat): Boolean {
+
+        // List items must be announced individually
+        if (isExplorableCollection(node)) return false
 
         if (!node.isVisibleToUser) return false
 
@@ -101,6 +104,9 @@ object NodeValidator {
      */
     fun hasReadableContent(node: AccessibilityNodeInfoCompat): Boolean {
 
+        // List items must be announced individually
+        if (isExplorableCollection(node)) return false
+
         if (!node.isVisibleToUser) return false
 
         if (node.isCheckable) return true
@@ -109,6 +115,14 @@ object NodeValidator {
         if (node.isEditable) return true
 
         return hasTextToRead(node)
+    }
+
+    /**
+     * @return true if [node] is an explorable collection
+     */
+    fun isExplorableCollection(node: AccessibilityNodeInfoCompat) : Boolean {
+
+        return node.collectionInfo != null && node.childCount > 0
     }
 
     /**
