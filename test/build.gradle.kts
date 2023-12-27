@@ -20,7 +20,7 @@
 @file:Suppress("UnstableApiUsage")
 
 plugins {
-    id(libs.plugins.android.application.get().pluginId)
+    alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
 }
 

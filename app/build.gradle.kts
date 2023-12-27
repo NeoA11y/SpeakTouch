@@ -19,10 +19,10 @@
 @file:Suppress("UnstableApiUsage")
 
 plugins {
-    id(libs.plugins.android.application.get().pluginId)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.dagger)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.dagger)
 }
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")

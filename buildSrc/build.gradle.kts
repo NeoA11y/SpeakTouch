@@ -29,8 +29,5 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.android.gradlePlugin)
     implementation(libs.android.gradlePluginApi)
-
-    implementation(libs.squareup.javapoet)
 }

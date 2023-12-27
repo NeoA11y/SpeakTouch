@@ -4,7 +4,6 @@ androidx-appcompat = "1.6.1"
 androidx-constraintlayout = "2.1.4"
 androidx-core = "1.12.0"
 dagger = "2.50"
-javapoet = "1.13.0"
 kotlin = "1.9.22"
 ksp = "1.9.22-1.0.16"
 material = "1.11.0"
@@ -24,7 +23,6 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 # Plugins
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 android-gradlePluginApi = { group = "com.android.tools.build", name = "gradle-api", version.ref = "agp" }
-squareup-javapoet = { group = "com.squareup", name = "javapoet", version.ref = "javapoet" }
 
 # Unit test
 junit = { group = "junit", name = "junit", version.ref = "test-junit" }

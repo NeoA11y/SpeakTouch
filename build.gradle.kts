@@ -18,7 +18,7 @@
  */
 
 plugins {
-    id(libs.plugins.android.application.get().pluginId) apply false
+    alias(libs.plugins.android.application) apply false
     alias(libs.plugins.dagger) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.ksp) apply false
