@@ -24,7 +24,6 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 # Plugins
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 android-gradlePluginApi = { group = "com.android.tools.build", name = "gradle-api", version.ref = "agp" }
-kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 squareup-javapoet = { group = "com.squareup", name = "javapoet", version.ref = "javapoet" }
 
 # Unit test

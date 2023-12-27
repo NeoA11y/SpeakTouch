@@ -20,6 +20,6 @@
 plugins {
     id(libs.plugins.android.application.get().pluginId) apply false
     alias(libs.plugins.dagger) apply false
-    id(libs.plugins.kotlin.android.get().pluginId) apply false
+    alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.ksp) apply false
 }

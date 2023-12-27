@@ -20,15 +20,15 @@
 
 plugins {
     id(libs.plugins.android.application.get().pluginId)
-    id(libs.plugins.kotlin.android.get().pluginId)
+    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.dagger)
 }
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 
-java {
-    toolchain {
+kotlin {
+    jvmToolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
         vendor.set(JvmVendorSpec.ADOPTIUM)
     }

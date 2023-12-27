@@ -34,8 +34,6 @@ dependencyResolutionManagement {
     }
 }
 
-
-
 rootProject.name = "SpeakTouch"
 
 include("app")

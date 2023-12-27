@@ -21,12 +21,13 @@
 
 plugins {
     id(libs.plugins.android.application.get().pluginId)
-    id(libs.plugins.kotlin.android.get().pluginId)
+    alias(libs.plugins.kotlin.android)
 }
 
-java {
-    toolchain {
+kotlin {
+    jvmToolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
+        vendor.set(JvmVendorSpec.ADOPTIUM)
     }
 }
 
@@ -40,7 +41,7 @@ android {
         applicationIdSuffix = "test"
 
         minSdk = 22
-        targetSdk = 33
+        targetSdk = 34
 
         versionCode = 1
         versionName = "1.0"
