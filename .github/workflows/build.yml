@@ -25,6 +25,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: SpeakTouch-APKs
-          path: |
-            app/build/outputs/apk/debug/SpeakTouch-debug.apk
-            app/build/outputs/apk/release/SpeakTouch-release-unsigned.apk
+          path: app/build/outputs/apk/**/*.apk

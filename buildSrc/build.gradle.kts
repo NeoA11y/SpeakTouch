@@ -21,17 +21,13 @@ plugins {
     `kotlin-dsl`
 }
 
-java {
-    toolchain {
+kotlin {
+    jvmToolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
         vendor.set(JvmVendorSpec.ADOPTIUM)
     }
 }
 
 dependencies {
-    implementation(libs.kotlin.gradlePlugin)
-    implementation(libs.android.gradlePlugin)
     implementation(libs.android.gradlePluginApi)
-
-    implementation(libs.squareup.javapoet)
 }

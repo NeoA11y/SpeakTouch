@@ -29,7 +29,7 @@ data class VersionConfig(
 
         val majorValue = major * MAJOR_WEIGHT
         val minorValue = minor * MINOR_WEIGHT
-        val patchValue = patch * PATH_WEIGHT
+        val patchValue = patch * PATCH_WEIGHT
 
         return majorValue + minorValue + patchValue
     }
@@ -72,6 +72,6 @@ data class VersionConfig(
     companion object {
         private const val MAJOR_WEIGHT = 100
         private const val MINOR_WEIGHT = 10
-        private const val PATH_WEIGHT = 1
+        private const val PATCH_WEIGHT = 1
     }
 }

@@ -19,16 +19,16 @@
 @file:Suppress("UnstableApiUsage")
 
 plugins {
-    id(libs.plugins.android.application.get().pluginId)
-    id(libs.plugins.kotlin.android.get().pluginId)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.android.application)
     alias(libs.plugins.dagger)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
 }
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 
-java {
-    toolchain {
+kotlin {
+    jvmToolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
         vendor.set(JvmVendorSpec.ADOPTIUM)
     }
@@ -61,6 +61,8 @@ android {
     defaultConfig {
         applicationId = "com.neo.speaktouch"
 
+        configure<BasePluginExtension> { archivesName.set(rootProject.name) }
+
         minSdk = 22
         targetSdk = 34
 
@@ -90,18 +92,6 @@ android {
 
             signingConfig = signingConfigs.getByName("debug")
         }
-    }
-
-    applicationVariants.all {
-        val variant = this
-        variant.outputs
-            .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
-            .forEach { output ->
-                output.outputFileName = "${rootProject.name}-${buildType.name}.apk"
-                if (buildType.name == "release" && variant.signingConfig == null) {
-                    output.outputFileName = "${rootProject.name}-${buildType.name}-unsigned.apk"
-                }
-            }
     }
 
     buildFeatures {

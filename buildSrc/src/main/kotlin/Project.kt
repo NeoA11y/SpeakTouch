@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+import com.android.build.api.dsl.ApplicationExtension
 import org.gradle.api.Project
 import java.io.File
 import java.io.FileInputStream
@@ -59,6 +59,6 @@ fun Project.appVersion(
     }
 }
 
-fun Project.android(): BaseAppModuleExtension {
-    return extensions.getByName("android") as BaseAppModuleExtension
+fun Project.android(): ApplicationExtension {
+    return extensions.getByName("android") as ApplicationExtension
 }
