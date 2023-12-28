@@ -20,7 +20,8 @@
         android:theme="@style/Theme.SpeakTouch"
         tools:targetApi="34"
         android:icon="@null"
-        android:memtagMode="async">
+        android:memtagMode="async"
+        android:directBootAware="true">
 
         <service
             android:name=".service.SpeakTouchService"
